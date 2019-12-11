@@ -1,0 +1,24 @@
+{
+  "name": "swagger-stylelint",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "types": "tsc --noEmit",
+    "dev": "ts-node ./src/bin.ts",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": ["swagger", "openapi"],
+  "author": "antonk52",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "@types/node": "^12.12.17",
+    "@types/node-fetch": "^2.5.4",
+    "case": "^1.6.2",
+    "node-fetch": "^2.6.0"
+  }
+}
