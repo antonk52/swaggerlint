@@ -10,7 +10,11 @@ export async function fetchUrl(url: string): Promise<Swagger> {
     return fetch(url).then(x => x.json());
 }
 
+function toOneLinerFormat({msg, name}: LintError) {
+    return `-> ${name}\n${msg}`;
+}
+
 export function logErrors(errors: LintError[]): void {
-    console.log(errors.map(({msg, name}) => `\n-> ${name}\n${msg}`).join('\n'));
+    console.log(errors.map(toOneLinerFormat).join('\n'));
     console.log(`\n\nYou have ${errors.length} errors.`);
 }

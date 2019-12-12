@@ -1,9 +1,17 @@
-import {stylelintSwagger} from './index';
+import {swaggerlint} from './index';
+import {LintError} from './types';
 import config from './sample-config';
-import {log, fetchUrl, logErrors} from './utils';
+import {log, fetchUrl} from './utils';
 
-async function binSwaggerLint() {
+type ExitCode = 0 | 1;
+type CliResult = {
+    code: ExitCode;
+    errors: LintError[];
+};
+
+export async function cli(): Promise<CliResult> {
     const args: string[] = process.argv;
+    let errors: LintError[] = [];
 
     let url: string | null = null;
     const urlFlagIndex = args.indexOf('--url');
@@ -23,9 +31,7 @@ async function binSwaggerLint() {
             process.exit(1);
         });
         log(`got response`);
-        const errors = stylelintSwagger(swagger, config);
-        logErrors(errors);
-        if (errors.length) return process.exit(1);
+        errors = swaggerlint(swagger, config);
     }
 
     let swaggerPath: string | null = null;
@@ -41,10 +47,18 @@ async function binSwaggerLint() {
     if (swaggerPath) {
         // TODO check if exists, valid, convert from yaml to json
         const swagger = require(swaggerPath);
-        const errors = stylelintSwagger(swagger, config);
-        logErrors(errors);
-        if (errors.length) return process.exit(1);
+        errors = swaggerlint(swagger, config);
     }
-}
 
-binSwaggerLint();
+    if (!(url || swaggerPath)) {
+        return {
+            errors,
+            code: 1,
+        };
+    }
+
+    return {
+        errors,
+        code: errors.length ? 1 : 0,
+    };
+}
