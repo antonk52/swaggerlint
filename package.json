@@ -1,14 +1,20 @@
 {
-  "name": "swagger-stylelint",
+  "name": "swaggerlint",
   "version": "0.0.1",
-  "description": "",
-  "main": "index.js",
+  "description": "Swaggerlint  helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.",
+  "main": "./src/index.ts",
   "scripts": {
     "types": "tsc --noEmit",
     "dev": "ts-node ./src/bin.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["swagger", "openapi"],
+  "bin": {
+    "swaggerlint": "./bin/swaggerlint.ts"
+  },
+  "keywords": [
+    "swagger",
+    "openapi"
+  ],
   "author": "antonk52",
   "license": "MIT",
   "devDependencies": {

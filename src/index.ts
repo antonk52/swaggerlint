@@ -51,7 +51,7 @@ const validators: Validators = {
     },
 };
 
-export function stylelintSwagger(
+export function swaggerlint(
     swagger: Swagger,
     lintConfig: Config,
 ): LintError[] {

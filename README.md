@@ -1,6 +1,6 @@
-# Swagger linter
+# Swaggerlint
 
-`Swagger-linter` helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.
+`Swaggerlint` helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.
 
 ## Instalation
 
@@ -11,13 +11,13 @@ TODO
 ### Url flag
 
 ```sh
-swagger-stylelint --url https://...
+swaggerlint --url https://...
 ```
 
 ### Path flag
 
 ```sh
-swagger-stylelint --path /path/to/swagger.json
+swaggerlint --path /path/to/swagger.json
 ```
 
 ## Config
@@ -28,6 +28,5 @@ TODO
 
 | rule name | value | description |
 |------------------------|------------------|------------------|
-| `object-prop-casing`   | `'camel' | 'lower' | 'snake' | 'pascal' | 'constant'` | Select one or more casing for your object property names. |
+| `object-prop-casing`   | `'camel'` \| `'lower'` \| `'snake'` \| `'pascal'` \| `'constant'` | Select one or more casing for your object property names. |
 | `properties-for-object-type` | `[]` | Object types have to have their properties specified. |
-
