@@ -6,9 +6,12 @@ export type Config = {
     rules: {
         [ruleName: string]: string[];
     };
+    ignore?: {
+        definitions: string[];
+    };
 };
 
-export type Validator = (a: Swagger, b: string[]) => LintError[];
+export type Validator = (a: Swagger, b: string[], c?: Config) => LintError[];
 export type Validators = {[k: string]: Validator};
 export type Info = {
     description: string;
@@ -33,35 +36,37 @@ export type XMLObject = {
     wrapped?: boolean;
 };
 
-export type PropString = {
+export type PropBase<A = Object> = {
+  title?: string,
+  description?: string;
+} & A;
+
+export type PropString = PropBase<{
     type: 'string';
     format?: 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-    description?: string;
     default?: string;
     enum?: string[];
-};
-export type PropInteger = {
+}>;
+export type PropInteger = PropBase<{
     type: 'integer';
     format?: 'int32' | 'int64';
     description?: string;
     default?: number;
     minimum?: number;
     maximum?: number;
-};
-export type PropNumber = {
+}>;
+export type PropNumber = PropBase<{
     type: 'number';
     format?: 'float' | 'double';
-    description?: string;
     default?: number;
     minimum?: number;
     maximum?: number;
-};
-export type PropBoolean = {
+}>;
+export type PropBoolean = PropBase<{
     type: 'boolean';
-    description?: string;
     default?: boolean;
-};
-export type PropObject = {
+}>;
+export type PropObject = PropBase<{
     type: 'object';
     properties: {
         [k: string]:
@@ -72,7 +77,22 @@ export type PropObject = {
             | PropBoolean;
     };
     required: string[];
-};
+}>;
+export type PlainType =
+    | 'object'
+    | 'boolean'
+    | 'string'
+    | 'number'
+    | 'integer'
+    | 'array';
+export type PropArray = PropBase<{
+    type: 'array';
+    items:
+        | {
+              $ref: string;
+          }
+        | {type: PlainType};
+}>;
 export type Property =
     | PropObject
     | PropString
@@ -82,7 +102,7 @@ export type Property =
 export type DefinitionObject = {
     title: string;
     description?: string;
-    type: 'object' | 'boolean' | 'string' | 'number' | 'integer';
+    type: PlainType;
     keys: string[];
     readOnly?: boolean;
     required: string[];
