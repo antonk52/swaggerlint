@@ -2,14 +2,15 @@
   "name": "swaggerlint",
   "version": "0.0.1",
   "description": "Swaggerlint  helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.",
-  "main": "./src/index.ts",
+  "main": "./dist/src/index.js",
   "scripts": {
+    "build": "tsc",
     "types": "tsc --noEmit",
     "dev": "ts-node ./src/bin.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "swaggerlint": "./bin/swaggerlint.ts"
+    "swaggerlint": "./dist/bin/swaggerlint.js"
   },
   "keywords": [
     "swagger",

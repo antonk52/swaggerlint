@@ -1,5 +1,4 @@
-#!/usr/bin/env ts-node
-// TODO node shebang
+#!/usr/bin/env node
 
 import {cli} from '../src/cli';
 import {logErrors} from '../src/utils';
