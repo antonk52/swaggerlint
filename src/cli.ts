@@ -26,6 +26,7 @@ export async function cli(): Promise<CliResult> {
     if (url) {
         log(`fetching for ${url}`);
         const swagger = await fetchUrl(url).catch(e => {
+            console.warn('error fetching by URL');
             log(`error fetching url, exiting...`);
             log(e);
             process.exit(1);
