@@ -1,0 +1,26 @@
+.git/
+
+# for npm
+node_modules/
+npm-shrinkwrap.json
+npm-debug.log
+
+.tscache/
+
+# for https://github.com/Microsoft/TypeScript/issues/4667
+lib/**/*.ts
+!lib/**/*.d.ts
+
+# misc
+example/
+.gitignore
+.editorconfig
+
+src/**/*
+test
+**/spec
+.eslintrc.js
+prettier.config.js
+jest.config.js
+.eslintrc.js
+**/*.md
