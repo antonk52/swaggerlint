@@ -7,12 +7,10 @@ export type Config = {
         [ruleName: string]: string[];
     };
     ignore?: {
-        definitions: string[];
+        definitions?: string[];
     };
 };
 
-export type Validator = (a: Swagger, b: string[], c?: Config) => LintError[];
-export type Validators = {[k: string]: Validator};
 export type Info = {
     description: string;
     version: string;
@@ -117,6 +115,7 @@ export type Swagger = {
     host: string;
     basePath: string;
     tags: Tag[];
+    // TODO
     paths: any;
     definitions: {
         [k: string]: Property;
@@ -126,5 +125,9 @@ export type Swagger = {
 export type LintError = {
     name: string;
     msg: string;
-    source: string;
+};
+
+export type Rule = {
+    name: string,
+    check: (a: Swagger, b: string[], c?: Config) => LintError[],
 };
