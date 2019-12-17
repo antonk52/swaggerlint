@@ -1,7 +1,9 @@
 import {swaggerlint} from './index';
 import {LintError} from './types';
 import config from './sample-config';
-import {log, fetchUrl} from './utils';
+import {log, fetchUrl, isYamlPath} from './utils';
+import fs from 'fs';
+import yaml from 'js-yaml';
 
 type ExitCode = 0 | 1;
 type CliResult = {
@@ -46,8 +48,25 @@ export async function cli(): Promise<CliResult> {
      * handling `swagger-lint --path /path/to/swagger.json`
      */
     if (swaggerPath) {
-        // TODO check if exists, valid, convert from yaml to json
-        const swagger = require(swaggerPath);
+        // non existing path
+        if (!fs.existsSync(swaggerPath)) {
+            return {
+                code: 1,
+                errors: [
+                    {
+                        msg: 'File with a provided path does not exits.',
+                        name: 'swaggerlint-core',
+                    },
+                ],
+            };
+        }
+
+        const isYaml = isYamlPath(swaggerPath);
+
+        const swagger = isYaml
+            ? yaml.safeLoad(fs.readFileSync(swaggerPath, 'utf8'))
+            : require(swaggerPath);
+
         errors = swaggerlint(swagger, config);
     }
 

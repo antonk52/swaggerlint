@@ -43,11 +43,6 @@ export type InfoObject = {
     licence?: string;
     version: string;
 };
-export type Tag = {
-    name: string;
-    description?: string;
-    externalDocs?: any;
-};
 export type XMLObject = {
     name?: string;
     namespace?: string;
@@ -341,7 +336,6 @@ export type OpenAPIObject = {
     swagger: string;
     host: string;
     basePath: string;
-    // tags: Tag[];
     definitions: {
         [k: string]: Property;
     };
