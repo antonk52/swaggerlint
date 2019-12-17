@@ -1,6 +1,6 @@
 {
   "name": "swaggerlint",
-  "version": "0.0.1",
+  "version": "0.0.2-0",
   "description": "Swaggerlint  helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.",
   "main": "./dist/src/index.js",
   "scripts": {
