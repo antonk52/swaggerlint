@@ -10,7 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "swaggerlint": "./dist/src/bin.js"
+    "swaggerlint": "./dist/bin.js"
   },
   "repository": {
     "type": "git",
