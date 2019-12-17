@@ -17,22 +17,45 @@ npm install --global swaggerlint
 
 ## Usage
 
-### Url flag
+### CLI
+
+#### Url flag
 
 ```sh
 swaggerlint --url https://...
 ```
 
-### Path flag
+#### Path flag
 
 ```sh
 swaggerlint --path /path/to/swagger.json
 ```
 
-### Config flag
+#### Config flag
 
 ```sh
 swaggerlint --config /path/to/swaggerlint.config.js
+```
+
+### Nodejs
+
+```js
+const {swaggerlint} = require('swaggerlint')
+const config = require('./my-company-config.js')
+const swaggerScheme = require('./generated-swagger-scheme')
+
+
+const result = swaggerlint(swaggerScheme, config)
+
+console.log(result) // an array or errors
+
+/**
+ * [{
+ *   name: 'string', // rule name
+ *   msg: 'string' // message from the rule checker
+ * }]
+ */
+
 ```
 
 ## Config
