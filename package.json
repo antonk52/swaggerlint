@@ -12,12 +12,19 @@
   "bin": {
     "swaggerlint": "./dist/bin/swaggerlint.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/antonk52/swaggerlint.git"
+  },
   "keywords": [
     "swagger",
     "openapi"
   ],
   "author": "antonk52",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/antonk52/swaggerlint/issues"
+  },
   "devDependencies": {
     "@types/jest": "^24.0.23",
     "jest": "^24.9.0",
