@@ -1,6 +1,6 @@
 import {swaggerlint} from './index';
 import {LintError} from './types';
-import config from './sample-config';
+import defaultConfig from './defaultConfig';
 import {log, fetchUrl, isYamlPath} from './utils';
 import fs from 'fs';
 import yaml from 'js-yaml';
@@ -11,9 +11,19 @@ type CliResult = {
     errors: LintError[];
 };
 
+const name = 'swaggerlint-core';
+
 export async function cli(): Promise<CliResult> {
     const args: string[] = process.argv;
     let errors: LintError[] = [];
+
+    let config = defaultConfig;
+    const configFlagIndex = args.indexOf('--config');
+
+    if (configFlagIndex !== -1) {
+        // TODO validatie path
+        config = require(args[configFlagIndex + 1]);
+    }
 
     let url: string | null = null;
     const urlFlagIndex = args.indexOf('--url');
@@ -55,7 +65,7 @@ export async function cli(): Promise<CliResult> {
                 errors: [
                     {
                         msg: 'File with a provided path does not exits.',
-                        name: 'swaggerlint-core',
+                        name,
                     },
                 ],
             };
@@ -72,7 +82,10 @@ export async function cli(): Promise<CliResult> {
 
     if (!(url || swaggerPath)) {
         return {
-            errors,
+            errors: [{
+                name,
+                msg: 'Neither url nor path were provided for your swagger scheme',
+            }],
             code: 1,
         };
     }

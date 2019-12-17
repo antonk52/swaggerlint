@@ -16,7 +16,7 @@
     "declaration": true,
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts", "bin/**/*.ts"],
-  "exclude" : ["src/**/spec", "bin/**/spec"]
+  "include": ["src/**/*.ts"],
+  "exclude" : ["src/**/spec"]
 }
 
