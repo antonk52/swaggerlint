@@ -4,7 +4,16 @@
 
 ## Instalation
 
-TODO
+Install in your project
+
+```sh
+npm install swaggerlint
+```
+
+Install it globally
+```sh
+npm install --global swaggerlint
+```
 
 ## Usage
 
@@ -20,9 +29,24 @@ swaggerlint --url https://...
 swaggerlint --path /path/to/swagger.json
 ```
 
+### Config flag
+
+```sh
+swaggerlint --config /path/to/swaggerlint.config.js
+```
+
 ## Config
 
-TODO
+```js
+// swaggerlint.config.js
+module.exports = {
+    rules: {
+        'object-prop-casing': ['camel', 'lower'],
+        'properties-for-object-type': [],
+        'latin-definitions-only': [],
+    },
+}
+```
 
 ## Rules
 
@@ -30,3 +54,5 @@ TODO
 |------------------------|------------------|------------------|
 | `object-prop-casing`   | `'camel'` \| `'lower'` \| `'snake'` \| `'pascal'` \| `'constant'` | Select one or more casing for your object property names. |
 | `properties-for-object-type` | `[]` | Object types have to have their properties specified. |
+| `latin-definitions-only` | `[]` | Error when non Latin characters used in definition names. |
+| `path-param-required-field` | `[]` | Helps to keep consistently set optional `required` property in path parameters. |
