@@ -22,5 +22,4 @@ test
 .eslintrc.js
 prettier.config.js
 jest.config.js
-.eslintrc.js
 **/*.md
