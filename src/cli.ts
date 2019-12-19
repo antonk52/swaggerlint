@@ -13,16 +13,28 @@ type CliResult = {
 
 const name = 'swaggerlint-core';
 
-export async function cli(): Promise<CliResult> {
-    const args: string[] = process.argv;
+export async function cli(args: string[]): Promise<CliResult> {
     let errors: LintError[] = [];
 
     let config = defaultConfig;
     const configFlagIndex = args.indexOf('--config');
 
     if (configFlagIndex !== -1) {
-        // TODO validatie path
-        config = require(args[configFlagIndex + 1]);
+        const configPath = args[configFlagIndex + 1];
+
+        if (fs.existsSync(configPath)) {
+            config = require(configPath);
+        } else {
+            return {
+                code: 1,
+                errors: [
+                    {
+                        name,
+                        msg: 'File at a provided config path does not exist.',
+                    },
+                ],
+            };
+        }
     }
 
     let url: string | null = null;
@@ -38,13 +50,23 @@ export async function cli(): Promise<CliResult> {
     if (url) {
         log(`fetching for ${url}`);
         const swagger = await fetchUrl(url).catch(e => {
-            console.warn('error fetching by URL');
-            log(`error fetching url, exiting...`);
+            log('error fetching url');
             log(e);
-            process.exit(1);
+
+            return null;
         });
-        log(`got response`);
-        errors = swaggerlint(swagger, config);
+        if (swagger === null) {
+            return {
+                code: 1,
+                errors: [{
+                    name,
+                    msg: 'Cannot fetch swagger scheme from the provided url',
+                }]
+            };
+        } else {
+            log(`got response`);
+            errors = swaggerlint(swagger, config);
+        }
     }
 
     let swaggerPath: string | null = null;
@@ -82,10 +104,13 @@ export async function cli(): Promise<CliResult> {
 
     if (!(url || swaggerPath)) {
         return {
-            errors: [{
-                name,
-                msg: 'Neither url nor path were provided for your swagger scheme',
-            }],
+            errors: [
+                {
+                    name,
+                    msg:
+                        'Neither url nor path were provided for your swagger scheme',
+                },
+            ],
             code: 1,
         };
     }

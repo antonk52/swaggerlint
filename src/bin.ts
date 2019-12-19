@@ -3,7 +3,7 @@
 import {cli} from './cli';
 import {logErrors} from './utils';
 
-cli().then(({code, errors}) => {
+cli(process.argv.slice(2)).then(({code, errors}) => {
     if (code === 1) {
         logErrors(errors);
     } else {
