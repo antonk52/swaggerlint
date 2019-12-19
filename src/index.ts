@@ -1,10 +1,11 @@
-import _ from 'lodash';
-
 import {OpenAPIObject, LintError, Config} from './types';
 
 import rules from './rules';
 
-export function swaggerlint(swagger: OpenAPIObject, lintConfig: Config): LintError[] {
+export function swaggerlint(
+    swagger: OpenAPIObject,
+    lintConfig: Config,
+): LintError[] {
     let errs: LintError[] = [];
 
     const checkRule = (ruleName: keyof Config['rules']) => {

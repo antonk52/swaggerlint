@@ -17,6 +17,7 @@ const methods: ['get', 'post', 'put', 'delete', 'options', 'trace'] = [
     'trace',
 ];
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isRefObj(obj: any): obj is ReferenceObject {
     return (
         typeof obj === 'object' &&
@@ -63,7 +64,6 @@ const rule: Rule = {
                             msg: `required is not set for path "${pathName}" in "${method}" in "${param.name}"`,
                         });
                     }
-
                 });
             });
         });

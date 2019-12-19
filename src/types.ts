@@ -51,7 +51,9 @@ export type XMLObject = {
     wrapped?: boolean;
 };
 
-export type PropBase<A = Object> = {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ObjStub = Record<string, any>;
+export type PropBase<A = ObjStub> = {
     title?: string;
     description?: string;
 } & A;
@@ -130,8 +132,8 @@ export type DefinitionObject = {
     required: string[];
     properties: {[k: string]: Property};
     xml?: XMLObject;
-    externalDocs?: any;
-    example?: any;
+    externalDocs?: ExternalDocumentationObject;
+    example?: {};
 };
 
 type RestSchema =

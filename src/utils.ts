@@ -6,7 +6,7 @@ import {OpenAPIObject, LintError} from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export const log = isDev ? (x: any) => console.log(`--> ${x}`) : () => {};
+export const log = isDev ? (x: string) => console.log(`--> ${x}`) : () => null;
 
 export function isYamlPath(p: string) {
     const ext = path.extname(p);

@@ -23,3 +23,5 @@ jobs:
       run: npm run build
     - name: check types
       run: npm run types
+    - name: linting
+      run: npm run lint
