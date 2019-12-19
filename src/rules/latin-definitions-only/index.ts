@@ -4,7 +4,7 @@ const name = 'latin-definitions-only';
 
 const rule: Rule = {
     name,
-    check: (swagger, _) => {
+    check: swagger => {
         const errors: LintError[] = [];
 
         Object.keys(swagger.definitions).forEach(definition => {

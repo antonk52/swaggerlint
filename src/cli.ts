@@ -58,10 +58,13 @@ export async function cli(args: string[]): Promise<CliResult> {
         if (swagger === null) {
             return {
                 code: 1,
-                errors: [{
-                    name,
-                    msg: 'Cannot fetch swagger scheme from the provided url',
-                }]
+                errors: [
+                    {
+                        name,
+                        msg:
+                            'Cannot fetch swagger scheme from the provided url',
+                    },
+                ],
             };
         } else {
             log(`got response`);
