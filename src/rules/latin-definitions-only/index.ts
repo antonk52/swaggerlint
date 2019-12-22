@@ -7,7 +7,9 @@ const rule: Rule = {
     check: swagger => {
         const errors: LintError[] = [];
 
-        Object.keys(swagger.definitions).forEach(definition => {
+        const {definitions = {}} = swagger;
+
+        Object.keys(definitions).forEach(definition => {
             const rest = definition
                 // def name may contain latin chars
                 .replace(/[a-z]+/i, '')

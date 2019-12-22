@@ -1,10 +1,12 @@
-/*
- * All types and their names should mimic the swagger spec.
+/**
+ * All types and their names should mimic the swagger spec (2.0).
  *
- * https://swagger.io/specification
- *
- * TODO
  * https://github.com/OAI/OpenAPI-Specification/blob/master/versions/2.0.md
+ *
+ * or
+ *
+ * https://swagger.io/specification/v2/
+ *
  */
 export type Config = {
     rules: {
@@ -325,7 +327,7 @@ export type OpenAPIObject = {
     /**
      * Semantic version numver
      */
-    openapi: string; // semantic version
+    swagger: '2.0'; // semantic version
     info: InfoObject;
     servers?: ServerObject[];
     paths: PathsObject;
@@ -335,10 +337,9 @@ export type OpenAPIObject = {
     externalDocs?: ExternalDocumentationObject;
 
     // below are questionable
-    swagger: string;
-    host: string;
-    basePath: string;
-    definitions: {
+    host?: string;
+    basePath?: string;
+    definitions?: {
         [k: string]: Property;
     };
 };

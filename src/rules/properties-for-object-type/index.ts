@@ -7,12 +7,13 @@ const rule: Rule = {
     name,
     check: (swagger, __, fullConfig) => {
         const errors: LintError[] = [];
+        const {definitions = {}} = swagger;
 
         _.difference(
-            Object.keys(swagger.definitions),
+            Object.keys(definitions),
             fullConfig?.ignore?.definitions ?? [],
         ).forEach(defKey => {
-            const definition = swagger.definitions[defKey];
+            const definition = definitions[defKey];
             if (definition.type === 'object') {
                 if (!('properties' in definition)) {
                     errors.push({
