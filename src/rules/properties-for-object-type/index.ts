@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import {Rule, LintError} from '../../types';
+import {Rule, LintError} from '@/types';
 
 const name = 'properties-for-object-type';
 

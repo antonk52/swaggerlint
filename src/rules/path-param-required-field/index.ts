@@ -4,7 +4,7 @@ import {
     PathItemObject,
     PathsObject,
     ReferenceObject,
-} from '../../types';
+} from '@/types';
 
 const name = 'path-param-required-field';
 
