@@ -75,7 +75,7 @@ module.exports = {
 
 | rule name | value | description |
 |------------------------|------------------|------------------|
-| `object-prop-casing`   | `'camel'` \| `'lower'` \| `'snake'` \| `'pascal'` \| `'constant'` | Select one or more casing for your object property names. |
+| `object-prop-casing`   | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your object property names. |
 | `properties-for-object-type` | `[]` | Object types have to have their properties specified. |
 | `latin-definitions-only` | `[]` | Error when non Latin characters used in definition names. |
 | `path-param-required-field` | `[]` | Helps to keep consistently set optional `required` property in path parameters. |

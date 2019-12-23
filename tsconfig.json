@@ -12,7 +12,9 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "declaration": true,
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "baseUrl": "./src",
+        "paths": {"@/*": ["./*"]}
     },
     "include": ["src/**/*.ts"],
     "exclude": ["src/**/spec"]

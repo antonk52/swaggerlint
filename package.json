@@ -8,7 +8,7 @@
         "types": "tsc --noEmit",
         "lint": "eslint . --ext=.js,.ts",
         "dev": "ts-node ./src/bin.ts",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest"
     },
     "bin": {
         "swaggerlint": "./dist/bin.js"
