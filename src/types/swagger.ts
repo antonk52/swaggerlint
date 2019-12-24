@@ -107,23 +107,6 @@ type ItemsObject =
 /**
  * https://swagger.io/specification/v2/#parameterObject
  */
-type CommonParameterObject = {
-    format?: string;
-    allowEmptyValue?: boolean;
-    default?: any;
-    maximum?: number;
-    exclusiveMaximum?: boolean;
-    minimum?: number;
-    exclusiveMinimum?: boolean;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
-    maxItems?: number;
-    minItems?: number;
-    uniqueItems?: boolean;
-    enum?: any[];
-    multipleOf?: number;
-};
 export type ParameterObject =
     /**
      * - in `body` parameter has `schema` property
@@ -139,22 +122,83 @@ export type ParameterObject =
     /**
      * in `path` parameter is always required
      */
-    | ({
+    | {
           name: string;
           in: 'path';
           required: true;
-      } & CommonParameterObject)
-    | ({
+          type: 'string' | 'number' | 'integer' | 'boolean';
+      }
+    | {
           name: string;
           in: 'query' | 'header' | 'formData';
           description: string;
           required?: boolean;
-          type: 'string' | 'number' | 'integer' | 'boolean' | 'file';
-      } & CommonParameterObject)
+          type: 'string';
+          format?: StringFormat;
+          maxLength?: number;
+          minLength?: number;
+          pattern?: string;
+          enum?: string[];
+          default?: string;
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'number';
+          format?: NumberFormat;
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+          default?: number;
+          enum?: number[];
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'integer';
+          format?: IntegerFormat;
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+          default?: number;
+          enum?: number[];
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'boolean';
+          default?: boolean;
+          allowEmptyValue?: boolean;
+      }
+    /**
+     * type `file` can only be in `formData`
+     */
+    | {
+          name: string;
+          in: 'formData';
+          description: string;
+          required?: boolean;
+          type: 'file';
+          default?: any;
+          allowEmptyValue?: boolean;
+      }
     /**
      * type array has `items` & optional `collectionFormat` properties
      */
-    | ({
+    | {
           name: string;
           in: 'query' | 'header' | 'formData';
           description: string;
@@ -162,7 +206,12 @@ export type ParameterObject =
           type: 'array';
           items: ItemsObject;
           collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
-      } & CommonParameterObject);
+          maxItems?: number;
+          minItems?: number;
+          uniqueItems?: boolean;
+          default?: any[];
+          allowEmptyValue?: boolean;
+      };
 
 /**
  * https://swagger.io/specification/v2/#referenceObject
