@@ -8,14 +8,7 @@
  * https://swagger.io/specification/v2/
  *
  */
-export type Config = {
-    rules: {
-        [ruleName: string]: [string] | [];
-    };
-    ignore?: {
-        definitions?: string[];
-    };
-};
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * https://swagger.io/specification/v2/#contactObject
@@ -32,7 +25,6 @@ export type ContactObject = {
 export type LicenseObject = {
     name: string;
     url?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [s: string]: any;
 };
 
@@ -70,56 +62,51 @@ export type ExternalDocumentationObject = {
 /**
  * https://swagger.io/specification/v2/#itemsObject
  */
-type CommonItemsObject = {
-    format?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    default?: any;
-    maximum?: number;
-    exclusiveMaximum?: boolean;
-    minimum?: number;
-    exclusiveMinimum?: boolean;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
-    maxItems?: number;
-    minItems?: number;
-    uniqueItems?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    enum?: any[];
-    multipleOf?: number;
-};
 type ItemsObject =
-    | ({
+    | {
           type: 'array';
           items: ItemsObject;
           collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes';
-      } & CommonItemsObject)
-    | ({
-          type: 'string' | 'number' | 'integer' | 'boolean';
-      } & CommonItemsObject);
+          uniqueItems?: boolean;
+          maxItems?: number;
+          minItems?: number;
+          default?: ItemsObject[];
+      }
+    | {
+          type: 'string';
+          format: StringFormat;
+          enum?: string[];
+          maxLength?: number;
+          minLength?: number;
+          pattern?: string;
+      }
+    | {
+          type: 'number';
+          format: NumberFormat;
+          enum?: number[];
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+      }
+    | {
+          type: 'integer';
+          format: IntegerFormat;
+          enum?: number[];
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+      }
+    | {
+          type: 'boolean';
+      };
 
 /**
  * https://swagger.io/specification/v2/#parameterObject
  */
-type CommonParameterObject = {
-    format?: string;
-    allowEmptyValue?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    default?: any;
-    maximum?: number;
-    exclusiveMaximum?: boolean;
-    minimum?: number;
-    exclusiveMinimum?: boolean;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
-    maxItems?: number;
-    minItems?: number;
-    uniqueItems?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    enum?: any[];
-    multipleOf?: number;
-};
 export type ParameterObject =
     /**
      * - in `body` parameter has `schema` property
@@ -135,22 +122,83 @@ export type ParameterObject =
     /**
      * in `path` parameter is always required
      */
-    | ({
+    | {
           name: string;
           in: 'path';
           required: true;
-      } & CommonParameterObject)
-    | ({
+          type: 'string' | 'number' | 'integer' | 'boolean';
+      }
+    | {
           name: string;
           in: 'query' | 'header' | 'formData';
           description: string;
           required?: boolean;
-          type: 'string' | 'number' | 'integer' | 'boolean' | 'file';
-      } & CommonParameterObject)
+          type: 'string';
+          format?: StringFormat;
+          maxLength?: number;
+          minLength?: number;
+          pattern?: string;
+          enum?: string[];
+          default?: string;
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'number';
+          format?: NumberFormat;
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+          default?: number;
+          enum?: number[];
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'integer';
+          format?: IntegerFormat;
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+          default?: number;
+          enum?: number[];
+          allowEmptyValue?: boolean;
+      }
+    | {
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'boolean';
+          default?: boolean;
+          allowEmptyValue?: boolean;
+      }
+    /**
+     * type `file` can only be in `formData`
+     */
+    | {
+          name: string;
+          in: 'formData';
+          description: string;
+          required?: boolean;
+          type: 'file';
+          default?: any;
+          allowEmptyValue?: boolean;
+      }
     /**
      * type array has `items` & optional `collectionFormat` properties
      */
-    | ({
+    | {
           name: string;
           in: 'query' | 'header' | 'formData';
           description: string;
@@ -158,7 +206,12 @@ export type ParameterObject =
           type: 'array';
           items: ItemsObject;
           collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
-      } & CommonParameterObject);
+          maxItems?: number;
+          minItems?: number;
+          uniqueItems?: boolean;
+          default?: any[];
+          allowEmptyValue?: boolean;
+      };
 
 /**
  * https://swagger.io/specification/v2/#referenceObject
@@ -175,9 +228,9 @@ export type SecurityRequirementObject = {
 /**
  * https://swagger.io/specification/v2/#responsesObject
  */
+
 export type ResponsesObject = {
-    default: ResponseObject | ReferenceObject;
-    [httpStatusCode: string]: ResponseObject | ReferenceObject;
+    [httpStatusCodeOrDefault: string]: ResponseObject | ReferenceObject;
 };
 
 /**
@@ -243,6 +296,12 @@ type SchemaObjectCreator<T, F, D> = {
     description?: string;
     default?: D;
     enum?: D[];
+    // fixed fields
+    discriminator?: string;
+    readOnly?: boolean;
+    xml?: XMLObject;
+    externalDocs?: ExternalDocumentationObject;
+    example?: any;
 };
 
 type NumberAddon = Partial<{
@@ -266,23 +325,35 @@ type ObjectAddon = Partial<{
     maxProperties: number;
     minProperties: number;
     required: string[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     additionalProperties: boolean | Record<string, any>;
     properties: {[name: string]: SchemaObject};
 }>;
+type SchemaObjectArray = SchemaObjectCreator<'array', any, SchemaObject[]> & {
+    items: SchemaObject;
+} & ArrayAddon;
+type SchemaObjectObject = SchemaObjectCreator<
+    'object',
+    any,
+    Record<string, any>
+> &
+    ObjectAddon;
+export type SchemaObjectAllOfObject = SchemaObjectCreator<
+    'object',
+    any,
+    SchemaObject[]
+> & {
+    allOf: (ReferenceObject | SchemaObjectObject)[];
+};
+
 export type SchemaObject =
     | ReferenceObject
     | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
-    // eslint-disable-next-line
     | SchemaObjectCreator<'boolean', any, boolean>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | (SchemaObjectCreator<'object', any, Record<string, any>> & ObjectAddon)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    | (SchemaObjectCreator<'array', any, SchemaObject[]> & {
-          items: SchemaObject;
-      } & ArrayAddon);
+    | SchemaObjectObject
+    | SchemaObjectArray
+    | SchemaObjectAllOfObject;
 
 /**
  * https://swagger.io/specification/v2/#headers-object
@@ -305,7 +376,6 @@ export type ResponseObject = {
  * https://swagger.io/specification/v2/#example-object
  */
 export type ExampleObject = {
-    // eslint-disable-next-line
     [mineType: string]: any;
 };
 
@@ -315,9 +385,7 @@ export type ExampleObject = {
 type CommonHeaderObject<T> = {
     description?: string;
     format?: string;
-    // eslint-disable-next-line
     default?: T;
-    // eslint-disable-next-line
     enum?: T[];
 };
 export type HeaderObject =
@@ -348,7 +416,6 @@ export type HeaderObject =
           maxItems?: number;
           minItems?: number;
           uniqueItems?: boolean;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } & CommonHeaderObject<any>);
 
 /**
@@ -428,14 +495,4 @@ export type SwaggerObject = {
     security?: SecurityRequirementObject[];
     tags: TagObject[];
     externalDocs?: ExternalDocumentationObject;
-};
-
-export type LintError = {
-    name: string;
-    msg: string;
-};
-
-export type Rule = {
-    name: string;
-    check: (a: SwaggerObject, b: string[], c?: Config) => LintError[];
 };

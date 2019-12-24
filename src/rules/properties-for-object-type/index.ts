@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import {Rule, LintError} from '@/types';
-import {isRef} from '@/utils';
+import {isRef, isSchemaObjectAllOfObject} from '@/utils';
 
 const name = 'properties-for-object-type';
 
@@ -17,6 +17,8 @@ const rule: Rule = {
             const definition = definitions[defKey];
 
             if (isRef(definition)) return;
+
+            if (isSchemaObjectAllOfObject(definition)) return;
 
             if (definition.type === 'object') {
                 const {properties} = definition;

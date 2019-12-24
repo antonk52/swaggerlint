@@ -1,7 +1,7 @@
 import Case from 'case';
 import _ from 'lodash';
-import {Rule, LintError} from '@/types';
-import {isRef} from '@/utils';
+import {Rule, LintError, SchemaObject} from '@/types';
+import {isRef, isSchemaObjectAllOfObject} from '@/utils';
 
 const name = 'object-prop-casing';
 
@@ -34,6 +34,40 @@ const rule: Rule = {
 
         const {definitions = {}} = swagger;
 
+        function isValidCase(str: string): boolean {
+            const strCase = Case.of(str);
+            return validCases.has(strCase);
+        }
+
+        function checkCasingOnProperty(
+            propName: string,
+            defKey: string,
+            properties: {[p: string]: SchemaObject},
+        ): void {
+            if (!isValidCase(propName)) {
+                errors.push({
+                    msg: `Property "${propName}" has wrong casing on "${defKey}"`,
+                    name,
+                });
+            }
+
+            const topLevelProp = properties[propName];
+
+            if (isRef(topLevelProp)) return;
+            if (isSchemaObjectAllOfObject(topLevelProp)) return;
+
+            if (topLevelProp.type === 'object') {
+                Object.keys(topLevelProp.properties || {}).forEach(k => {
+                    if (!isValidCase(propName)) {
+                        errors.push({
+                            msg: `Property in path "${propName}.${k}" has wrong casing on "${defKey}"`,
+                            name,
+                        });
+                    }
+                });
+            }
+        }
+
         _.difference(
             Object.keys(definitions),
             fullConfig?.ignore?.definitions ?? [],
@@ -42,39 +76,30 @@ const rule: Rule = {
 
             if (isRef(definition)) return;
 
+            if (isSchemaObjectAllOfObject(definition)) {
+                definition.allOf.forEach(subDef => {
+                    if (isRef(subDef)) return;
+
+                    const {properties} = subDef;
+
+                    if (properties === undefined) return;
+
+                    Object.keys(properties).forEach(propName =>
+                        checkCasingOnProperty(propName, defKey, properties),
+                    );
+                });
+
+                return;
+            }
+
             if (definition.type === 'object') {
                 const {properties} = definition;
 
                 if (properties === undefined) return;
 
-                Object.keys(properties).forEach(propName => {
-                    const propCase = Case.of(propName);
-                    if (!validCases.has(propCase)) {
-                        errors.push({
-                            msg: `Property "${propName}" has wrong casing on "${defKey}"`,
-                            name,
-                        });
-                    }
-
-                    const topLevelProp = properties[propName];
-
-                    if (isRef(topLevelProp)) return;
-
-                    // TODO dig deeper with a stack
-                    if (topLevelProp.type === 'object') {
-                        Object.keys(topLevelProp.properties || {}).forEach(
-                            k => {
-                                const propCase = Case.of(propName);
-                                if (!validCases.has(propCase)) {
-                                    errors.push({
-                                        msg: `Property in path "${propName}.${k}" has wrong casing on "${defKey}"`,
-                                        name,
-                                    });
-                                }
-                            },
-                        );
-                    }
-                });
+                Object.keys(properties).forEach(propName =>
+                    checkCasingOnProperty(propName, defKey, properties),
+                );
             }
         });
 
