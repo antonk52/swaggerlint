@@ -64,7 +64,7 @@ console.log(result) // an array or errors
 // swaggerlint.config.js
 module.exports = {
     rules: {
-        'object-prop-casing': ['camel', 'lower'],
+        'object-prop-casing': ['camel'],
         'properties-for-object-type': [],
         'latin-definitions-only': [],
     },
