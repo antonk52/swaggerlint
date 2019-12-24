@@ -8,6 +8,7 @@
  * https://swagger.io/specification/v2/
  *
  */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Config = {
     rules: {
         [ruleName: string]: [string] | [];
@@ -32,7 +33,6 @@ export type ContactObject = {
 export type LicenseObject = {
     name: string;
     url?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [s: string]: any;
 };
 
@@ -72,7 +72,6 @@ export type ExternalDocumentationObject = {
  */
 type CommonItemsObject = {
     format?: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     default?: any;
     maximum?: number;
     exclusiveMaximum?: boolean;
@@ -84,7 +83,6 @@ type CommonItemsObject = {
     maxItems?: number;
     minItems?: number;
     uniqueItems?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     enum?: any[];
     multipleOf?: number;
 };
@@ -104,7 +102,6 @@ type ItemsObject =
 type CommonParameterObject = {
     format?: string;
     allowEmptyValue?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     default?: any;
     maximum?: number;
     exclusiveMaximum?: boolean;
@@ -116,7 +113,6 @@ type CommonParameterObject = {
     maxItems?: number;
     minItems?: number;
     uniqueItems?: boolean;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     enum?: any[];
     multipleOf?: number;
 };
@@ -266,7 +262,6 @@ type ObjectAddon = Partial<{
     maxProperties: number;
     minProperties: number;
     required: string[];
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     additionalProperties: boolean | Record<string, any>;
     properties: {[name: string]: SchemaObject};
 }>;
@@ -275,11 +270,8 @@ export type SchemaObject =
     | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
-    // eslint-disable-next-line
     | SchemaObjectCreator<'boolean', any, boolean>
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | (SchemaObjectCreator<'object', any, Record<string, any>> & ObjectAddon)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     | (SchemaObjectCreator<'array', any, SchemaObject[]> & {
           items: SchemaObject;
       } & ArrayAddon);
@@ -305,7 +297,6 @@ export type ResponseObject = {
  * https://swagger.io/specification/v2/#example-object
  */
 export type ExampleObject = {
-    // eslint-disable-next-line
     [mineType: string]: any;
 };
 
@@ -315,9 +306,7 @@ export type ExampleObject = {
 type CommonHeaderObject<T> = {
     description?: string;
     format?: string;
-    // eslint-disable-next-line
     default?: T;
-    // eslint-disable-next-line
     enum?: T[];
 };
 export type HeaderObject =
@@ -348,7 +337,6 @@ export type HeaderObject =
           maxItems?: number;
           minItems?: number;
           uniqueItems?: boolean;
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } & CommonHeaderObject<any>);
 
 /**
