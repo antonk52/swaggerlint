@@ -62,31 +62,47 @@ export type ExternalDocumentationObject = {
 /**
  * https://swagger.io/specification/v2/#itemsObject
  */
-type CommonItemsObject = {
-    format?: string;
-    default?: any;
-    maximum?: number;
-    exclusiveMaximum?: boolean;
-    minimum?: number;
-    exclusiveMinimum?: boolean;
-    maxLength?: number;
-    minLength?: number;
-    pattern?: string;
-    maxItems?: number;
-    minItems?: number;
-    uniqueItems?: boolean;
-    enum?: any[];
-    multipleOf?: number;
-};
 type ItemsObject =
-    | ({
+    | {
           type: 'array';
           items: ItemsObject;
           collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes';
-      } & CommonItemsObject)
-    | ({
-          type: 'string' | 'number' | 'integer' | 'boolean';
-      } & CommonItemsObject);
+          uniqueItems?: boolean;
+          maxItems?: number;
+          minItems?: number;
+          default?: ItemsObject[];
+      }
+    | {
+          type: 'string';
+          format: StringFormat;
+          enum?: string[];
+          maxLength?: number;
+          minLength?: number;
+          pattern?: string;
+      }
+    | {
+          type: 'number';
+          format: NumberFormat;
+          enum?: number[];
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+      }
+    | {
+          type: 'integer';
+          format: IntegerFormat;
+          enum?: number[];
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+      }
+    | {
+          type: 'boolean';
+      };
 
 /**
  * https://swagger.io/specification/v2/#parameterObject
