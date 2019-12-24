@@ -418,8 +418,8 @@ export type SwaggerObject = {
     host?: string;
     basePath?: string;
     schemes?: ('http' | 'https' | 'ws' | 'wss')[];
-    consumes: string[];
-    produces: string[];
+    consumes?: string[];
+    produces?: string[];
     paths: PathsObject;
     definitions?: DefinitionsObject;
     parameters?: ParametersDefinitionsObject;

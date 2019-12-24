@@ -1,9 +1,9 @@
 import rule from '../';
-import {OpenAPIObject} from '../../../types';
+import {SwaggerObject, Config} from '../../../types';
 import {swaggerlint} from '../../../';
 import _ from 'lodash';
 
-const swaggerSample: OpenAPIObject = {
+const swaggerSample: SwaggerObject = {
     swagger: '2.0',
     info: {
         title: 'stub',
@@ -14,7 +14,7 @@ const swaggerSample: OpenAPIObject = {
 };
 
 describe(`rule "${rule.name}"`, () => {
-    const config = {
+    const config: Config = {
         rules: {
             [rule.name]: ['camel'],
         },
