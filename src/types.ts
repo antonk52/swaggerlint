@@ -239,6 +239,12 @@ type SchemaObjectCreator<T, F, D> = {
     description?: string;
     default?: D;
     enum?: D[];
+    // fixed fields
+    discriminator?: string;
+    readOnly?: boolean;
+    xml?: XMLObject;
+    externalDocs?: ExternalDocumentationObject;
+    example?: any;
 };
 
 type NumberAddon = Partial<{
@@ -274,7 +280,14 @@ export type SchemaObject =
     | (SchemaObjectCreator<'object', any, Record<string, any>> & ObjectAddon)
     | (SchemaObjectCreator<'array', any, SchemaObject[]> & {
           items: SchemaObject;
-      } & ArrayAddon);
+      } & ArrayAddon)
+    | (SchemaObjectCreator<'object', any, SchemaObject[]> & {
+          allOf: (
+              | ReferenceObject
+              | (SchemaObjectCreator<'object', any, Record<string, any>> &
+                    ObjectAddon)
+          )[];
+      });
 
 /**
  * https://swagger.io/specification/v2/#headers-object
