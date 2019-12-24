@@ -9,14 +9,6 @@
  *
  */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export type Config = {
-    rules: {
-        [ruleName: string]: [string] | [];
-    };
-    ignore?: {
-        definitions?: string[];
-    };
-};
 
 /**
  * https://swagger.io/specification/v2/#contactObject
@@ -171,9 +163,9 @@ export type SecurityRequirementObject = {
 /**
  * https://swagger.io/specification/v2/#responsesObject
  */
+
 export type ResponsesObject = {
-    default: ResponseObject | ReferenceObject;
-    [httpStatusCode: string]: ResponseObject | ReferenceObject;
+    [httpStatusCodeOrDefault: string]: ResponseObject | ReferenceObject;
 };
 
 /**
@@ -271,23 +263,32 @@ type ObjectAddon = Partial<{
     additionalProperties: boolean | Record<string, any>;
     properties: {[name: string]: SchemaObject};
 }>;
+type SchemaObjectArray = SchemaObjectCreator<'array', any, SchemaObject[]> & {
+    items: SchemaObject;
+} & ArrayAddon;
+type SchemaObjectObject = SchemaObjectCreator<
+    'object',
+    any,
+    Record<string, any>
+> &
+    ObjectAddon;
+export type SchemaObjectAllOfObject = SchemaObjectCreator<
+    'object',
+    any,
+    SchemaObject[]
+> & {
+    allOf: (ReferenceObject | SchemaObjectObject)[];
+};
+
 export type SchemaObject =
     | ReferenceObject
     | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
     | SchemaObjectCreator<'boolean', any, boolean>
-    | (SchemaObjectCreator<'object', any, Record<string, any>> & ObjectAddon)
-    | (SchemaObjectCreator<'array', any, SchemaObject[]> & {
-          items: SchemaObject;
-      } & ArrayAddon)
-    | (SchemaObjectCreator<'object', any, SchemaObject[]> & {
-          allOf: (
-              | ReferenceObject
-              | (SchemaObjectCreator<'object', any, Record<string, any>> &
-                    ObjectAddon)
-          )[];
-      });
+    | SchemaObjectObject
+    | SchemaObjectArray
+    | SchemaObjectAllOfObject;
 
 /**
  * https://swagger.io/specification/v2/#headers-object
@@ -429,14 +430,4 @@ export type SwaggerObject = {
     security?: SecurityRequirementObject[];
     tags: TagObject[];
     externalDocs?: ExternalDocumentationObject;
-};
-
-export type LintError = {
-    name: string;
-    msg: string;
-};
-
-export type Rule = {
-    name: string;
-    check: (a: SwaggerObject, b: string[], c?: Config) => LintError[];
 };

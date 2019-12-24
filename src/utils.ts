@@ -2,7 +2,12 @@ import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 
-import {SwaggerObject, LintError, ReferenceObject} from './types';
+import {
+    SwaggerObject,
+    LintError,
+    ReferenceObject,
+    SchemaObjectAllOfObject,
+} from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -32,4 +37,11 @@ export function logErrors(errors: LintError[]): void {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function isRef(arg: Record<string, any>): arg is ReferenceObject {
     return typeof arg.$ref === 'string';
+}
+
+export function isSchemaObjectAllOfObject(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    arg: Record<string, any>,
+): arg is SchemaObjectAllOfObject {
+    return Array.isArray(arg.allOf);
 }
