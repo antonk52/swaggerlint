@@ -1,10 +1,5 @@
-import {
-    Rule,
-    LintError,
-    PathItemObject,
-    PathsObject,
-    ReferenceObject,
-} from '@/types';
+import {Rule, LintError, PathItemObject, PathsObject} from '@/types';
+import {isRef} from '@/utils';
 
 const name = 'path-param-required-field';
 
@@ -17,17 +12,6 @@ const methods: ['get', 'post', 'put', 'delete', 'options', 'trace'] = [
     'trace',
 ];
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function isRefObj(obj: any): obj is ReferenceObject {
-    return (
-        typeof obj === 'object' &&
-        !Array.isArray(obj) &&
-        obj !== null &&
-        '$ref' in obj &&
-        typeof obj.$ref === 'string'
-    );
-}
-
 const rule: Rule = {
     name,
     check: swagger => {
@@ -35,12 +19,12 @@ const rule: Rule = {
 
         Object.keys(swagger.paths).forEach((pathName: keyof PathsObject) => {
             const path: PathItemObject = swagger.paths[pathName];
+            if (isRef(path)) return;
+
             if (path.parameters) {
                 path.parameters.forEach(param => {
-                    if (isRefObj(param)) {
-                        // TODO handle refs
-                        return;
-                    }
+                    if (isRef(param)) return;
+
                     if (typeof param.required !== 'boolean') {
                         errors.push({
                             name,
@@ -52,12 +36,13 @@ const rule: Rule = {
             methods.forEach(method => {
                 const operation = path[method];
                 if (operation === undefined) return;
-                console.log(operation);
-                operation.parameters.forEach(param => {
-                    if (isRefObj(param)) {
-                        // TODO handle refs
-                        return;
-                    }
+
+                const {parameters} = operation;
+                if (parameters === undefined) return;
+
+                parameters.forEach(param => {
+                    if (isRef(param)) return;
+
                     if (typeof param.required !== 'boolean') {
                         errors.push({
                             name,

@@ -2,7 +2,7 @@ import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 
-import {OpenAPIObject, LintError} from './types';
+import {SwaggerObject, LintError, ReferenceObject} from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -14,7 +14,7 @@ export function isYamlPath(p: string) {
     return ext === '.yml' || ext === '.yaml';
 }
 
-export async function fetchUrl(url: string): Promise<OpenAPIObject> {
+export async function fetchUrl(url: string): Promise<SwaggerObject> {
     return fetch(url).then(x =>
         isYamlPath(url) ? x.text().then(yaml.safeLoad) : x.json(),
     );
@@ -27,4 +27,9 @@ function toOneLinerFormat({msg, name}: LintError) {
 export function logErrors(errors: LintError[]): void {
     console.log(errors.map(toOneLinerFormat).join('\n'));
     console.log(`\n\nYou have ${errors.length} errors.`);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isRef(arg: Record<string, any>): arg is ReferenceObject {
+    return typeof arg.$ref === 'string';
 }
