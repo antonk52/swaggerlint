@@ -1,9 +1,9 @@
-import {OpenAPIObject, LintError, Config} from './types';
+import {SwaggerObject, LintError, Config} from './types';
 
 import rules from './rules';
 
 export function swaggerlint(
-    swagger: OpenAPIObject,
+    swagger: SwaggerObject,
     lintConfig: Config,
 ): LintError[] {
     let errs: LintError[] = [];

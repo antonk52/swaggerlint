@@ -10,7 +10,7 @@
  */
 export type Config = {
     rules: {
-        [ruleName: string]: string[];
+        [ruleName: string]: [string] | [];
     };
     ignore?: {
         definitions?: string[];
@@ -18,7 +18,7 @@ export type Config = {
 };
 
 /**
- * https://swagger.io/specification/#contactObject
+ * https://swagger.io/specification/v2/#contactObject
  */
 export type ContactObject = {
     name?: string;
@@ -27,24 +27,30 @@ export type ContactObject = {
 };
 
 /**
- * https://swagger.io/specification/#licenseObject
+ * https://swagger.io/specification/v2/#licenseObject
  */
-export type LicenceObject = {
+export type LicenseObject = {
     name: string;
     url?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [s: string]: any;
 };
 
 /**
- * https://swagger.io/specification/#infoObject
+ * https://swagger.io/specification/v2/#infoObject
  */
 export type InfoObject = {
     title: string;
     description?: string;
     termsOfService?: string;
     contact?: ContactObject;
-    licence?: string;
+    licence?: LicenseObject;
     version: string;
 };
+
+/**
+ * https://swagger.io/specification/v2/#xmlObject
+ */
 export type XMLObject = {
     name?: string;
     namespace?: string;
@@ -53,266 +59,321 @@ export type XMLObject = {
     wrapped?: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type ObjStub = Record<string, any>;
-export type PropBase<A = ObjStub> = {
-    title?: string;
-    description?: string;
-} & A;
-
-type StrFormat = 'byte' | 'binary' | 'date' | 'date-time' | 'password';
-export type PropString = PropBase<{
-    type: 'string';
-    format?: StrFormat;
-    default?: string;
-    enum?: string[];
-}>;
-
-type IntFormat = 'int32' | 'int64';
-export type PropInteger = PropBase<{
-    type: 'integer';
-    format?: IntFormat;
-    description?: string;
-    default?: number;
-    minimum?: number;
-    maximum?: number;
-}>;
-
-type NumberFormat = 'float' | 'double';
-export type PropNumber = PropBase<{
-    type: 'number';
-    format?: NumberFormat;
-    default?: number;
-    minimum?: number;
-    maximum?: number;
-}>;
-export type PropBoolean = PropBase<{
-    type: 'boolean';
-    default?: boolean;
-}>;
-export type PropObject = PropBase<{
-    type: 'object';
-    properties: {
-        [k: string]:
-            | PropObject
-            | PropString
-            | PropInteger
-            | PropNumber
-            | PropBoolean;
-    };
-    required: string[];
-}>;
-export type PlainType =
-    | 'object'
-    | 'boolean'
-    | 'string'
-    | 'number'
-    | 'integer'
-    | 'array';
-export type PropArray = PropBase<{
-    type: 'array';
-    items:
-        | {
-              $ref: string;
-          }
-        | {type: PlainType};
-}>;
-export type Property =
-    | PropObject
-    | PropString
-    | PropInteger
-    | PropNumber
-    | PropBoolean
-    | PropArray;
-
-export type DefinitionObject = {
-    title: string;
-    description?: string;
-    type: PlainType;
-    keys: string[];
-    readOnly?: boolean;
-    required: string[];
-    properties: {[k: string]: Property};
-    xml?: XMLObject;
-    externalDocs?: ExternalDocumentationObject;
-    example?: {};
-};
-
-type RestSchema =
-    | {
-          $ref: string;
-      }
-    | {
-          type: 'array';
-          items:
-              | {
-                    $ref: string;
-                }
-              | {
-                    type:
-                        | 'object'
-                        | 'boolean'
-                        | 'string'
-                        | 'number'
-                        | 'integer';
-                };
-      };
-export type PathParameter = {
-    name: string;
-    in: 'query' | 'path' | 'body';
-    description: string;
-    required?: boolean;
-    // query only
-    allowEmptyValue?: boolean;
-} & Property;
-// TODO
-export type ExternalDocumentationObject = {};
-
 /**
- * https://swagger.io/specification/#parameterObject
+ * https://swagger.io/specification/v2/#externalDocumentationObject
  */
-export type ParameterObject = {
-    name: string;
-    // TODO break into sep types by `in`
-    in: 'query' | 'header' | 'path' | 'cookie';
-    description: string;
-    required?: boolean;
-    deprecated?: boolean;
-    allowEmptyValue?: boolean;
-};
-
-/**
- * https://swagger.io/specification/#referenceObject
- */
-export type ReferenceObject = {
-    $ref: string;
-};
-
-// TODO
-export type RequestBodyObject = {};
-// TODO
-export type SecurityRequirementObject = {};
-
-/**
- * https://swagger.io/specification/#serverVariableObject
- */
-export type ServerVariableObject = {
-    enum?: string[];
-    default: string;
-    description?: string;
-};
-
-/**
- * https://swagger.io/specification/#serverObject
- */
-export type ServerObject = {
+export type ExternalDocumentationObject = {
     url: string;
-    description: string;
-    variables: {
-        [n: string]: ServerVariableObject;
-    };
+    description?: string;
 };
-// TODO
-export type CallbackObject = {};
+
 /**
- * https://swagger.io/specification/#operationObject
+ * https://swagger.io/specification/v2/#itemsObject
+ */
+type CommonItemsObject = {
+    format?: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    default?: any;
+    maximum?: number;
+    exclusiveMaximum?: boolean;
+    minimum?: number;
+    exclusiveMinimum?: boolean;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: string;
+    maxItems?: number;
+    minItems?: number;
+    uniqueItems?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    enum?: any[];
+    multipleOf?: number;
+};
+type ItemsObject =
+    | ({
+          type: 'array';
+          items: ItemsObject;
+          collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes';
+      } & CommonItemsObject)
+    | ({
+          type: 'string' | 'number' | 'integer' | 'boolean';
+      } & CommonItemsObject);
+
+/**
+ * https://swagger.io/specification/v2/#parameterObject
+ */
+type CommonParameterObject = {
+    format?: string;
+    allowEmptyValue?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    default?: any;
+    maximum?: number;
+    exclusiveMaximum?: boolean;
+    minimum?: number;
+    exclusiveMinimum?: boolean;
+    maxLength?: number;
+    minLength?: number;
+    pattern?: string;
+    maxItems?: number;
+    minItems?: number;
+    uniqueItems?: boolean;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    enum?: any[];
+    multipleOf?: number;
+};
+export type ParameterObject =
+    /**
+     * - in `body` parameter has `schema` property
+     * - no common properties
+     */
+    | {
+          name: string;
+          in: 'body';
+          description: string;
+          required?: boolean;
+          schema: SchemaObject;
+      }
+    /**
+     * in `path` parameter is always required
+     */
+    | ({
+          name: string;
+          in: 'path';
+          required: true;
+      } & CommonParameterObject)
+    | ({
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'string' | 'number' | 'integer' | 'boolean' | 'file';
+      } & CommonParameterObject)
+    /**
+     * type array has `items` & optional `collectionFormat` properties
+     */
+    | ({
+          name: string;
+          in: 'query' | 'header' | 'formData';
+          description: string;
+          required?: boolean;
+          type: 'array';
+          items: ItemsObject;
+          collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes' | 'multi';
+      } & CommonParameterObject);
+
+/**
+ * https://swagger.io/specification/v2/#referenceObject
+ */
+export type ReferenceObject = {$ref: string};
+
+/**
+ * https://swagger.io/specification/v2/#security-requirement-object
+ */
+export type SecurityRequirementObject = {
+    [name: string]: string[];
+};
+
+/**
+ * https://swagger.io/specification/v2/#responsesObject
+ */
+export type ResponsesObject = {
+    default: ResponseObject | ReferenceObject;
+    [httpStatusCode: string]: ResponseObject | ReferenceObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#operationObject
  */
 export type OperationObject = {
     tags?: string[];
     summary?: string;
     description?: string;
     externalDocs?: ExternalDocumentationObject;
-    operationId: string;
-    // parameters: PathParameter[];
-    parameters: (ParameterObject | ReferenceObject)[];
-    requestBody?: RequestBodyObject | ReferenceObject;
-    responses: {
-        [responseCode: string]: {
-            description: string;
-            schema?: RestSchema;
-        };
-    };
-    callbacks?: {
-        [s: string]: CallbackObject | ReferenceObject;
-    };
-    deprecated?: boolean;
-    consumes: string[];
-    security: SecurityRequirementObject[];
-    servers: ServerObject[];
-};
-
-/**
- * https://swagger.io/specification/#pathItemObject
- */
-export type PathItemObject = {
-    $ref?: string;
-    summary?: string;
-    description?: string;
-    get?: OperationObject;
-    post?: OperationObject;
-    put?: OperationObject;
-    delete?: OperationObject;
-    options?: OperationObject;
-    trace?: OperationObject;
-    servers?: ServerObject[];
+    operationId?: string;
+    consumes?: string[];
+    produces?: string[];
     parameters?: (ParameterObject | ReferenceObject)[];
+    responses: ResponsesObject;
+    schemes?: ('http' | 'https' | 'ws' | 'wss')[];
+    deprecated?: boolean;
+    security: SecurityRequirementObject[];
 };
 
 /**
- * https://swagger.io/specification/#pathsObject
+ * https://swagger.io/specification/v2/#pathItemObject
+ */
+export type PathItemObject =
+    | ReferenceObject
+    | {
+          get?: OperationObject;
+          put?: OperationObject;
+          post?: OperationObject;
+          delete?: OperationObject;
+          options?: OperationObject;
+          head?: OperationObject;
+          patch?: OperationObject;
+          trace?: OperationObject;
+          parameters?: (ParameterObject | ReferenceObject)[];
+      };
+
+/**
+ * https://swagger.io/specification/v2/#pathsObject
  */
 export type PathsObject = {
     [m: string]: PathItemObject;
 };
 
-// TODO
-export type SchemaObject = {};
-// TODO
-export type ResponseObject = {};
-// TODO
-export type ExampleObject = {};
-// TODO
-export type HeaderObject = {};
-// TODO
-export type SecuritySchemeObject = {};
-// TODO
-export type LinkObject = {};
+/**
+ * https://swagger.io/specification/v2/#schemaObject
+ */
+export type DataType = 'integer' | 'number' | 'string' | 'boolean';
+type IntegerFormat = 'int32' | 'int64';
+type NumberFormat = 'float' | 'double';
+type StringFormat =
+    | 'byte'
+    | 'binary'
+    | 'date'
+    | 'date-time'
+    | 'password'
+    | 'email'
+    | 'uuid';
+type SchemaObjectCreator<T, F, D> = {
+    format?: F;
+    type?: T;
+    title?: string;
+    description?: string;
+    default?: D;
+    enum?: D[];
+};
+
+type NumberAddon = Partial<{
+    maximum: number;
+    exclusiveMaximum: boolean;
+    minimum: number;
+    exclusiveMinimum: boolean;
+    multipleOf?: number;
+}>;
+type StringAddon = Partial<{
+    maxLength: number;
+    minLength: number;
+    pattern: string;
+}>;
+type ArrayAddon = Partial<{
+    maxItems: number;
+    minItems: number;
+    uniqueItems: boolean;
+}>;
+type ObjectAddon = Partial<{
+    maxProperties: number;
+    minProperties: number;
+    required: string[];
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    additionalProperties: boolean | Record<string, any>;
+    properties: {[name: string]: SchemaObject};
+}>;
+export type SchemaObject =
+    | ReferenceObject
+    | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
+    | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
+    | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
+    // eslint-disable-next-line
+    | SchemaObjectCreator<'boolean', any, boolean>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | (SchemaObjectCreator<'object', any, Record<string, any>> & ObjectAddon)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    | (SchemaObjectCreator<'array', any, SchemaObject[]> & {
+          items: SchemaObject;
+      } & ArrayAddon);
 
 /**
- * https://swagger.io/specification/#componentsObject
+ * https://swagger.io/specification/v2/#headers-object
  */
-export type ComponentsObject = {
-    schemas: {
-        [m: string]: SchemaObject | ReferenceObject;
-    };
-    responses: {
-        [m: string]: ResponseObject | ReferenceObject;
-    };
-    parameters: {
-        [m: string]: ParameterObject | ReferenceObject;
-    };
-    examples: {
-        [m: string]: ExampleObject | ReferenceObject;
-    };
-    requestBodies: {
-        [m: string]: RequestBodyObject | ReferenceObject;
-    };
-    headers: {
-        [m: string]: HeaderObject | ReferenceObject;
-    };
-    securitySchemes: {
-        [m: string]: SecuritySchemeObject | ReferenceObject;
-    };
-    links: {
-        [m: string]: LinkObject | ReferenceObject;
-    };
-    callbacks: {
-        [m: string]: CallbackObject | ReferenceObject;
-    };
+type HeadersObject = {
+    [name: string]: HeaderObject;
 };
 
 /**
- * https://swagger.io/specification/#tagObject
+ * https://swagger.io/specification/v2/#responseObject
+ */
+export type ResponseObject = {
+    description: string;
+    schema?: SchemaObject;
+    headers?: HeadersObject;
+    examples?: ExampleObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#example-object
+ */
+export type ExampleObject = {
+    // eslint-disable-next-line
+    [mineType: string]: any;
+};
+
+/**
+ * https://swagger.io/specification/v2/#headerObject
+ */
+type CommonHeaderObject<T> = {
+    description?: string;
+    format?: string;
+    // eslint-disable-next-line
+    default?: T;
+    // eslint-disable-next-line
+    enum?: T[];
+};
+export type HeaderObject =
+    | ({
+          type: 'boolean';
+      } & CommonHeaderObject<boolean>)
+    | ({
+          type: 'number' | 'integer';
+          maximum?: number;
+          exclusiveMaximum?: boolean;
+          minimum?: number;
+          exclusiveMinimum?: boolean;
+          multipleOf?: number;
+      } & CommonHeaderObject<number>)
+    | ({
+          type: 'string';
+          maxLength?: number;
+          minLength?: number;
+          pattern?: string;
+      } & CommonHeaderObject<string>)
+    | ({
+          type: 'array';
+          items: ItemsObject;
+          /**
+           * default 'csv'
+           */
+          collectionFormat?: 'csv' | 'ssv' | 'tsv' | 'pipes';
+          maxItems?: number;
+          minItems?: number;
+          uniqueItems?: boolean;
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } & CommonHeaderObject<any>);
+
+/**
+ * https://swagger.io/specification/v2/#security-scheme-object
+ */
+export type SecuritySchemeObject = {
+    type: string;
+    description?: string;
+    name: string;
+    in: 'query' | 'header';
+    flow: 'implicit' | 'password' | 'application' | 'accessCode';
+    authorizationUrl: string;
+    tokenUrl: string;
+    scopes: ScopesObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#scopes-object
+ */
+type ScopesObject = {
+    [name: string]: string;
+};
+
+/**
+ * https://swagger.io/specification/v2/#tagObject
  */
 export type TagObject = {
     name: string;
@@ -321,27 +382,52 @@ export type TagObject = {
 };
 
 /**
- * https://swagger.io/specification/#openapi-object
+ * https://swagger.io/specification/v2/#parametersDefinitionsObject
  */
-export type OpenAPIObject = {
-    /**
-     * Semantic version numver
-     */
-    swagger: '2.0'; // semantic version
+type ParametersDefinitionsObject = {
+    [name: string]: ParameterObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#responses-definitions-object
+ */
+type ResponsesDefinitionsObject = {
+    [name: string]: ResponseObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#securityDefinitionsObject
+ */
+type SecurityDefinitionsObject = {
+    [name: string]: SecuritySchemeObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#definitionsObject
+ */
+type DefinitionsObject = {
+    [name: string]: SchemaObject;
+};
+
+/**
+ * https://swagger.io/specification/v2/#swagger-object
+ */
+export type SwaggerObject = {
+    swagger: '2.0';
     info: InfoObject;
-    servers?: ServerObject[];
+    host?: string;
+    basePath?: string;
+    schemes?: ('http' | 'https' | 'ws' | 'wss')[];
+    consumes?: string[];
+    produces?: string[];
     paths: PathsObject;
-    components?: ComponentsObject;
+    definitions?: DefinitionsObject;
+    parameters?: ParametersDefinitionsObject;
+    responses?: ResponsesDefinitionsObject;
+    securityDefinitions?: SecurityDefinitionsObject;
     security?: SecurityRequirementObject[];
     tags: TagObject[];
     externalDocs?: ExternalDocumentationObject;
-
-    // below are questionable
-    host?: string;
-    basePath?: string;
-    definitions?: {
-        [k: string]: Property;
-    };
 };
 
 export type LintError = {
@@ -351,5 +437,5 @@ export type LintError = {
 
 export type Rule = {
     name: string;
-    check: (a: OpenAPIObject, b: string[], c?: Config) => LintError[];
+    check: (a: SwaggerObject, b: string[], c?: Config) => LintError[];
 };

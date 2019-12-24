@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import {Rule, LintError} from '@/types';
+import {isRef} from '@/utils';
 
 const name = 'properties-for-object-type';
 
@@ -14,15 +15,21 @@ const rule: Rule = {
             fullConfig?.ignore?.definitions ?? [],
         ).forEach(defKey => {
             const definition = definitions[defKey];
+
+            if (isRef(definition)) return;
+
             if (definition.type === 'object') {
-                if (!('properties' in definition)) {
+                const {properties} = definition;
+                if (properties === undefined) {
                     errors.push({
                         msg: `"${defKey}" has "object" type but is missing "properties"`,
                         name,
                     });
                 } else {
-                    Object.keys(definition.properties).forEach(key => {
-                        const topLevelProp = definition.properties[key];
+                    Object.keys(properties).forEach(key => {
+                        const topLevelProp = properties[key];
+                        if (isRef(topLevelProp)) return;
+
                         if (
                             topLevelProp.type === 'object' &&
                             !('properties' in topLevelProp)
