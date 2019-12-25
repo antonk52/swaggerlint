@@ -33,6 +33,8 @@ swaggerlint --path /path/to/swagger.json
 
 #### Config flag
 
+`swaggerlint` will automatilly search up the directories for a `swaggerlint.config.js` file. Or you can specify it explicitly
+
 ```sh
 swaggerlint --config /path/to/swaggerlint.config.js
 ```

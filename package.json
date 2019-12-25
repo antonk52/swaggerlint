@@ -45,6 +45,7 @@
         "@types/node": "^12.12.17",
         "@types/node-fetch": "^2.5.4",
         "case": "^1.6.2",
+        "cosmiconfig": "^6.0.0",
         "js-yaml": "^3.13.1",
         "lodash": "^4.17.15",
         "node-fetch": "^2.6.0"

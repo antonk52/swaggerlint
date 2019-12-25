@@ -1,8 +1,10 @@
 import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
+import {cosmiconfigSync} from 'cosmiconfig';
 
 import {
+    Config,
     SwaggerObject,
     LintError,
     ReferenceObject,
@@ -10,6 +12,7 @@ import {
 } from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
+const projectName = 'swaggerlint';
 
 export const log = isDev ? (x: string) => console.log(`--> ${x}`) : () => null;
 
@@ -23,6 +26,24 @@ export async function fetchUrl(url: string): Promise<SwaggerObject> {
     return fetch(url).then(x =>
         isYamlPath(url) ? x.text().then(yaml.safeLoad) : x.json(),
     );
+}
+
+export function getConfig(configPath?: string): Config | null {
+    if (typeof configPath === 'string') {
+        const result = cosmiconfigSync(projectName).load(configPath);
+        if (result == null) {
+            return result;
+        } else {
+            return result.config;
+        }
+    } else {
+        const result = cosmiconfigSync(projectName).search();
+        if (result == null) {
+            return result;
+        } else {
+            return result.config;
+        }
+    }
 }
 
 function toOneLinerFormat({msg, name}: LintError) {

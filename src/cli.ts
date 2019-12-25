@@ -1,7 +1,7 @@
 import {swaggerlint} from './index';
 import {LintError} from './types';
 import defaultConfig from './defaultConfig';
-import {log, fetchUrl, isYamlPath} from './utils';
+import {log, fetchUrl, isYamlPath, getConfig} from './utils';
 import fs from 'fs';
 import yaml from 'js-yaml';
 
@@ -17,14 +17,29 @@ export async function cli(args: string[]): Promise<CliResult> {
     let errors: LintError[] = [];
 
     let config = defaultConfig;
-    const configFlagIndex = args.indexOf('--config');
 
-    if (configFlagIndex !== -1) {
-        const configPath = args[configFlagIndex + 1];
+    if (args.includes('--config')) {
+        const configPath = args[args.indexOf('--config') + 1];
+        const loadedConfig = getConfig(configPath);
 
-        if (fs.existsSync(configPath)) {
-            config = require(configPath);
+        if (loadedConfig === null) {
+            return {
+                code: 1,
+                errors: [
+                    {
+                        name,
+                        msg:
+                            'Swaggerlint config with a provided path does not exits.',
+                    },
+                ],
+            };
         } else {
+            config = loadedConfig;
+        }
+    } else {
+        const loadedConfig = getConfig();
+
+        if (loadedConfig === null) {
             return {
                 code: 1,
                 errors: [
@@ -34,6 +49,8 @@ export async function cli(args: string[]): Promise<CliResult> {
                     },
                 ],
             };
+        } else {
+            config = loadedConfig;
         }
     }
 
@@ -89,7 +106,7 @@ export async function cli(args: string[]): Promise<CliResult> {
                 code: 1,
                 errors: [
                     {
-                        msg: 'File with a provided path does not exits.',
+                        msg: 'File with a provided path does not exist.',
                         name,
                     },
                 ],
