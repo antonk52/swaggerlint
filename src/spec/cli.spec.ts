@@ -31,7 +31,7 @@ describe('cli function', () => {
         const result = await cli([]);
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
-        expect(getConfig.mock.calls).toEqual([[]]);
+        expect(getConfig.mock.calls).toEqual([[undefined]]);
 
         expect(result).toEqual({
             code: 1,
@@ -62,6 +62,27 @@ describe('cli function', () => {
                 {
                     msg:
                         'Swaggerlint config with a provided path does not exits.',
+                    name,
+                },
+            ],
+        });
+    });
+
+    it('exits when could not locate the config', async () => {
+        const {swaggerlint} = require('../index');
+        const {getConfig} = require('../utils');
+
+        getConfig.mockReturnValueOnce(null);
+
+        const result = await cli([]);
+
+        expect(getConfig.mock.calls.length === 1).toBe(true);
+        expect(swaggerlint.mock.calls.length === 0).toBe(true);
+        expect(result).toEqual({
+            code: 1,
+            errors: [
+                {
+                    msg: 'Could not find swaggerlint.config.js file',
                     name,
                 },
             ],

@@ -29,21 +29,9 @@ export async function fetchUrl(url: string): Promise<SwaggerObject> {
 }
 
 export function getConfig(configPath?: string): Config | null {
-    if (typeof configPath === 'string') {
-        const result = cosmiconfigSync(projectName).load(configPath);
-        if (result == null) {
-            return result;
-        } else {
-            return result.config;
-        }
-    } else {
-        const result = cosmiconfigSync(projectName).search();
-        if (result == null) {
-            return result;
-        } else {
-            return result.config;
-        }
-    }
+    return typeof configPath === 'string'
+        ? cosmiconfigSync(projectName).load(configPath)?.config
+        : cosmiconfigSync(projectName).search()?.config;
 }
 
 function toOneLinerFormat({msg, name}: LintError) {

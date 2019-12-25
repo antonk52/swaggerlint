@@ -13,45 +13,32 @@ type CliResult = {
 
 const name = 'swaggerlint-core';
 
+function preLintError(msg: string): CliResult {
+    return {
+        code: 1,
+        errors: [{name, msg}],
+    };
+}
+
 export async function cli(args: string[]): Promise<CliResult> {
     let errors: LintError[] = [];
 
     let config = defaultConfig;
 
-    if (args.includes('--config')) {
-        const configPath = args[args.indexOf('--config') + 1];
-        const loadedConfig = getConfig(configPath);
+    const passedConfigPath = args.includes('--config')
+        ? args[args.indexOf('--config') + 1]
+        : undefined;
 
-        if (loadedConfig === null) {
-            return {
-                code: 1,
-                errors: [
-                    {
-                        name,
-                        msg:
-                            'Swaggerlint config with a provided path does not exits.',
-                    },
-                ],
-            };
-        } else {
-            config = loadedConfig;
-        }
+    const loadedConfig = getConfig(passedConfigPath);
+
+    if (loadedConfig === null) {
+        return preLintError(
+            passedConfigPath
+                ? 'Swaggerlint config with a provided path does not exits.'
+                : 'Could not find swaggerlint.config.js file',
+        );
     } else {
-        const loadedConfig = getConfig();
-
-        if (loadedConfig === null) {
-            return {
-                code: 1,
-                errors: [
-                    {
-                        name,
-                        msg: 'File at a provided config path does not exist.',
-                    },
-                ],
-            };
-        } else {
-            config = loadedConfig;
-        }
+        config = loadedConfig;
     }
 
     let url: string | null = null;
@@ -73,16 +60,9 @@ export async function cli(args: string[]): Promise<CliResult> {
             return null;
         });
         if (swagger === null) {
-            return {
-                code: 1,
-                errors: [
-                    {
-                        name,
-                        msg:
-                            'Cannot fetch swagger scheme from the provided url',
-                    },
-                ],
-            };
+            return preLintError(
+                'Cannot fetch swagger scheme from the provided url',
+            );
         } else {
             log(`got response`);
             errors = swaggerlint(swagger, config);
@@ -102,15 +82,7 @@ export async function cli(args: string[]): Promise<CliResult> {
     if (swaggerPath) {
         // non existing path
         if (!fs.existsSync(swaggerPath)) {
-            return {
-                code: 1,
-                errors: [
-                    {
-                        msg: 'File with a provided path does not exist.',
-                        name,
-                    },
-                ],
-            };
+            return preLintError('File with a provided path does not exist.');
         }
 
         const isYaml = isYamlPath(swaggerPath);
@@ -123,16 +95,9 @@ export async function cli(args: string[]): Promise<CliResult> {
     }
 
     if (!(url || swaggerPath)) {
-        return {
-            errors: [
-                {
-                    name,
-                    msg:
-                        'Neither url nor path were provided for your swagger scheme',
-                },
-            ],
-            code: 1,
-        };
+        return preLintError(
+            'Neither url nor path were provided for your swagger scheme',
+        );
     }
 
     return {
