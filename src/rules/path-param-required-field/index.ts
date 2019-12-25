@@ -1,5 +1,5 @@
-import {Rule, LintError, PathItemObject, PathsObject} from '@/types';
-import {isRef} from '@/utils';
+import {Rule, LintError, PathItemObject, PathsObject} from '../../types';
+import {isRef} from '../../utils';
 
 const name = 'path-param-required-field';
 

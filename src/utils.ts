@@ -1,8 +1,11 @@
 import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
+import {cosmiconfigSync} from 'cosmiconfig';
+const pkg = require('../package.json');
 
 import {
+    Config,
     SwaggerObject,
     LintError,
     ReferenceObject,
@@ -23,6 +26,12 @@ export async function fetchUrl(url: string): Promise<SwaggerObject> {
     return fetch(url).then(x =>
         isYamlPath(url) ? x.text().then(yaml.safeLoad) : x.json(),
     );
+}
+
+export function getConfig(configPath?: string): Config | null {
+    return typeof configPath === 'string'
+        ? cosmiconfigSync(pkg.name).load(configPath)?.config
+        : cosmiconfigSync(pkg.name).search()?.config;
 }
 
 function toOneLinerFormat({msg, name}: LintError) {

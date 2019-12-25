@@ -1,4 +1,4 @@
-import {Rule, LintError} from '@/types';
+import {Rule, LintError} from '../../types';
 
 const name = 'latin-definitions-only';
 

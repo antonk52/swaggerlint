@@ -33,6 +33,8 @@ swaggerlint --path /path/to/swagger.json
 
 #### Config flag
 
+`swaggerlint` will automatilly search up the directories for a `swaggerlint.config.js` file. Or you can specify it explicitly
+
 ```sh
 swaggerlint --config /path/to/swaggerlint.config.js
 ```
@@ -41,8 +43,8 @@ swaggerlint --config /path/to/swaggerlint.config.js
 
 ```js
 const {swaggerlint} = require('swaggerlint')
-const config = require('./my-company-config.js')
-const swaggerScheme = require('./generated-swagger-scheme')
+const config = require('./configs/swaggerlint.config.js')
+const swaggerScheme = require('./swagger.json')
 
 
 const result = swaggerlint(swaggerScheme, config)
