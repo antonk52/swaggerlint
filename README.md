@@ -43,8 +43,8 @@ swaggerlint --config /path/to/swaggerlint.config.js
 
 ```js
 const {swaggerlint} = require('swaggerlint')
-const config = require('./my-company-config.js')
-const swaggerScheme = require('./generated-swagger-scheme')
+const config = require('./configs/swaggerlint.config.js')
+const swaggerScheme = require('./swagger.json')
 
 
 const result = swaggerlint(swaggerScheme, config)
