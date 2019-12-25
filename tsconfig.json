@@ -3,22 +3,22 @@
         "allowJs": true,
         "alwaysStrict": true,
         "esModuleInterop": true,
-        "isolatedModules": true,
+        "resolveJsonModule": true,
         "lib": ["es2017"],
         "noFallthroughCasesInSwitch": true,
         "noUnusedParameters": false,
         "strict": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true,
-        "resolveJsonModule": true,
         "declaration": true,
 
         "target": "es6",
         "module": "commonjs",
         "moduleResolution": "node",
+        "rootDir": "./src",
         "outDir": "./dist",
         "baseUrl": "./src"
     },
     "include": ["src/**/*.ts"],
-    "exclude": ["src/**/spec"]
+    "exclude": ["src/**/spec", "./package.json"]
 }

@@ -28,7 +28,7 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce('lookedup-config');
 
-        const result = await cli([]);
+        const result = await cli({});
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(getConfig.mock.calls).toEqual([[undefined]]);
@@ -51,10 +51,10 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce(null);
 
-        const path = 'lol/kek/foo/bar';
-        const result = await cli(['--config', path]);
+        const config = 'lol/kek/foo/bar';
+        const result = await cli({config});
 
-        expect(getConfig.mock.calls).toEqual([[path]]);
+        expect(getConfig.mock.calls).toEqual([[config]]);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
             code: 1,
@@ -74,7 +74,7 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce(null);
 
-        const result = await cli([]);
+        const result = await cli({});
 
         expect(getConfig.mock.calls.length === 1).toBe(true);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
@@ -98,7 +98,7 @@ describe('cli function', () => {
         fs.existsSync.mockReturnValueOnce(false);
 
         const path = 'lol/kek/foo/bar';
-        const result = await cli(['--path', path]);
+        const result = await cli({path});
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
@@ -119,7 +119,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.reject(null));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli(['--url', url]);
+        const result = await cli({url});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
@@ -143,7 +143,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.resolve({}));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli(['--url', url]);
+        const result = await cli({url});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);
@@ -163,7 +163,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.resolve({}));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli(['--url', url]);
+        const result = await cli({url});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);

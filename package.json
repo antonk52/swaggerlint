@@ -2,7 +2,7 @@
     "name": "swaggerlint",
     "version": "0.0.2-0",
     "description": "Swaggerlint  helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.",
-    "main": "./dist/src/index.js",
+    "main": "./dist/index.js",
     "scripts": {
         "build": "tsc",
         "types": "tsc --noEmit",
@@ -28,6 +28,11 @@
     },
     "devDependencies": {
         "@types/jest": "^24.0.23",
+        "@types/js-yaml": "^3.12.1",
+        "@types/lodash": "^4.14.149",
+        "@types/minimist": "^1.2.0",
+        "@types/node": "^12.12.17",
+        "@types/node-fetch": "^2.5.4",
         "@typescript-eslint/eslint-plugin": "^2.12.0",
         "@typescript-eslint/parser": "^2.12.0",
         "eslint": "^6.7.2",
@@ -40,14 +45,11 @@
         "typescript": "^3.7.3"
     },
     "dependencies": {
-        "@types/js-yaml": "^3.12.1",
-        "@types/lodash": "^4.14.149",
-        "@types/node": "^12.12.17",
-        "@types/node-fetch": "^2.5.4",
         "case": "^1.6.2",
         "cosmiconfig": "^6.0.0",
         "js-yaml": "^3.13.1",
         "lodash": "^4.17.15",
+        "minimist": "^1.2.0",
         "node-fetch": "^2.6.0"
     }
 }

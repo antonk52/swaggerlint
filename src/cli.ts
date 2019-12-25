@@ -1,15 +1,9 @@
 import {swaggerlint} from './index';
-import {LintError} from './types';
+import {LintError, CliOptions, CliResult} from './types';
 import defaultConfig from './defaultConfig';
 import {log, fetchUrl, isYamlPath, getConfig} from './utils';
 import fs from 'fs';
 import yaml from 'js-yaml';
-
-type ExitCode = 0 | 1;
-type CliResult = {
-    code: ExitCode;
-    errors: LintError[];
-};
 
 const name = 'swaggerlint-core';
 
@@ -20,20 +14,14 @@ function preLintError(msg: string): CliResult {
     };
 }
 
-export async function cli(args: string[]): Promise<CliResult> {
+export async function cli(opts: CliOptions): Promise<CliResult> {
     let errors: LintError[] = [];
 
     let config = defaultConfig;
-
-    const passedConfigPath = args.includes('--config')
-        ? args[args.indexOf('--config') + 1]
-        : undefined;
-
-    const loadedConfig = getConfig(passedConfigPath);
-
+    const loadedConfig = getConfig(opts.config);
     if (loadedConfig === null) {
         return preLintError(
-            passedConfigPath
+            typeof opts.config === 'string'
                 ? 'Swaggerlint config with a provided path does not exits.'
                 : 'Could not find swaggerlint.config.js file',
         );
@@ -41,12 +29,7 @@ export async function cli(args: string[]): Promise<CliResult> {
         config = loadedConfig;
     }
 
-    let url: string | null = null;
-    const urlFlagIndex = args.indexOf('--url');
-
-    if (urlFlagIndex !== -1) {
-        url = args[urlFlagIndex + 1];
-    }
+    const {url} = opts;
 
     /**
      * handling `swagger-lint --url https://...`
@@ -69,13 +52,7 @@ export async function cli(args: string[]): Promise<CliResult> {
         }
     }
 
-    let swaggerPath: string | null = null;
-    const pathFlagIndex = args.indexOf('--path');
-
-    if (pathFlagIndex !== -1) {
-        swaggerPath = args[pathFlagIndex + 1];
-    }
-
+    const swaggerPath = opts.path;
     /**
      * handling `swagger-lint --path /path/to/swagger.json`
      */

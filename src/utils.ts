@@ -2,6 +2,7 @@ import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 import {cosmiconfigSync} from 'cosmiconfig';
+const pkg = require('../package.json');
 
 import {
     Config,
@@ -12,7 +13,6 @@ import {
 } from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
-const projectName = 'swaggerlint';
 
 export const log = isDev ? (x: string) => console.log(`--> ${x}`) : () => null;
 
@@ -30,8 +30,8 @@ export async function fetchUrl(url: string): Promise<SwaggerObject> {
 
 export function getConfig(configPath?: string): Config | null {
     return typeof configPath === 'string'
-        ? cosmiconfigSync(projectName).load(configPath)?.config
-        : cosmiconfigSync(projectName).search()?.config;
+        ? cosmiconfigSync(pkg.name).load(configPath)?.config
+        : cosmiconfigSync(pkg.name).search()?.config;
 }
 
 function toOneLinerFormat({msg, name}: LintError) {
