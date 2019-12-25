@@ -1,6 +1,6 @@
 import _ from 'lodash';
-import {Rule, LintError} from '@/types';
-import {isRef, isSchemaObjectAllOfObject} from '@/utils';
+import {Rule, LintError} from '../../types';
+import {isRef, isSchemaObjectAllOfObject} from '../../utils';
 
 const name = 'properties-for-object-type';
 

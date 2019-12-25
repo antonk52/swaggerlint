@@ -12,9 +12,12 @@
         "forceConsistentCasingInFileNames": true,
         "resolveJsonModule": true,
         "declaration": true,
+
+        "target": "es6",
+        "module": "commonjs",
+        "moduleResolution": "node",
         "outDir": "./dist",
-        "baseUrl": "./src",
-        "paths": {"@/*": ["./*"]}
+        "baseUrl": "./src"
     },
     "include": ["src/**/*.ts"],
     "exclude": ["src/**/spec"]

@@ -1,7 +1,7 @@
 import Case from 'case';
 import _ from 'lodash';
-import {Rule, LintError, SchemaObject} from '@/types';
-import {isRef, isSchemaObjectAllOfObject} from '@/utils';
+import {Rule, LintError, SchemaObject} from '../../types';
+import {isRef, isSchemaObjectAllOfObject} from '../../utils';
 
 const name = 'object-prop-casing';
 
