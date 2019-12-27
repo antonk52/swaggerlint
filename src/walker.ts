@@ -283,7 +283,15 @@ function walker(swagger: SwaggerObject): WalkerResult {
         refs.ResponseObject = uniqBy(refs.ResponseObject, '$ref');
         refs.ParameterObject = uniqBy(refs.ParameterObject, '$ref');
 
-        // TODO populate visitors with refs
+        refs.SchemaObject.forEach(({$ref}) => {
+            const refName = $ref.replace('#/definitions/', '');
+
+            if (swagger.definitions && refName in swagger.definitions) {
+                const schema = swagger.definitions[refName];
+
+                populateSchemaObject(schema);
+            }
+        });
 
         console.log({
             refs: Object.entries(refs).reduce<{[a: string]: number}>(
@@ -300,9 +308,6 @@ function walker(swagger: SwaggerObject): WalkerResult {
                 },
                 {},
             ),
-            xmls: visitors.SchemaObject.map(x =>
-                'xml' in x ? x.xml : false,
-            ).filter(Boolean),
         });
 
         return {visitors};
