@@ -1,6 +1,7 @@
 import {SwaggerObject, LintError, Config} from './types';
 
 import rules from './rules';
+import walker from './walker';
 
 export function swaggerlint(
     swagger: SwaggerObject,
@@ -21,6 +22,8 @@ export function swaggerlint(
     };
 
     Object.keys(lintConfig.rules).forEach(checkRule);
+
+    walker(swagger);
 
     return errs;
 }

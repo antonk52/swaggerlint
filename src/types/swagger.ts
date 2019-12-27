@@ -62,7 +62,7 @@ export type ExternalDocumentationObject = {
 /**
  * https://swagger.io/specification/v2/#itemsObject
  */
-type ItemsObject =
+export type ItemsObject =
     | {
           type: 'array';
           items: ItemsObject;
@@ -248,25 +248,23 @@ export type OperationObject = {
     responses: ResponsesObject;
     schemes?: ('http' | 'https' | 'ws' | 'wss')[];
     deprecated?: boolean;
-    security: SecurityRequirementObject[];
+    security?: SecurityRequirementObject[];
 };
 
 /**
  * https://swagger.io/specification/v2/#pathItemObject
  */
-export type PathItemObject =
-    | ReferenceObject
-    | {
-          get?: OperationObject;
-          put?: OperationObject;
-          post?: OperationObject;
-          delete?: OperationObject;
-          options?: OperationObject;
-          head?: OperationObject;
-          patch?: OperationObject;
-          trace?: OperationObject;
-          parameters?: (ParameterObject | ReferenceObject)[];
-      };
+export type PathItemObject = {
+    get?: OperationObject;
+    put?: OperationObject;
+    post?: OperationObject;
+    delete?: OperationObject;
+    options?: OperationObject;
+    head?: OperationObject;
+    patch?: OperationObject;
+    trace?: OperationObject;
+    parameters?: (ParameterObject | ReferenceObject)[];
+};
 
 /**
  * https://swagger.io/specification/v2/#pathsObject
@@ -358,7 +356,7 @@ export type SchemaObject =
 /**
  * https://swagger.io/specification/v2/#headers-object
  */
-type HeadersObject = {
+export type HeadersObject = {
     [name: string]: HeaderObject;
 };
 
@@ -435,7 +433,7 @@ export type SecuritySchemeObject = {
 /**
  * https://swagger.io/specification/v2/#scopes-object
  */
-type ScopesObject = {
+export type ScopesObject = {
     [name: string]: string;
 };
 
@@ -451,28 +449,28 @@ export type TagObject = {
 /**
  * https://swagger.io/specification/v2/#parametersDefinitionsObject
  */
-type ParametersDefinitionsObject = {
+export type ParametersDefinitionsObject = {
     [name: string]: ParameterObject;
 };
 
 /**
  * https://swagger.io/specification/v2/#responses-definitions-object
  */
-type ResponsesDefinitionsObject = {
+export type ResponsesDefinitionsObject = {
     [name: string]: ResponseObject;
 };
 
 /**
  * https://swagger.io/specification/v2/#securityDefinitionsObject
  */
-type SecurityDefinitionsObject = {
+export type SecurityDefinitionsObject = {
     [name: string]: SecuritySchemeObject;
 };
 
 /**
  * https://swagger.io/specification/v2/#definitionsObject
  */
-type DefinitionsObject = {
+export type DefinitionsObject = {
     [name: string]: SchemaObject;
 };
 
