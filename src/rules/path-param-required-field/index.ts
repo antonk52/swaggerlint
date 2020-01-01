@@ -1,60 +1,31 @@
-import {Rule, LintError, PathItemObject, PathsObject} from '../../types';
+import {Rule} from '../../types';
 import {isRef} from '../../utils';
 
 const name = 'path-param-required-field';
 
-const methods: ['get', 'post', 'put', 'delete', 'options', 'trace'] = [
-    'get',
-    'post',
-    'put',
-    'delete',
-    'options',
-    'trace',
-];
-
 const rule: Rule = {
     name,
-    visitor: {},
-    check: swagger => {
-        const errors: LintError[] = [];
-
-        Object.keys(swagger.paths).forEach((pathName: keyof PathsObject) => {
-            const path: PathItemObject = swagger.paths[pathName];
-            if (isRef(path)) return;
-
-            if (path.parameters) {
-                path.parameters.forEach(param => {
-                    if (isRef(param)) return;
-
-                    if (typeof param.required !== 'boolean') {
-                        errors.push({
-                            name,
-                            msg: `required is not set for path "${pathName}".parameters`,
-                        });
-                    }
-                });
+    visitor: {
+        ParameterObject: ({node, report}) => {
+            if (!('required' in node)) {
+                report(
+                    `Parameter with name "${node.name}" is missing "required" property`,
+                );
             }
-            methods.forEach(method => {
-                const operation = path[method];
-                if (operation === undefined) return;
+        },
+        PathItemObject: ({node, report}) => {
+            const params = node.parameters;
+            if (!params) return;
+            params.forEach(param => {
+                if (isRef(param)) return;
 
-                const {parameters} = operation;
-                if (parameters === undefined) return;
-
-                parameters.forEach(param => {
-                    if (isRef(param)) return;
-
-                    if (typeof param.required !== 'boolean') {
-                        errors.push({
-                            name,
-                            msg: `required is not set for path "${pathName}" in "${method}" in "${param.name}"`,
-                        });
-                    }
-                });
+                if (!('required' in param)) {
+                    report(
+                        `Parameter with name "${param.name}" is missing "required" property`,
+                    );
+                }
             });
-        });
-
-        return errors;
+        },
     },
 };
 

@@ -262,7 +262,6 @@ export type PathItemObject = {
     options?: OperationObject;
     head?: OperationObject;
     patch?: OperationObject;
-    trace?: OperationObject;
     parameters?: (ParameterObject | ReferenceObject)[];
 };
 
