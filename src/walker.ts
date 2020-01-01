@@ -29,6 +29,7 @@ import {
     ItemsObject,
     ExampleObject,
     LintError,
+    ConfigIgnore,
 } from './types';
 
 type OneOrNone<T> = [T] | [];
@@ -79,8 +80,14 @@ type WalkerResult =
           errors: LintError[];
       };
 
-function walker(swagger: SwaggerObject): WalkerResult {
+function walker(
+    swagger: SwaggerObject,
+    ignore: ConfigIgnore = {},
+): WalkerResult {
     try {
+        const DEFINITIONS_TO_IGNORE = new Set(ignore.definitions ?? []);
+        const PATHS_TO_IGNORE = new Set(ignore.paths ?? []);
+
         const paths = Object.values(swagger.paths);
 
         const visitors: Visitors = {
@@ -211,8 +218,12 @@ function walker(swagger: SwaggerObject): WalkerResult {
             }
         }
 
-        // populate from paths below
-        paths.forEach(path => {
+        // populate from paths down
+        // paths.forEach(path => {
+        Object.keys(swagger.paths).forEach(pathUrl => {
+            if (PATHS_TO_IGNORE.has(pathUrl)) return;
+
+            const path = swagger.paths[pathUrl];
             httpsMethods.forEach(method => {
                 const operationObject = path[method];
 
@@ -285,6 +296,8 @@ function walker(swagger: SwaggerObject): WalkerResult {
 
         refs.SchemaObject.forEach(({$ref}) => {
             const refName = $ref.replace('#/definitions/', '');
+
+            if (DEFINITIONS_TO_IGNORE.has(refName)) return;
 
             if (swagger.definitions && refName in swagger.definitions) {
                 const schema = swagger.definitions[refName];

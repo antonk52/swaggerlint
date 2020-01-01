@@ -42,13 +42,15 @@ export type CliResult = {
 };
 
 type RuleSetting = [string] | [];
+export type ConfigIgnore = {
+    definitions?: string[];
+    paths?: string[];
+};
 export type Config = {
     rules: {
         [ruleName: string]: RuleSetting;
     };
-    ignore?: {
-        definitions?: string[];
-    };
+    ignore?: ConfigIgnore;
 };
 
 export type LintError = {
