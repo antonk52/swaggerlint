@@ -56,6 +56,7 @@ export type Config = {
 export type LintError = {
     name: string;
     msg: string;
+    location: string[];
 };
 
 type RuleVisitorFunction<T> = (a: {
