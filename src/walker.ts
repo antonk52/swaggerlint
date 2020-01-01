@@ -293,23 +293,6 @@ function walker(swagger: SwaggerObject): WalkerResult {
             }
         });
 
-        console.log({
-            refs: Object.entries(refs).reduce<{[a: string]: number}>(
-                (acc, [k, v]) => {
-                    acc[k] = v.length;
-                    return acc;
-                },
-                {},
-            ),
-            visitors: Object.entries(visitors).reduce<{[a: string]: number}>(
-                (acc, [k, v]) => {
-                    acc[k] = v.length;
-                    return acc;
-                },
-                {},
-            ),
-        });
-
         return {visitors};
     } catch (err) {
         return {

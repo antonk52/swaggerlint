@@ -4,6 +4,7 @@ const name = 'latin-definitions-only';
 
 const rule: Rule = {
     name,
+    visitor: {},
     check: swagger => {
         const errors: LintError[] = [];
 

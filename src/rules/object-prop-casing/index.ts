@@ -105,6 +105,34 @@ const rule: Rule = {
 
         return errors;
     },
+    visitor: {
+        /**
+         * TODO:
+         * - handle `additionalProperties`
+         * - handle `allOf`
+         */
+        SchemaObject: ({node, report, setting}) => {
+            const settingCasingName = setting[0];
+            if (
+                typeof settingCasingName === 'string' &&
+                isValidRuleOption(settingCasingName)
+            ) {
+                const validCases = validCasesSets[settingCasingName];
+                if (isRef(node)) return;
+                if (node.type !== 'object') return;
+                if ('properties' in node && node.properties) {
+                    Object.keys(node.properties).forEach(propName => {
+                        const propCase = Case.of(propName);
+                        if (!validCases.has(propCase)) {
+                            report(`Property "${propName}" has wrong casing.`);
+                        }
+                    });
+                }
+                return;
+            }
+            report(`${settingCasingName} is not a valid plugin option.`);
+        },
+    },
 };
 
 export default rule;

@@ -14,6 +14,7 @@ const methods: ['get', 'post', 'put', 'delete', 'options', 'trace'] = [
 
 const rule: Rule = {
     name,
+    visitor: {},
     check: swagger => {
         const errors: LintError[] = [];
 

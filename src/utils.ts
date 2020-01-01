@@ -10,6 +10,7 @@ import {
     LintError,
     ReferenceObject,
     SchemaObjectAllOfObject,
+    VisitorName,
 } from './types';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -53,4 +54,35 @@ export function isSchemaObjectAllOfObject(
     arg: Record<string, any>,
 ): arg is SchemaObjectAllOfObject {
     return Array.isArray(arg.allOf);
+}
+
+const visitorSet = new Set([
+    'SwaggerObject',
+    'InfoObject',
+    'PathsObject',
+    'DefinitionsObject',
+    'ParametersDefinitionsObject',
+    'ResponsesDefinitionsObject',
+    'SecurityDefinitionsObject',
+    'SecuritySchemeObject',
+    'ScopesObject',
+    'SecurityRequirementObject',
+    'TagObject',
+    'ExternalDocumentationObject',
+    'ContactObject',
+    'LicenseObject',
+    'PathItemObject',
+    'OperationObject',
+    'ParameterObject',
+    'ResponsesObject',
+    'ResponseObject',
+    'SchemaObject',
+    'XMLObject',
+    'HeadersObject',
+    'HeaderObject',
+    'ItemsObject',
+    'ExampleObject',
+]);
+export function isValidVisitorName(name: string): name is VisitorName {
+    return visitorSet.has(name);
 }

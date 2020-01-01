@@ -1,4 +1,5 @@
-import {SwaggerObject, LintError, Config} from './types';
+import {SwaggerObject, LintError, Config, VisitorName} from './types';
+import {isValidVisitorName} from './utils';
 
 import rules from './rules';
 import walker from './walker';
@@ -7,23 +8,165 @@ export function swaggerlint(
     swagger: SwaggerObject,
     lintConfig: Config,
 ): LintError[] {
-    let errs: LintError[] = [];
+    const errs: LintError[] = [];
 
-    const checkRule = (ruleName: keyof Config['rules']) => {
-        const check = rules[ruleName];
-        const ruleOptions = lintConfig.rules[ruleName];
+    const walkerResult = walker(swagger);
 
-        if (typeof check !== 'function') {
-            console.warn(`"${ruleName}" is not a valid rule name`);
-            process.exit(1);
+    if ('errors' in walkerResult) {
+        return walkerResult.errors;
+    }
+
+    const {visitors} = walkerResult;
+
+    Object.keys(lintConfig.rules).forEach(ruleName => {
+        const rule = rules[ruleName];
+        if (!rule) {
+            return errs.push({
+                msg: `swaggerlint.config.js contains invalid rule "${ruleName}"`,
+                name: 'swaggerlint-core',
+            });
         }
 
-        errs = errs.concat(check(swagger, ruleOptions, lintConfig));
-    };
+        const setting = lintConfig.rules[ruleName];
+        // TODO validate setting using rule's `isValidSetting`
 
-    Object.keys(lintConfig.rules).forEach(checkRule);
+        const ruleVisitorKeys = Object.keys(rule.visitor) as VisitorName[];
+        ruleVisitorKeys.forEach(visitorName => {
+            if (!isValidVisitorName(visitorName)) return;
 
-    walker(swagger);
+            const report = (msg: string) => errs.push({msg, name: ruleName});
+
+            switch (visitorName) {
+                case 'SwaggerObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'InfoObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'PathsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'DefinitionsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ParametersDefinitionsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ResponsesDefinitionsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'SecurityDefinitionsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'SecuritySchemeObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ScopesObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'SecurityRequirementObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'TagObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ExternalDocumentationObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ContactObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'LicenseObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'PathItemObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'OperationObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ParameterObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ResponsesObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ResponseObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'SchemaObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'XMLObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'HeadersObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'HeaderObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ItemsObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+                case 'ExampleObject':
+                    return visitors[visitorName].forEach(node => {
+                        const check = rule.visitor[visitorName];
+                        check && check({node, setting, report});
+                    });
+            }
+        });
+
+        rule;
+    });
 
     return errs;
 }
