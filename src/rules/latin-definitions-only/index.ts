@@ -1,31 +1,25 @@
-import {Rule, LintError} from '../../types';
+import {Rule} from '../../types';
 
 const name = 'latin-definitions-only';
 
 const rule: Rule = {
     name,
-    visitor: {},
-    check: swagger => {
-        const errors: LintError[] = [];
+    visitor: {
+        DefinitionsObject: ({node, report}) => {
+            Object.keys(node).forEach(name => {
+                const rest = name
+                    // def name may contain latin chars
+                    .replace(/[a-z]+/i, '')
+                    // or numerals
+                    .replace(/\d/gi, '');
 
-        const {definitions = {}} = swagger;
-
-        Object.keys(definitions).forEach(definition => {
-            const rest = definition
-                // def name may contain latin chars
-                .replace(/[a-z]+/i, '')
-                // or numerals
-                .replace(/\d/gi, '');
-
-            if (rest.length > 0) {
-                errors.push({
-                    msg: `Definition name "${definition}" contains non latin characters.`,
-                    name,
-                });
-            }
-        });
-
-        return errors;
+                if (rest.length > 0) {
+                    report(
+                        `Definition name "${name}" contains non latin characters.`,
+                    );
+                }
+            });
+        },
     },
 };
 
