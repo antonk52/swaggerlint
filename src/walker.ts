@@ -472,8 +472,9 @@ function walker(
         return {
             errors: [
                 {
-                    name: `swaggerlint-walker`,
+                    name: `swaggerlint-core`,
                     msg: err,
+                    location: [],
                 },
             ],
         };
