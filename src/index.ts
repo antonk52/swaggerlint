@@ -8,9 +8,9 @@ export function swaggerlint(
     swagger: SwaggerObject,
     lintConfig: Config,
 ): LintError[] {
-    const errs: LintError[] = [];
+    const errors: LintError[] = [];
 
-    const walkerResult = walker(swagger);
+    const walkerResult = walker(swagger, lintConfig.ignore);
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;
@@ -21,20 +21,27 @@ export function swaggerlint(
     Object.keys(lintConfig.rules).forEach(ruleName => {
         const rule = rules[ruleName];
         if (!rule) {
-            return errs.push({
+            return errors.push({
                 msg: `swaggerlint.config.js contains invalid rule "${ruleName}"`,
                 name: 'swaggerlint-core',
             });
         }
 
         const setting = lintConfig.rules[ruleName];
-        // TODO validate setting using rule's `isValidSetting`
+
+        if (typeof rule.isValidSetting === 'function') {
+            if (!rule.isValidSetting(setting))
+                return errors.push({
+                    msg: 'Invalid rule setting',
+                    name: ruleName,
+                });
+        }
 
         const ruleVisitorKeys = Object.keys(rule.visitor) as VisitorName[];
         ruleVisitorKeys.forEach(visitorName => {
             if (!isValidVisitorName(visitorName)) return;
 
-            const report = (msg: string) => errs.push({msg, name: ruleName});
+            const report = (msg: string) => errors.push({msg, name: ruleName});
 
             switch (visitorName) {
                 case 'SwaggerObject':
@@ -168,5 +175,5 @@ export function swaggerlint(
         rule;
     });
 
-    return errs;
+    return errors;
 }

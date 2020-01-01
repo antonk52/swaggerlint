@@ -45,6 +45,7 @@ const rule: Rule = {
             report(`${settingCasingName} is not a valid plugin option.`);
         },
     },
+    isValidSetting: option => !!option[0] && option[0] in validCasesSets,
 };
 
 export default rule;
