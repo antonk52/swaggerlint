@@ -60,6 +60,7 @@ export type LintError = {
 
 type RuleVisitorFunction<T> = (a: {
     node: T;
+    location: string[];
     report: (m: string) => void;
     setting: [] | [string];
 }) => void;
