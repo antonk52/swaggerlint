@@ -35,8 +35,10 @@ export function getConfig(configPath?: string): Config | null {
         : cosmiconfigSync(pkg.name).search()?.config;
 }
 
-function toOneLinerFormat({msg, name}: LintError) {
-    return `-> ${name}\n${msg}`;
+function toOneLinerFormat({msg, name, location}: LintError) {
+    const locationInfo =
+        location.length > 0 ? `\n  in ${location.join('.')}` : '';
+    return `-> ${name}${locationInfo}\n  ${msg}`;
 }
 
 export function logErrors(errors: LintError[]): void {

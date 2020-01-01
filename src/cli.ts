@@ -10,7 +10,7 @@ const name = 'swaggerlint-core';
 function preLintError(msg: string): CliResult {
     return {
         code: 1,
-        errors: [{name, msg}],
+        errors: [{name, msg, location: []}],
     };
 }
 

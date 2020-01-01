@@ -38,6 +38,7 @@ describe('cli function', () => {
             errors: [
                 {
                     name,
+                    location: [],
                     msg:
                         'Neither url nor path were provided for your swagger scheme',
                 },
@@ -62,6 +63,7 @@ describe('cli function', () => {
                 {
                     msg:
                         'Swaggerlint config with a provided path does not exits.',
+                    location: [],
                     name,
                 },
             ],
@@ -83,6 +85,7 @@ describe('cli function', () => {
             errors: [
                 {
                     msg: 'Could not find swaggerlint.config.js file',
+                    location: [],
                     name,
                 },
             ],
@@ -106,6 +109,7 @@ describe('cli function', () => {
             errors: [
                 {
                     msg: 'File with a provided path does not exist.',
+                    location: [],
                     name,
                 },
             ],
@@ -128,6 +132,7 @@ describe('cli function', () => {
             errors: [
                 {
                     msg: 'Cannot fetch swagger scheme from the provided url',
+                    location: [],
                     name,
                 },
             ],
@@ -156,7 +161,7 @@ describe('cli function', () => {
     it('returns code 1 when errors are found', async () => {
         const {swaggerlint} = require('../index');
         const {fetchUrl, getConfig} = require('../utils');
-        const errors = [{name: 'foo', msg: 'bar'}];
+        const errors = [{name: 'foo', location: [], msg: 'bar'}];
 
         getConfig.mockReturnValueOnce('lookedup-config');
         swaggerlint.mockImplementation(() => errors);
