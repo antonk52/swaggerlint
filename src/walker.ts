@@ -179,62 +179,6 @@ function walker(
             ResponseObject: [],
         };
 
-        function populateParams(
-            parameters: (ParameterObject | ReferenceObject)[],
-            path: string[],
-        ) {
-            parameters.forEach((parameter, i) => {
-                if (isRef(parameter)) {
-                    refs.ParameterObject.push(parameter);
-                } else {
-                    visitors.ParameterObject.push({
-                        node: parameter,
-                        location: [...path, String(i)],
-                    });
-
-                    if ('schema' in parameter) {
-                        const {schema} = parameter;
-                        if (isRef(schema)) {
-                            refs.SchemaObject.push(schema);
-                        } else {
-                            visitors.SchemaObject.push({
-                                node: schema,
-                                location: [...path, String(i), 'schema'],
-                            });
-
-                            // TODO handle allOf property
-
-                            if (schema.externalDocs) {
-                                visitors.ExternalDocumentationObject.push({
-                                    node: schema.externalDocs,
-                                    location: [
-                                        ...path,
-                                        String(i),
-                                        'externalDocs',
-                                    ],
-                                });
-                            }
-
-                            if (schema.xml) {
-                                visitors.XMLObject.push({
-                                    node: schema.xml,
-                                    location: [...path, String(i), 'xml'],
-                                });
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function populateItemsObject(itemsObj: ItemsObject, path: string[]) {
-            visitors.ItemsObject.push({node: itemsObj, location: path});
-
-            if (itemsObj.type === 'array') {
-                populateItemsObject(itemsObj.items, [...path, 'items']);
-            }
-        }
-
         function populateSchemaObject(
             schema: SchemaObject,
             path: string[],
@@ -248,6 +192,13 @@ function walker(
                     visitors.XMLObject.push({
                         node: schema.xml,
                         location: [...path, 'xml'],
+                    });
+                }
+
+                if (schema.externalDocs) {
+                    visitors.ExternalDocumentationObject.push({
+                        node: schema.externalDocs,
+                        location: [...path, 'externalDocs'],
                     });
                 }
 
@@ -290,6 +241,51 @@ function walker(
                     ]);
                 }
             }
+        }
+
+        function populateItemsObject(itemsObj: ItemsObject, path: string[]) {
+            visitors.ItemsObject.push({node: itemsObj, location: path});
+
+            if (itemsObj.type === 'array') {
+                populateItemsObject(itemsObj.items, [...path, 'items']);
+            }
+        }
+
+        function populateParams(
+            parameters: (ParameterObject | ReferenceObject)[],
+            path: string[],
+        ) {
+            parameters.forEach((parameter, i) => {
+                if (isRef(parameter)) {
+                    refs.ParameterObject.push(parameter);
+                } else {
+                    visitors.ParameterObject.push({
+                        node: parameter,
+                        location: [...path, String(i)],
+                    });
+
+                    if ('schema' in parameter) {
+                        const {schema} = parameter;
+                        if (isRef(schema)) {
+                            refs.SchemaObject.push(schema);
+                        } else {
+                            populateSchemaObject(schema, [
+                                ...path,
+                                String(i),
+                                'schema',
+                            ]);
+                        }
+                    }
+
+                    if (parameter.in !== 'body' && parameter.type === 'array') {
+                        populateItemsObject(parameter.items, [
+                            ...path,
+                            String(i),
+                            'items',
+                        ]);
+                    }
+                }
+            });
         }
 
         // populate from paths down
