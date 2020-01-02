@@ -6,11 +6,11 @@ import walker from './walker';
 
 export function swaggerlint(
     swagger: SwaggerObject,
-    lintConfig: Config,
+    config: Config,
 ): LintError[] {
     const errors: LintError[] = [];
 
-    const walkerResult = walker(swagger, lintConfig.ignore);
+    const walkerResult = walker(swagger, config.ignore);
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;
@@ -18,17 +18,17 @@ export function swaggerlint(
 
     const {visitors} = walkerResult;
 
-    Object.keys(lintConfig.rules).forEach(ruleName => {
+    Object.keys(config.rules).forEach(ruleName => {
         const rule = rules[ruleName];
         if (!rule) {
             return errors.push({
-                msg: `swaggerlint.config.js contains invalid rule "${ruleName}"`,
+                msg: `swaggerlint.config.js contains unknown rule "${ruleName}"`,
                 name: 'swaggerlint-core',
                 location: [],
             });
         }
 
-        const setting = lintConfig.rules[ruleName];
+        const setting = config.rules[ruleName];
 
         if (typeof rule.isValidSetting === 'function') {
             if (!rule.isValidSetting(setting))
