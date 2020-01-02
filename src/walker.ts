@@ -154,7 +154,7 @@ function walker(
             LicenseObject: swagger.info.licence
                 ? [{node: swagger.info.licence, location: ['info', 'licence']}]
                 : [],
-            PathItemObject: [{node: swagger.paths, location: ['paths']}],
+            PathItemObject: [],
             OperationObject: [],
             ParameterObject: [],
             ResponsesObject: [],
@@ -293,6 +293,12 @@ function walker(
             if (PATHS_TO_IGNORE.has(pathUrl)) return;
 
             const path = swagger.paths[pathUrl];
+
+            visitors.PathItemObject.push({
+                node: path,
+                location: ['paths', pathUrl],
+            });
+
             httpsMethods.forEach(method => {
                 const operationObject = path[method];
 
