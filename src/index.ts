@@ -43,6 +43,13 @@ export function swaggerlint(
         ruleVisitorKeys.forEach(visitorName => {
             if (!isValidVisitorName(visitorName)) return;
 
+            /**
+             * This looks horrific
+             * Yet it was my only option to tell typescript that
+             * the check function argument and visitor item have the same type
+             *
+             * @see https://bit.ly/2MNEii7
+             */
             switch (visitorName) {
                 case 'SwaggerObject':
                     return visitors[visitorName].forEach(({node, location}) => {
