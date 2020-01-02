@@ -322,7 +322,7 @@ type ObjectAddon = Partial<{
     maxProperties: number;
     minProperties: number;
     required: string[];
-    additionalProperties: boolean | Record<string, any>;
+    additionalProperties?: SchemaObject | ReferenceObject;
     properties: {[name: string]: SchemaObject};
 }>;
 type SchemaObjectArray = SchemaObjectCreator<'array', any, SchemaObject[]> & {

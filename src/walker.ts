@@ -216,7 +216,7 @@ function walker(
 
                 if (
                     'additionalProperties' in schema &&
-                    typeof schema.additionalProperties === 'object'
+                    schema.additionalProperties
                 ) {
                     populateSchemaObject(schema.additionalProperties, [
                         ...path,

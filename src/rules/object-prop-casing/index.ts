@@ -18,11 +18,6 @@ function isValidRuleOption(name: string): name is keyof typeof validCasesSets {
 const rule: Rule = {
     name,
     visitor: {
-        /**
-         * TODO:
-         * - handle `additionalProperties`
-         * - handle `allOf`
-         */
         SchemaObject: ({node, report, setting}) => {
             const settingCasingName = setting[0];
             if (
