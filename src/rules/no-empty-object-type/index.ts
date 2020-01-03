@@ -11,11 +11,16 @@ const rule: Rule = {
             if (node.type !== 'object') return;
 
             if ('properties' in node && node.properties) {
-                return node;
+                return;
             } else if ('allOf' in node && node.allOf) {
-                return node;
+                return;
+            } else if (
+                'additionalProperties' in node &&
+                node.additionalProperties
+            ) {
+                return;
             } else {
-                return report(
+                report(
                     `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,
                 );
             }
