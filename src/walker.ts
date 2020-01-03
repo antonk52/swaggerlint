@@ -265,16 +265,11 @@ function walker(
                     });
 
                     if ('schema' in parameter) {
-                        const {schema} = parameter;
-                        if (isRef(schema)) {
-                            refs.SchemaObject.push(schema);
-                        } else {
-                            populateSchemaObject(schema, [
-                                ...path,
-                                String(i),
-                                'schema',
-                            ]);
-                        }
+                        populateSchemaObject(parameter.schema, [
+                            ...path,
+                            String(i),
+                            'schema',
+                        ]);
                     }
 
                     if (parameter.in !== 'body' && parameter.type === 'array') {
