@@ -28,6 +28,20 @@ describe(`rule "${rule.name}"`, () => {
 
     it('should error for all non camel cased property names', () => {
         const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
             definitions: {
                 lolkekDTO: {
                     type: 'object',
@@ -44,22 +58,27 @@ describe(`rule "${rule.name}"`, () => {
         };
         const modConfig = _.merge(mod, swaggerSample);
         const result = swaggerlint(modConfig, config);
+        const location = ['definitions', 'lolkekDTO'];
         const expected = [
             {
-                msg: 'Property "some-casing" has wrong casing on "lolkekDTO"',
+                msg: 'Property "some-casing" has wrong casing.',
                 name: 'object-prop-casing',
+                location,
             },
             {
-                msg: 'Property "some_casing" has wrong casing on "lolkekDTO"',
+                msg: 'Property "some_casing" has wrong casing.',
                 name: 'object-prop-casing',
+                location,
             },
             {
-                msg: 'Property "SOME_CASING" has wrong casing on "lolkekDTO"',
+                msg: 'Property "SOME_CASING" has wrong casing.',
                 name: 'object-prop-casing',
+                location,
             },
             {
-                msg: 'Property "SomeCasing" has wrong casing on "lolkekDTO"',
+                msg: 'Property "SomeCasing" has wrong casing.',
                 name: 'object-prop-casing',
+                location,
             },
         ];
 

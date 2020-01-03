@@ -12,7 +12,7 @@ module.exports = {
     ],
     parser: '@typescript-eslint/parser',
     rules: {
-        indent: ['error', 4],
+        indent: ['error', 4, { "SwitchCase": 1 }],
         '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/no-var-requires': 0,
     },
