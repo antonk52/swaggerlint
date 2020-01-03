@@ -19,14 +19,13 @@ const rule: Rule = {
     name,
     visitor: {
         SchemaObject: ({node, report, setting}) => {
-            const settingCasingName = setting[0];
+            const [settingCasingName] = setting;
             if (
                 typeof settingCasingName === 'string' &&
                 isValidRuleOption(settingCasingName)
             ) {
                 const validCases = validCasesSets[settingCasingName];
                 if (isRef(node)) return;
-                if (node.type !== 'object') return;
                 if ('properties' in node && node.properties) {
                     Object.keys(node.properties).forEach(propName => {
                         const propCase = Case.of(propName);
@@ -37,7 +36,6 @@ const rule: Rule = {
                 }
                 return;
             }
-            report(`${settingCasingName} is not a valid plugin option.`);
         },
     },
     isValidSetting: option => !!option[0] && option[0] in validCasesSets,

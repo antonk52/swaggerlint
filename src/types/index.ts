@@ -63,7 +63,7 @@ type RuleVisitorFunction<T> = (a: {
     node: T;
     location: string[];
     report: (m: string) => void;
-    setting: [] | [string];
+    setting: RuleSetting;
 }) => void;
 
 export type VisitorName = keyof RuleVisitor;
@@ -103,7 +103,6 @@ type RuleVisitor = Partial<{
 
 export type Rule = {
     name: string;
-    check?: (a: SwaggerObject, b: string[], c?: Config) => LintError[];
     isValidSetting?: (setting: RuleSetting) => boolean | {msg: string};
     visitor: RuleVisitor;
 };
