@@ -7,9 +7,6 @@ const config: Config = {
         'no-single-allof': [],
         'object-prop-casing': ['camel'],
     },
-    ignore: {
-        definitions: [],
-    },
 };
 
 export default config;
