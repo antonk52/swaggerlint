@@ -19,6 +19,8 @@ const rule: Rule = {
     name,
     visitor: {
         SchemaObject: ({node, report, setting}) => {
+            if (typeof setting === 'boolean') return;
+
             const [settingCasingName] = setting;
             if (
                 typeof settingCasingName === 'string' &&
@@ -38,7 +40,8 @@ const rule: Rule = {
             }
         },
     },
-    isValidSetting: option => !!option[0] && option[0] in validCasesSets,
+    isValidSetting: option =>
+        Array.isArray(option) && !!option[0] && option[0] in validCasesSets,
 };
 
 export default rule;
