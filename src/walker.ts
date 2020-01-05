@@ -1,4 +1,3 @@
-import {uniqBy} from 'lodash';
 import {isRef} from './utils';
 
 import {
@@ -168,82 +167,67 @@ function walker(
         };
         /* eslint-enable indent */
 
-        type Refs = {
-            ParameterObject: ReferenceObject[];
-            SchemaObject: ReferenceObject[];
-            ResponseObject: ReferenceObject[];
-        };
-        const refs: Refs = {
-            ParameterObject: [],
-            SchemaObject: [],
-            ResponseObject: [],
-        };
-
         function populateSchemaObject(
             schema: SchemaObject,
             path: string[],
         ): void {
             if (isRef(schema)) {
-                refs.SchemaObject.push(schema);
-            } else {
-                visitors.SchemaObject.push({node: schema, location: path});
+                return;
+            }
 
-                if (schema.xml) {
-                    visitors.XMLObject.push({
-                        node: schema.xml,
-                        location: [...path, 'xml'],
-                    });
-                }
+            visitors.SchemaObject.push({node: schema, location: path});
 
-                if (schema.externalDocs) {
-                    visitors.ExternalDocumentationObject.push({
-                        node: schema.externalDocs,
-                        location: [...path, 'externalDocs'],
-                    });
-                }
+            if (schema.xml) {
+                visitors.XMLObject.push({
+                    node: schema.xml,
+                    location: [...path, 'xml'],
+                });
+            }
 
-                if ('properties' in schema && schema.properties) {
-                    const {properties} = schema;
-                    Object.keys(properties).forEach(propName => {
-                        const prop = properties[propName];
-                        populateSchemaObject(prop, [
-                            ...path,
-                            'properties',
-                            propName,
-                        ]);
-                    });
-                }
+            if (schema.externalDocs) {
+                visitors.ExternalDocumentationObject.push({
+                    node: schema.externalDocs,
+                    location: [...path, 'externalDocs'],
+                });
+            }
 
-                if (
-                    'additionalProperties' in schema &&
-                    schema.additionalProperties
-                ) {
-                    populateSchemaObject(schema.additionalProperties, [
+            if ('properties' in schema && schema.properties) {
+                const {properties} = schema;
+                Object.keys(properties).forEach(propName => {
+                    const prop = properties[propName];
+                    populateSchemaObject(prop, [
                         ...path,
-                        'additionalProperties',
+                        'properties',
+                        propName,
                     ]);
-                }
+                });
+            }
 
-                if ('allOf' in schema) {
-                    schema.allOf.forEach((prop, i) =>
-                        populateSchemaObject(prop, [
-                            ...path,
-                            'allOf',
-                            String(i),
-                        ]),
-                    );
-                }
+            if (
+                'additionalProperties' in schema &&
+                schema.additionalProperties
+            ) {
+                populateSchemaObject(schema.additionalProperties, [
+                    ...path,
+                    'additionalProperties',
+                ]);
+            }
 
-                if (schema.type === 'array') {
-                    return populateSchemaObject(schema.items, [
-                        ...path,
-                        'items',
-                    ]);
-                }
+            if ('allOf' in schema) {
+                schema.allOf.forEach((prop, i) =>
+                    populateSchemaObject(prop, [...path, 'allOf', String(i)]),
+                );
+            }
+
+            if (schema.type === 'array') {
+                return populateSchemaObject(schema.items, [...path, 'items']);
             }
         }
 
-        function populateItemsObject(itemsObj: ItemsObject, path: string[]) {
+        function populateItemsObject(
+            itemsObj: ItemsObject,
+            path: string[],
+        ): void {
             visitors.ItemsObject.push({node: itemsObj, location: path});
 
             if (itemsObj.type === 'array') {
@@ -254,33 +238,80 @@ function walker(
         function populateParams(
             parameters: (ParameterObject | ReferenceObject)[],
             path: string[],
-        ) {
+        ): void {
             parameters.forEach((parameter, i) => {
                 if (isRef(parameter)) {
-                    refs.ParameterObject.push(parameter);
-                } else {
-                    visitors.ParameterObject.push({
-                        node: parameter,
-                        location: [...path, String(i)],
+                    return;
+                }
+
+                visitors.ParameterObject.push({
+                    node: parameter,
+                    location: [...path, String(i)],
+                });
+
+                if ('schema' in parameter) {
+                    populateSchemaObject(parameter.schema, [
+                        ...path,
+                        String(i),
+                        'schema',
+                    ]);
+                }
+
+                if (parameter.in !== 'body' && parameter.type === 'array') {
+                    populateItemsObject(parameter.items, [
+                        ...path,
+                        String(i),
+                        'items',
+                    ]);
+                }
+            });
+        }
+
+        function populateResponseObject(
+            response: ResponseObject | ReferenceObject,
+            path: string[],
+        ): void {
+            if (isRef(response)) {
+                return;
+            }
+
+            visitors.ResponseObject.push({
+                node: response,
+                location: [...path],
+            });
+            if (response.schema) {
+                populateSchemaObject(response.schema, [...path, 'schema']);
+            }
+            const {headers} = response;
+            if (headers) {
+                visitors.HeadersObject.push({
+                    node: headers,
+                    location: [...path, 'headers'],
+                });
+
+                Object.keys(headers).forEach(headerName => {
+                    const headerObject = headers[headerName];
+                    visitors.HeaderObject.push({
+                        node: headerObject,
+                        location: [...path, 'headers', headerName],
                     });
 
-                    if ('schema' in parameter) {
-                        populateSchemaObject(parameter.schema, [
+                    if (headerObject.type === 'array') {
+                        populateItemsObject(headerObject.items, [
                             ...path,
-                            String(i),
-                            'schema',
-                        ]);
-                    }
-
-                    if (parameter.in !== 'body' && parameter.type === 'array') {
-                        populateItemsObject(parameter.items, [
-                            ...path,
-                            String(i),
+                            'headers',
+                            headerName,
                             'items',
                         ]);
                     }
-                }
-            });
+                });
+            }
+            if (response.examples) {
+                visitors.ExampleObject.push({
+                    node: response.examples,
+                    location: [...path, 'examples'],
+                });
+            }
         }
 
         // populate from paths down
@@ -334,90 +365,13 @@ function walker(
                             const response =
                                 operationObject.responses[responseHttpCode];
 
-                            if (isRef(response)) {
-                                refs.ResponseObject.push(response);
-                            } else {
-                                visitors.ResponseObject.push({
-                                    node: response,
-                                    location: [
-                                        'paths',
-                                        pathUrl,
-                                        method,
-                                        'responses',
-                                        responseHttpCode,
-                                    ],
-                                });
-                                if (response.schema) {
-                                    populateSchemaObject(response.schema, [
-                                        'paths',
-                                        pathUrl,
-                                        method,
-                                        'responses',
-                                        responseHttpCode,
-                                        'schema',
-                                    ]);
-                                }
-                                const {headers} = response;
-                                if (headers) {
-                                    visitors.HeadersObject.push({
-                                        node: headers,
-                                        location: [
-                                            'paths',
-                                            pathUrl,
-                                            method,
-                                            'responses',
-                                            responseHttpCode,
-                                            'headers',
-                                        ],
-                                    });
-
-                                    Object.keys(headers).forEach(headerName => {
-                                        const headerObject =
-                                            headers[headerName];
-                                        visitors.HeaderObject.push({
-                                            node: headerObject,
-                                            location: [
-                                                'paths',
-                                                pathUrl,
-                                                method,
-                                                'responses',
-                                                responseHttpCode,
-                                                'headers',
-                                                headerName,
-                                            ],
-                                        });
-
-                                        if (headerObject.type === 'array') {
-                                            populateItemsObject(
-                                                headerObject.items,
-                                                [
-                                                    'paths',
-                                                    pathUrl,
-                                                    method,
-                                                    'responses',
-                                                    responseHttpCode,
-                                                    'headers',
-                                                    headerName,
-                                                    'items',
-                                                ],
-                                            );
-                                        }
-                                    });
-                                }
-                                if (response.examples) {
-                                    visitors.ExampleObject.push({
-                                        node: response.examples,
-                                        location: [
-                                            'paths',
-                                            pathUrl,
-                                            method,
-                                            'responses',
-                                            responseHttpCode,
-                                            'examples',
-                                        ],
-                                    });
-                                }
-                            }
+                            populateResponseObject(response, [
+                                'paths',
+                                pathUrl,
+                                method,
+                                'resposes',
+                                responseHttpCode,
+                            ]);
                         },
                     );
 
@@ -447,20 +401,31 @@ function walker(
             }
         });
 
-        // remove duplicates
-        refs.SchemaObject = uniqBy(refs.SchemaObject, '$ref');
-        refs.ResponseObject = uniqBy(refs.ResponseObject, '$ref');
-        refs.ParameterObject = uniqBy(refs.ParameterObject, '$ref');
+        // SchemaObjects by reference
+        Object.keys(definitions || {}).forEach((name: string) => {
+            if (DEFINITIONS_TO_IGNORE.has(name)) return;
 
-        refs.SchemaObject.forEach(({$ref}) => {
-            const refName = $ref.replace('#/definitions/', '');
+            const schema = (definitions || {})[name];
+            if (schema) {
+                populateSchemaObject(schema, ['definitions', name]);
+            }
+        });
 
-            if (DEFINITIONS_TO_IGNORE.has(refName)) return;
+        // ParameterObjects by reference
+        Object.keys(swagger.parameters || {}).forEach((name: string) => {
+            const parameterObject = (swagger.parameters || {})[name];
 
-            if (swagger.definitions && refName in swagger.definitions) {
-                const schema = swagger.definitions[refName];
+            if (parameterObject) {
+                populateParams([parameterObject], ['parameters', name]);
+            }
+        });
 
-                populateSchemaObject(schema, ['definitions', refName]);
+        // ResponseObjects by reference
+        Object.keys(swagger.responses || {}).forEach((name: string) => {
+            const responseObject = (swagger.responses || {})[name];
+
+            if (responseObject) {
+                populateResponseObject(responseObject, ['responses', name]);
             }
         });
 
