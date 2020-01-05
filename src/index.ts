@@ -240,8 +240,6 @@ export function swaggerlint(
                     });
             }
         });
-
-        rule;
     });
 
     return errors;
