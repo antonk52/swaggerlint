@@ -224,7 +224,10 @@ function walker(
             }
         }
 
-        function populateItemsObject(itemsObj: ItemsObject, path: string[]) {
+        function populateItemsObject(
+            itemsObj: ItemsObject,
+            path: string[],
+        ): void {
             visitors.ItemsObject.push({node: itemsObj, location: path});
 
             if (itemsObj.type === 'array') {
@@ -235,7 +238,7 @@ function walker(
         function populateParams(
             parameters: (ParameterObject | ReferenceObject)[],
             path: string[],
-        ) {
+        ): void {
             parameters.forEach((parameter, i) => {
                 if (isRef(parameter)) {
                     return;
@@ -267,7 +270,7 @@ function walker(
         function populateResponseObject(
             response: ResponseObject | ReferenceObject,
             path: string[],
-        ) {
+        ): void {
             if (isRef(response)) {
                 return;
             }
