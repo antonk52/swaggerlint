@@ -75,9 +75,12 @@ module.exports = {
 
 ## Rules
 
+You can set any rule value to `false` to disable it or to `true` to enable and set its setting to default value.
+
 | rule name | value | description |
 |------------------------|------------------|------------------|
 | `object-prop-casing`   | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your object property names. |
-| `properties-for-object-type` | `[]` | Object types have to have their properties specified. |
+| `no-empty-object-type` | `[]` | Object types have to have their properties specified. |
+| `no-single-allof` | `[]` | Object types should not have a redundant single `allOf` property. |
 | `latin-definitions-only` | `[]` | Error when non Latin characters used in definition names. |
 | `path-param-required-field` | `[]` | Helps to keep consistently set optional `required` property in path parameters. |

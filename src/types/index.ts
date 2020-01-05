@@ -41,7 +41,7 @@ export type CliResult = {
     errors: LintError[];
 };
 
-type RuleSetting = [string] | [];
+type RuleSetting = string[] | boolean;
 export type ConfigIgnore = {
     definitions?: string[];
     paths?: string[];

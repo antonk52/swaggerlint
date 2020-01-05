@@ -1,5 +1,6 @@
 import {SwaggerObject, LintError, Config, VisitorName} from './types';
 import {isValidVisitorName} from './utils';
+import defaultConfig from './defaultConfig';
 
 import rules from './rules';
 import walker from './walker';
@@ -28,15 +29,26 @@ export function swaggerlint(
             });
         }
 
-        const setting = config.rules[ruleName];
+        let setting = config.rules[ruleName];
+
+        if (setting === false) {
+            return;
+        } else if (setting === true) {
+            const defaultSetting = defaultConfig.rules[ruleName];
+            if (typeof defaultSetting !== 'undefined') {
+                setting = defaultConfig.rules[ruleName];
+            }
+        }
 
         if (typeof rule.isValidSetting === 'function') {
-            if (!rule.isValidSetting(setting))
-                return errors.push({
+            if (!rule.isValidSetting(setting)) {
+                errors.push({
                     msg: 'Invalid rule setting',
                     name: ruleName,
                     location: [],
                 });
+                return;
+            }
         }
 
         const ruleVisitorKeys = Object.keys(rule.visitor) as VisitorName[];
@@ -228,8 +240,6 @@ export function swaggerlint(
                     });
             }
         });
-
-        rule;
     });
 
     return errors;
