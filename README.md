@@ -54,7 +54,8 @@ console.log(result) // an array or errors
 /**
  * [{
  *   name: 'string', // rule name
- *   msg: 'string' // message from the rule checker
+ *   msg: 'string', // message from the rule checker
+ *   location: ['path', 'to', 'error'] // what caused an error
  * }]
  */
 
@@ -67,8 +68,8 @@ console.log(result) // an array or errors
 module.exports = {
     rules: {
         'object-prop-casing': ['camel'],
-        'properties-for-object-type': [],
-        'latin-definitions-only': [],
+        'properties-for-object-type': true,
+        'latin-definitions-only': true,
     },
 }
 ```
@@ -80,8 +81,8 @@ You can set any rule value to `false` to disable it or to `true` to enable and s
 | rule name | value | description |
 |------------------------|------------------|------------------|
 | `object-prop-casing`   | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your object property names. |
-| `no-empty-object-type` | `[]` | Object types have to have their properties specified. |
-| `no-single-allof` | `[]` | Object types should not have a redundant single `allOf` property. |
-| `latin-definitions-only` | `[]` | Error when non Latin characters used in definition names. |
-| `path-param-required-field` | `[]` | Helps to keep consistently set optional `required` property in path parameters. |
-| `expressive-path-summary` | `true` | `false` | Helps to have an intentional summary. |
+| `no-empty-object-type` | `true` \| `false` | Object types have to have their properties specified. |
+| `no-single-allof` | `true` \| `false` | Object types should not have a redundant single `allOf` property. |
+| `latin-definitions-only` | `true` \| `false` | Error when non Latin characters used in definition names. |
+| `path-param-required-field` | `true` \| `false` | Helps to keep consistently set optional `required` property in path parameters. |
+| `expressive-path-summary` | `true` \| `false` | Helps to have an intentional summary. |
