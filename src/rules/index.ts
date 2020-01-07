@@ -4,6 +4,7 @@ import noEmptyObjectType from './no-empty-object-type';
 import noSingleOneof from './no-single-allof';
 import noTrailingSlash from './no-trailing-slash';
 import objPropCasing from './object-prop-casing';
+import parameterCasing from './parameter-casing';
 import pathParamRequiredField from './path-param-required-field';
 import requiredOperationTags from './required-operation-tags';
 import requiredParameterDescription from './required-parameter-description';
@@ -16,6 +17,7 @@ const rules = {
     [noSingleOneof.name]: noSingleOneof,
     [noTrailingSlash.name]: noTrailingSlash,
     [objPropCasing.name]: objPropCasing,
+    [parameterCasing.name]: parameterCasing,
     [pathParamRequiredField.name]: pathParamRequiredField,
     [requiredOperationTags.name]: requiredOperationTags,
     [requiredParameterDescription.name]: requiredParameterDescription,
