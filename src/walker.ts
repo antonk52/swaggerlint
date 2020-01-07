@@ -236,35 +236,21 @@ function walker(
         }
 
         function populateParams(
-            parameters: (ParameterObject | ReferenceObject)[],
+            parameter: ParameterObject,
             path: string[],
         ): void {
-            parameters.forEach((parameter, i) => {
-                if (isRef(parameter)) {
-                    return;
-                }
-
-                visitors.ParameterObject.push({
-                    node: parameter,
-                    location: [...path, String(i)],
-                });
-
-                if ('schema' in parameter) {
-                    populateSchemaObject(parameter.schema, [
-                        ...path,
-                        String(i),
-                        'schema',
-                    ]);
-                }
-
-                if (parameter.in !== 'body' && parameter.type === 'array') {
-                    populateItemsObject(parameter.items, [
-                        ...path,
-                        String(i),
-                        'items',
-                    ]);
-                }
+            visitors.ParameterObject.push({
+                node: parameter,
+                location: [...path],
             });
+
+            if ('schema' in parameter) {
+                populateSchemaObject(parameter.schema, [...path, 'schema']);
+            }
+
+            if (parameter.in !== 'body' && parameter.type === 'array') {
+                populateItemsObject(parameter.items, [...path, 'items']);
+            }
         }
 
         function populateResponseObject(
@@ -347,12 +333,18 @@ function walker(
                     }
 
                     if (operationObject.parameters) {
-                        populateParams(operationObject.parameters, [
-                            'paths',
-                            pathUrl,
-                            method,
-                            'parameters',
-                        ]);
+                        operationObject.parameters.forEach((parameter, i) => {
+                            if (isRef(parameter)) {
+                                return;
+                            }
+                            populateParams(parameter, [
+                                'paths',
+                                pathUrl,
+                                method,
+                                'parameters',
+                                String(i),
+                            ]);
+                        });
                     }
 
                     visitors.ResponsesObject.push({
@@ -393,11 +385,17 @@ function walker(
             });
 
             if (path.parameters) {
-                populateParams(path.parameters, [
-                    'paths',
-                    pathUrl,
-                    'parameters',
-                ]);
+                path.parameters.forEach((parameter, i) => {
+                    if (isRef(parameter)) {
+                        return;
+                    }
+                    populateParams(parameter, [
+                        'paths',
+                        pathUrl,
+                        'parameters',
+                        String(i),
+                    ]);
+                });
             }
         });
 
@@ -416,7 +414,7 @@ function walker(
             const parameterObject = (swagger.parameters || {})[name];
 
             if (parameterObject) {
-                populateParams([parameterObject], ['parameters', name]);
+                populateParams(parameterObject, ['parameters', name]);
             }
         });
 

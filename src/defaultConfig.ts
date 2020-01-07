@@ -4,6 +4,7 @@ const config: Config = {
     rules: {
         'expressive-path-summary': true,
         'latin-definitions-only': true,
+        'required-parameter-description': true,
         'no-empty-object-type': true,
         'no-single-allof': true,
         'no-trailing-slash': true,
