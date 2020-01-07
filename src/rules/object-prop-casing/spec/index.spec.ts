@@ -61,22 +61,26 @@ describe(`rule "${rule.name}"`, () => {
         const location = ['definitions', 'lolkekDTO'];
         const expected = [
             {
-                msg: 'Property "some-casing" has wrong casing.',
+                msg:
+                    'Property "some-casing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
                 location,
             },
             {
-                msg: 'Property "some_casing" has wrong casing.',
+                msg:
+                    'Property "some_casing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
                 location,
             },
             {
-                msg: 'Property "SOME_CASING" has wrong casing.',
+                msg:
+                    'Property "SOME_CASING" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
                 location,
             },
             {
-                msg: 'Property "SomeCasing" has wrong casing.',
+                msg:
+                    'Property "SomeCasing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
                 location,
             },

@@ -32,7 +32,18 @@ const rule: Rule = {
                     Object.keys(node.properties).forEach(propName => {
                         const propCase = Case.of(propName);
                         if (!validCases.has(propCase)) {
-                            report(`Property "${propName}" has wrong casing.`);
+                            const correctVersion =
+                                settingCasingName in validCasesSets
+                                    ? Case[settingCasingName](propName)
+                                    : '';
+
+                            report(
+                                `Property "${propName}" has wrong casing.${
+                                    correctVersion
+                                        ? ` Should be "${correctVersion}".`
+                                        : ''
+                                }`,
+                            );
                         }
                     });
                 }
