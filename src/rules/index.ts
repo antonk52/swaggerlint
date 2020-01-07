@@ -6,6 +6,7 @@ import noTrailingSlash from './no-trailing-slash';
 import objPropCasing from './object-prop-casing';
 import pathParamRequiredField from './path-param-required-field';
 import requiredParameterDescription from './required-parameter-description';
+import requiredTagDescription from './required-tag-description';
 
 const rules = {
     [expressivePathSummary.name]: expressivePathSummary,
@@ -16,6 +17,7 @@ const rules = {
     [objPropCasing.name]: objPropCasing,
     [pathParamRequiredField.name]: pathParamRequiredField,
     [requiredParameterDescription.name]: requiredParameterDescription,
+    [requiredTagDescription.name]: requiredTagDescription,
 };
 
 export default rules;

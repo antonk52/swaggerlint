@@ -1,13 +1,13 @@
 import {Rule} from '../../types';
 
-const name = 'required-parameter-description';
+const name = 'required-tag-description';
 
 const rule: Rule = {
     name,
     visitor: {
-        ParameterObject: ({node, report}) => {
+        TagObject: ({node, report}) => {
             if (!('description' in node) || !node.description) {
-                report(`"${node.name}" parameter is missing description.`);
+                report(`Tag "${node.name}" is missing description.`);
             }
         },
     },
