@@ -6,6 +6,7 @@ const config: Config = {
         'latin-definitions-only': true,
         'no-empty-object-type': true,
         'no-single-allof': true,
+        'no-trailing-slash': true,
         'object-prop-casing': ['camel'],
     },
 };
