@@ -10,7 +10,7 @@ const rule: Rule = {
 
             urls.forEach(url => {
                 if (url.endsWith('/')) {
-                    report(`url cannot end with a slash "${url}".`);
+                    report(`Url cannot end with a slash "${url}".`);
                 }
             });
         },
