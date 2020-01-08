@@ -55,5 +55,6 @@ export function logErrors(
 ): void {
     console.log(errors.map(x => toOneLinerFormat(x, swagger)).join('\n'));
     console.log('\n');
-    console.log(bold(`You have ${errors.length} errors.`));
+    const hasErrs = !!errors.length;
+    console.log(bold(`You have ${errors.length} error${hasErrs ? 's' : ''}.`));
 }
