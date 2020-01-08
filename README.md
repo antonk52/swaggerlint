@@ -77,20 +77,20 @@ module.exports = {
 
 You can set any rule value to `false` to disable it or to `true` to enable and set its setting to default value.
 
-| rule name | value | description |
-|------------------------|------------------|------------------|
-| `object-prop-casing`   | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your object property names. |
-| `no-empty-object-type` | `true` \| `false` | Object types have to have their properties specified. |
-| `no-single-allof` | `true` \| `false` | Object types should not have a redundant single `allOf` property. |
-| `latin-definitions-only` | `true` \| `false` | Error when non Latin characters used in definition names. |
-| `path-param-required-field` | `true` \| `false` | Helps to keep consistently set optional `required` property in path parameters. |
-| `expressive-path-summary` | `true` \| `false` | Helps to have an intentional summary. |
-| `only-valid-mime-types` | `true` \| `false` | Checks mime types against known from [`mime-db`](https://npm.im/mime-db). |
-| `parameter-casing` | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your parameters. |
-| `required-operation-tags` | `true` \| `false` | All operations must have tags. |
-| `required-tag-description` | `true` \| `false` | All tags must have description. |
-| `required-parameter-description` | `true` \| `false` | All parameters must have description. |
-| `no-trailing-slash` | `true` \| `false` | All URLs must NOT end with a slash. |
+| rule name | value | setting | default |
+|------------------------|------------------|------------------|------------------|
+| `object-prop-casing`   | Casing for your object property names. | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | `camel` |
+| `no-empty-object-type` | Object types have to have their properties specified. |
+| `no-single-allof` | Object types should not have a redundant single `allOf` property. |
+| `latin-definitions-only` | Error when non Latin characters used in definition names. |
+| `path-param-required-field` | Helps to keep consistently set optional `required` property in path parameters. |
+| `expressive-path-summary` | Helps to have an intentional summary. |
+| `only-valid-mime-types` | Checks mime types against known from [`mime-db`](https://npm.im/mime-db). |
+| `parameter-casing` | Casing for your parameters. | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | `camel` |
+| `required-operation-tags` | All operations must have tags. |
+| `required-tag-description` | All tags must have description. |
+| `required-parameter-description` | All parameters must have description. |
+| `no-trailing-slash` | All URLs must NOT end with a slash. |
 
 ### Acknowledgments
 

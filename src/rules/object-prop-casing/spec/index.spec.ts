@@ -58,7 +58,7 @@ describe(`rule "${rule.name}"`, () => {
         };
         const modConfig = _.merge(mod, swaggerSample);
         const result = swaggerlint(modConfig, config);
-        const location = ['definitions', 'lolkekDTO'];
+        const location = ['definitions', 'lolkekDTO', 'properties'];
         const expected = [
             {
                 msg:

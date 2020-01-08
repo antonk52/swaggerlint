@@ -38,6 +38,7 @@ type ExitCode = 0 | 1;
 export type CliResult = {
     code: ExitCode;
     errors: LintError[];
+    swagger: SwaggerObject | void;
 };
 
 type RuleSetting = string[] | boolean;
