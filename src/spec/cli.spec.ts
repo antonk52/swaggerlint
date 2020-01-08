@@ -28,7 +28,7 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce('lookedup-config');
 
-        const result = await cli({});
+        const result = await cli({_: []});
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(getConfig.mock.calls).toEqual([[undefined]]);
@@ -53,7 +53,7 @@ describe('cli function', () => {
         getConfig.mockReturnValueOnce(null);
 
         const config = 'lol/kek/foo/bar';
-        const result = await cli({config});
+        const result = await cli({_: [], config});
 
         expect(getConfig.mock.calls).toEqual([[config]]);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
@@ -76,7 +76,7 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce(null);
 
-        const result = await cli({});
+        const result = await cli({_: []});
 
         expect(getConfig.mock.calls.length === 1).toBe(true);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
@@ -101,14 +101,14 @@ describe('cli function', () => {
         fs.existsSync.mockReturnValueOnce(false);
 
         const path = 'lol/kek/foo/bar';
-        const result = await cli({path});
+        const result = await cli({_: [path]});
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
             code: 1,
             errors: [
                 {
-                    msg: 'File with a provided path does not exist.',
+                    msg: 'File at the provided path does not exist.',
                     location: [],
                     name,
                 },
@@ -123,7 +123,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.reject(null));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli({url});
+        const result = await cli({_: [url]});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
@@ -148,7 +148,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.resolve({}));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli({url});
+        const result = await cli({_: [url]});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);
@@ -168,7 +168,7 @@ describe('cli function', () => {
         fetchUrl.mockImplementation(() => Promise.resolve({}));
 
         const url = 'https://lol.org/openapi';
-        const result = await cli({url});
+        const result = await cli({_: [url]});
 
         expect(fetchUrl.mock.calls).toEqual([[url]]);
         expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);

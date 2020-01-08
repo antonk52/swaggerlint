@@ -29,12 +29,19 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         config = loadedConfig;
     }
 
-    const {url} = opts;
+    const [urlOrPath] = opts._;
+
+    if (!urlOrPath) {
+        return preLintError(
+            'Neither url nor path were provided for your swagger scheme',
+        );
+    }
 
     /**
-     * handling `swagger-lint --url https://...`
+     * handling `swagger-lint https://...`
      */
-    if (url) {
+    if (urlOrPath.startsWith('http')) {
+        const url = urlOrPath;
         log(`fetching for ${url}`);
         const swagger = await fetchUrl(url).catch(e => {
             log('error fetching url');
@@ -50,16 +57,15 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
             log(`got response`);
             errors = swaggerlint(swagger, config);
         }
-    }
+    } else {
+        /**
+         * handling `swagger-lint --path /path/to/swagger.json`
+         */
+        const swaggerPath = urlOrPath;
 
-    const swaggerPath = opts.path;
-    /**
-     * handling `swagger-lint --path /path/to/swagger.json`
-     */
-    if (swaggerPath) {
         // non existing path
         if (!fs.existsSync(swaggerPath)) {
-            return preLintError('File with a provided path does not exist.');
+            return preLintError('File at the provided path does not exist.');
         }
 
         const isYaml = isYamlPath(swaggerPath);
@@ -69,12 +75,6 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
             : require(swaggerPath);
 
         errors = swaggerlint(swagger, config);
-    }
-
-    if (!(url || swaggerPath)) {
-        return preLintError(
-            'Neither url nor path were provided for your swagger scheme',
-        );
     }
 
     return {

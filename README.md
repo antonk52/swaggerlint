@@ -19,21 +19,20 @@ npm install --global swaggerlint
 
 ### CLI
 
-#### Url flag
-
+You can lint your swagger scheme by path
 ```sh
-swaggerlint --url https://...
+swaggerlint /path/to/swagger.json
 ```
 
-#### Path flag
+Or by providing a URL
 
 ```sh
-swaggerlint --path /path/to/swagger.json
+swaggerlint https://...
 ```
 
 #### Config flag
 
-`swaggerlint` will automatilly search up the directories for a `swaggerlint.config.js` file. Or you can specify it explicitly
+`swaggerlint` will automatically search up the directory tree for a `swaggerlint.config.js` file. Or you can specify it explicitly
 
 ```sh
 swaggerlint --config /path/to/swaggerlint.config.js
