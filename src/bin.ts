@@ -8,9 +8,11 @@ import {green} from 'kleur';
 const pkg = require('../package.json');
 
 function program() {
-    const {version, ...options} = minimist<CliOptions>(process.argv.slice(2));
+    const {version, v, ...options} = minimist<CliOptions>(
+        process.argv.slice(2),
+    );
 
-    if (version) {
+    if (version || v) {
         console.log(pkg.version);
 
         process.exit(0);
