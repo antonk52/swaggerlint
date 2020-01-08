@@ -59,10 +59,11 @@ export type LintError = {
     location: string[];
 };
 
+export type Report = (msg: string, location?: string[]) => void;
 type RuleVisitorFunction<T> = (a: {
     node: T;
     location: string[];
-    report: (m: string) => void;
+    report: Report;
     setting: RuleSetting;
 }) => void;
 

@@ -8,6 +8,7 @@ const config: Config = {
         'no-single-allof': true,
         'no-trailing-slash': true,
         'object-prop-casing': ['camel'],
+        'only-valid-mime-types': true,
         'parameter-casing': ['camel'],
         'required-operation-tags': true,
         'required-parameter-description': true,

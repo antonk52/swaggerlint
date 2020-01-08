@@ -30,6 +30,7 @@
         "@types/jest": "^24.0.23",
         "@types/js-yaml": "^3.12.1",
         "@types/lodash": "^4.14.149",
+        "@types/mime-db": "^1.27.0",
         "@types/minimist": "^1.2.0",
         "@types/node": "^12.12.17",
         "@types/node-fetch": "^2.5.4",
@@ -49,6 +50,7 @@
         "cosmiconfig": "^6.0.0",
         "js-yaml": "^3.13.1",
         "lodash": "^4.17.15",
+        "mime-db": "^1.43.0",
         "minimist": "^1.2.0",
         "node-fetch": "^2.6.0"
     }
