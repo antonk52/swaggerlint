@@ -49,6 +49,7 @@
         "case": "^1.6.2",
         "cosmiconfig": "^6.0.0",
         "js-yaml": "^3.13.1",
+        "kleur": "^3.0.3",
         "lodash": "^4.17.15",
         "mime-db": "^1.43.0",
         "minimist": "^1.2.0",

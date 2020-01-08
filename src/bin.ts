@@ -2,8 +2,9 @@
 
 import minimist from 'minimist';
 import {cli} from './cli';
-import {logErrors} from './utils';
+import {logErrors} from './utils/output';
 import {CliOptions} from './types';
+import {green} from 'kleur';
 const pkg = require('../package.json');
 
 function program() {
@@ -15,11 +16,11 @@ function program() {
         process.exit(0);
     }
 
-    cli(options).then(({code, errors}) => {
+    cli(options).then(({code, errors, swagger}) => {
         if (code === 1) {
-            logErrors(errors);
+            logErrors(errors, swagger);
         } else {
-            console.log('No errors found');
+            console.log(green('No errors found'));
         }
 
         process.exit(code);

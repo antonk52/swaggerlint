@@ -2,16 +2,15 @@ import path from 'path';
 import fetch from 'node-fetch';
 import yaml from 'js-yaml';
 import {cosmiconfigSync} from 'cosmiconfig';
-const pkg = require('../package.json');
+const pkg = require('../../package.json');
 
 import {
     Config,
     SwaggerObject,
-    LintError,
     ReferenceObject,
     SchemaObjectAllOfObject,
     VisitorName,
-} from './types';
+} from '../types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -33,17 +32,6 @@ export function getConfig(configPath?: string): Config | null {
     return typeof configPath === 'string'
         ? cosmiconfigSync(pkg.name).load(configPath)?.config
         : cosmiconfigSync(pkg.name).search()?.config;
-}
-
-function toOneLinerFormat({msg, name, location}: LintError) {
-    const locationInfo =
-        location.length > 0 ? `\n  in ${location.join('.')}` : '';
-    return `-> ${name}${locationInfo}\n  ${msg}`;
-}
-
-export function logErrors(errors: LintError[]): void {
-    console.log(errors.map(toOneLinerFormat).join('\n'));
-    console.log(`\n\nYou have ${errors.length} errors.`);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

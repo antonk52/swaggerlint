@@ -7,7 +7,7 @@ const name = 'object-prop-casing';
 const rule: Rule = {
     name,
     visitor: {
-        SchemaObject: ({node, report, setting}) => {
+        SchemaObject: ({node, report, setting, location}) => {
             if (typeof setting === 'boolean') return;
 
             const [settingCasingName] = setting;
@@ -32,6 +32,7 @@ const rule: Rule = {
                                         ? ` Should be "${correctVersion}".`
                                         : ''
                                 }`,
+                                [...location, 'properties'],
                             );
                         }
                     });

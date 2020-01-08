@@ -1,5 +1,5 @@
 import {swaggerlint} from './index';
-import {LintError, CliOptions, CliResult} from './types';
+import {LintError, CliOptions, CliResult, SwaggerObject} from './types';
 import defaultConfig from './defaultConfig';
 import {log, fetchUrl, isYamlPath, getConfig} from './utils';
 import fs from 'fs';
@@ -11,6 +11,7 @@ function preLintError(msg: string): CliResult {
     return {
         code: 1,
         errors: [{name, msg, location: []}],
+        swagger: undefined,
     };
 }
 
@@ -18,6 +19,7 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
     let errors: LintError[] = [];
 
     let config = defaultConfig;
+    let swagger: void | SwaggerObject;
     const loadedConfig = getConfig(opts.config);
     if (loadedConfig === null) {
         return preLintError(
@@ -43,19 +45,22 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
     if (urlOrPath.startsWith('http')) {
         const url = urlOrPath;
         log(`fetching for ${url}`);
-        const swagger = await fetchUrl(url).catch(e => {
-            log('error fetching url');
-            log(e);
+        const swaggerFromUrl: SwaggerObject | null = await fetchUrl(url).catch(
+            e => {
+                log('error fetching url');
+                log(e);
 
-            return null;
-        });
-        if (swagger === null) {
+                return null;
+            },
+        );
+        if (swaggerFromUrl === null) {
             return preLintError(
                 'Cannot fetch swagger scheme from the provided url',
             );
         } else {
             log(`got response`);
-            errors = swaggerlint(swagger, config);
+            swagger = Object.freeze(swaggerFromUrl);
+            errors = swaggerlint(swaggerFromUrl, config);
         }
     } else {
         /**
@@ -70,15 +75,17 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
 
         const isYaml = isYamlPath(swaggerPath);
 
-        const swagger = isYaml
+        const swaggerFromPath: SwaggerObject = isYaml
             ? yaml.safeLoad(fs.readFileSync(swaggerPath, 'utf8'))
             : require(swaggerPath);
+        swagger = Object.freeze(swaggerFromPath);
 
-        errors = swaggerlint(swagger, config);
+        errors = swaggerlint(swaggerFromPath, config);
     }
 
     return {
         errors,
         code: errors.length ? 1 : 0,
+        swagger,
     };
 }
