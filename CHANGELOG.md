@@ -1,4 +1,4 @@
-## v0.0.3
+## v0.0.2
 Features:
 - Visitor based rules
 - Rules added
