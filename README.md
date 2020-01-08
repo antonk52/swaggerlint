@@ -86,3 +86,18 @@ You can set any rule value to `false` to disable it or to `true` to enable and s
 | `latin-definitions-only` | `true` \| `false` | Error when non Latin characters used in definition names. |
 | `path-param-required-field` | `true` \| `false` | Helps to keep consistently set optional `required` property in path parameters. |
 | `expressive-path-summary` | `true` \| `false` | Helps to have an intentional summary. |
+| `only-valid-mime-types` | `true` \| `false` | Checks mime types against known from [`mime-db`](https://npm.im/mime-db). |
+| `parameter-casing` | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | Casing for your parameters. |
+| `required-operation-tags` | `true` \| `false` | All operations must have tags. |
+| `required-tag-description` | `true` \| `false` | All tags must have description. |
+| `required-parameter-description` | `true` \| `false` | All parameters must have description. |
+| `no-trailing-slash` | `true` \| `false` | All URLs must NOT end with a slash. |
+
+### Acknowledgments
+
+This tool has been inspired by already existing swagger validation checkers:
+
+- [api lint](https://github.com/danielgtaylor/apilint)
+- [speccy](https://github.com/wework/speccy)
+- [zally](https://github.com/zalando/zally)
+- [openapi-validator](https://github.com/IBM/openapi-validator)

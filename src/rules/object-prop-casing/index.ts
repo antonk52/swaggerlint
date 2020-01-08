@@ -1,19 +1,8 @@
 import Case from 'case';
 import {Rule} from '../../types';
-import {isRef} from '../../utils';
+import {isRef, validCases, isValidCaseName} from '../../utils';
 
 const name = 'object-prop-casing';
-
-const validCasesSets = {
-    camel: new Set(['camel', 'lower']), // someName
-    snake: new Set(['snake', 'lower']), // some_name
-    pascal: new Set(['pascal']), // SomeName
-    constant: new Set(['constant']), // SOME_NAME
-};
-
-function isValidRuleOption(name: string): name is keyof typeof validCasesSets {
-    return name in validCasesSets;
-}
 
 const rule: Rule = {
     name,
@@ -24,16 +13,16 @@ const rule: Rule = {
             const [settingCasingName] = setting;
             if (
                 typeof settingCasingName === 'string' &&
-                isValidRuleOption(settingCasingName)
+                isValidCaseName(settingCasingName)
             ) {
-                const validCases = validCasesSets[settingCasingName];
+                const validPropCases = validCases[settingCasingName];
                 if (isRef(node)) return;
                 if ('properties' in node && node.properties) {
                     Object.keys(node.properties).forEach(propName => {
                         const propCase = Case.of(propName);
-                        if (!validCases.has(propCase)) {
+                        if (!validPropCases.has(propCase)) {
                             const correctVersion =
-                                settingCasingName in validCasesSets
+                                settingCasingName in validCases
                                     ? Case[settingCasingName](propName)
                                     : '';
 
@@ -52,7 +41,7 @@ const rule: Rule = {
         },
     },
     isValidSetting: option =>
-        Array.isArray(option) && !!option[0] && option[0] in validCasesSets,
+        Array.isArray(option) && !!option[0] && isValidCaseName(option[0]),
 };
 
 export default rule;

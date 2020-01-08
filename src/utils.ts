@@ -88,3 +88,14 @@ const visitorSet = new Set([
 export function isValidVisitorName(name: string): name is VisitorName {
     return visitorSet.has(name);
 }
+
+export const validCases = {
+    camel: new Set(['camel', 'lower']), // someName
+    snake: new Set(['snake', 'lower']), // some_name
+    pascal: new Set(['pascal']), // SomeName
+    constant: new Set(['constant']), // SOME_NAME
+};
+
+export function isValidCaseName(name: string): name is keyof typeof validCases {
+    return name in validCases;
+}
