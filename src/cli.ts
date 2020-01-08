@@ -3,6 +3,7 @@ import {LintError, CliOptions, CliResult, SwaggerObject} from './types';
 import defaultConfig from './defaultConfig';
 import {log, fetchUrl, isYamlPath, getConfig} from './utils';
 import fs from 'fs';
+import path from 'path';
 import yaml from 'js-yaml';
 
 const name = 'swaggerlint-core';
@@ -64,9 +65,9 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         }
     } else {
         /**
-         * handling `swagger-lint --path /path/to/swagger.json`
+         * handling `swagger-lint /path/to/swagger.json`
          */
-        const swaggerPath = urlOrPath;
+        const swaggerPath = path.resolve(urlOrPath);
 
         // non existing path
         if (!fs.existsSync(swaggerPath)) {

@@ -155,6 +155,7 @@ describe('cli function', () => {
         expect(result).toEqual({
             code: 0,
             errors: [],
+            swagger: {},
         });
     });
 
@@ -175,6 +176,7 @@ describe('cli function', () => {
         expect(result).toEqual({
             code: 1,
             errors,
+            swagger: {},
         });
     });
 });
