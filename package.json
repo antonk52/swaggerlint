@@ -4,11 +4,13 @@
     "description": "Swaggerlint  helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.",
     "main": "./dist/index.js",
     "scripts": {
-        "build": "tsc",
+        "build": "rm -rf ./dist && tsc",
         "types": "tsc --noEmit",
         "lint": "eslint . --ext=.js,.ts",
         "dev": "ts-node ./src/bin.ts",
-        "test": "jest"
+        "test": "jest",
+        "preversion": "npm run test && npm run lint && npm run build",
+        "postversion": "npm publish && git push --follow-tags"
     },
     "bin": {
         "swaggerlint": "./dist/bin.js"
