@@ -2,7 +2,7 @@
 
 `Swaggerlint` helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.
 
-## Instalation
+## Installation
 
 Install in your project
 
