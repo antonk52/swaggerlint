@@ -31,6 +31,7 @@ export * from './swagger';
 export type CliOptions = {
     _: string[];
     version?: string | boolean;
+    v?: string | boolean;
     config?: string;
 };
 
