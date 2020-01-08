@@ -1,10 +1,8 @@
 import {swaggerlint} from './index';
 import {LintError, CliOptions, CliResult, SwaggerObject} from './types';
-import defaultConfig from './defaultConfig';
-import {log, fetchUrl, isYamlPath, getConfig} from './utils';
-import fs from 'fs';
-import path from 'path';
-import yaml from 'js-yaml';
+import {getConfig} from './utils/config';
+import {getSwaggerByPath, getSwaggerByUrl} from './utils/swaggerfile';
+import {log} from './utils';
 
 const name = 'swaggerlint-core';
 
@@ -18,22 +16,14 @@ function preLintError(msg: string): CliResult {
 
 export async function cli(opts: CliOptions): Promise<CliResult> {
     let errors: LintError[] = [];
-
-    let config = defaultConfig;
     let swagger: void | SwaggerObject;
-    const loadedConfig = getConfig(opts.config);
-    if (loadedConfig === null) {
-        return preLintError(
-            typeof opts.config === 'string'
-                ? 'Swaggerlint config with a provided path does not exits.'
-                : 'Could not find swaggerlint.config.js file',
-        );
-    } else {
-        config = loadedConfig;
+
+    const {config, error: configError} = getConfig(opts.config);
+    if (configError) {
+        return preLintError(configError);
     }
 
     const [urlOrPath] = opts._;
-
     if (!urlOrPath) {
         return preLintError(
             'Neither url nor path were provided for your swagger scheme',
@@ -46,14 +36,14 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
     if (urlOrPath.startsWith('http')) {
         const url = urlOrPath;
         log(`fetching for ${url}`);
-        const swaggerFromUrl: SwaggerObject | null = await fetchUrl(url).catch(
-            e => {
-                log('error fetching url');
-                log(e);
+        const swaggerFromUrl: SwaggerObject | null = await getSwaggerByUrl(
+            url,
+        ).catch((e: string) => {
+            log('error fetching url');
+            log(e);
 
-                return null;
-            },
-        );
+            return null;
+        });
         if (swaggerFromUrl === null) {
             return preLintError(
                 'Cannot fetch swagger scheme from the provided url',
@@ -67,21 +57,14 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         /**
          * handling `swagger-lint /path/to/swagger.json`
          */
-        const swaggerPath = path.resolve(urlOrPath);
+        const result = getSwaggerByPath(urlOrPath);
 
-        // non existing path
-        if (!fs.existsSync(swaggerPath)) {
-            return preLintError('File at the provided path does not exist.');
+        if ('error' in result) {
+            return preLintError(result.error);
         }
 
-        const isYaml = isYamlPath(swaggerPath);
-
-        const swaggerFromPath: SwaggerObject = isYaml
-            ? yaml.safeLoad(fs.readFileSync(swaggerPath, 'utf8'))
-            : require(swaggerPath);
-        swagger = Object.freeze(swaggerFromPath);
-
-        errors = swaggerlint(swaggerFromPath, config);
+        swagger = Object.freeze(result.swagger);
+        errors = swaggerlint(result.swagger, config);
     }
 
     return {
