@@ -349,7 +349,7 @@ function walker(
 
                     visitors.ResponsesObject.push({
                         node: operationObject.responses,
-                        location: ['paths', pathUrl, method, 'resposes'],
+                        location: ['paths', pathUrl, method, 'responses'],
                     });
 
                     Object.keys(operationObject.responses).forEach(
@@ -361,7 +361,7 @@ function walker(
                                 'paths',
                                 pathUrl,
                                 method,
-                                'resposes',
+                                'responses',
                                 responseHttpCode,
                             ]);
                         },
