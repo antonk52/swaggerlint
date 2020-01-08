@@ -29,9 +29,8 @@ import {
 export * from './swagger';
 
 export type CliOptions = {
+    _: string[];
     version?: string | boolean;
-    path?: string;
-    url?: string;
     config?: string;
 };
 
