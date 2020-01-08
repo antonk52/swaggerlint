@@ -1,12 +1,12 @@
 import {LintError, SwaggerObject} from '../types';
-import {get} from 'lodash';
+import _get from 'lodash.get';
 import {bold, red, dim, grey} from 'kleur';
 
 const PAD = 6;
 
 function shallowStringify(swagger: SwaggerObject, location: string[]): string {
     let topLevelObject = true;
-    const objToStringify = get(swagger, location);
+    const objToStringify = _get(swagger, location);
     const stringifiedObj = JSON.stringify(
         objToStringify,
         (_, value) => {

@@ -1,7 +1,7 @@
 import rule from '../';
 import {SwaggerObject, Config} from '../../../types';
 import {swaggerlint} from '../../../';
-import _ from 'lodash';
+import _merge from 'lodash.merge';
 
 const swaggerSample: SwaggerObject = {
     swagger: '2.0',
@@ -57,7 +57,7 @@ describe(`rule "${rule.name}"`, () => {
                 },
             },
         };
-        const modConfig = _.merge(mod, swaggerSample);
+        const modConfig = _merge(mod, swaggerSample);
         const result = swaggerlint(modConfig, config);
         const location = ['definitions', 'Example'];
         const expected = [
@@ -107,7 +107,7 @@ describe(`rule "${rule.name}"`, () => {
                 },
             },
         };
-        const modConfig = _.merge(mod, swaggerSample);
+        const modConfig = _merge(mod, swaggerSample);
         const result = swaggerlint(modConfig, config);
 
         expect(result).toEqual([]);
