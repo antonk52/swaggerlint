@@ -2,9 +2,11 @@
 
 `Swaggerlint` helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.
 
+<p align="center"><img src="https://user-images.githubusercontent.com/5817809/72013495-0b443700-326f-11ea-9549-84dce1ec861e.png" width="600" alt="npm command"></p>
+
 ## Installation
 
-Install in your project
+Install it in your project
 
 ```sh
 npm install swaggerlint
