@@ -2,7 +2,7 @@
 
 `Swaggerlint` helps you to have a consistent API style by linting your swagger / OpenAPI Scheme.
 
-<p align="center"><img src="https://user-images.githubusercontent.com/5817809/72013495-0b443700-326f-11ea-9549-84dce1ec861e.png" width="600" alt="npm command"></p>
+<p align="center"><img src="https://user-images.githubusercontent.com/5817809/72013495-0b443700-326f-11ea-9549-84dce1ec861e.png" width="750" alt="npm command"></p>
 
 ## Installation
 
@@ -61,6 +61,10 @@ console.log(result) // an array or errors
  */
 
 ```
+
+### Docker image
+
+If you do not have nodejs installed you can use the [swaggerlint docker image](https://hub.docker.com/r/antonk52/alpine-swaggerlint).
 
 ## Config
 
