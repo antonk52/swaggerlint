@@ -1,4 +1,9 @@
-import {ReferenceObject, SchemaObjectAllOfObject, VisitorName} from '../types';
+import {
+    ReferenceObject,
+    SchemaObjectAllOfObject,
+    VisitorName,
+    SwaggerObject,
+} from '../types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -56,4 +61,14 @@ export const validCases = {
 
 export function isValidCaseName(name: string): name is keyof typeof validCases {
     return name in validCases;
+}
+
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+export function isSwaggerObject(arg: any): arg is SwaggerObject {
+    return (
+        typeof arg === 'object' &&
+        !Array.isArray(arg) &&
+        arg !== null &&
+        arg.swagger === '2.0'
+    );
 }
