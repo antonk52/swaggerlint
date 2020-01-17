@@ -29,7 +29,7 @@ describe('cli function', () => {
         const {swaggerlint} = require('../index');
         const {getConfig} = require('../utils/config');
 
-        getConfig.mockReturnValueOnce('lookedup-config');
+        getConfig.mockReturnValueOnce({config: 'lookedup-config'});
 
         const result = await cli({_: []});
 
@@ -86,7 +86,7 @@ describe('cli function', () => {
 
         getConfig.mockReturnValueOnce({
             error: null,
-            config: 'default-config',
+            config: {rules: 'default-config'},
         });
 
         swaggerlint.mockReturnValueOnce([]);
@@ -94,7 +94,9 @@ describe('cli function', () => {
         const result = await cli({_: ['some-path']});
 
         expect(getConfig.mock.calls.length === 1).toBe(true);
-        expect(swaggerlint.mock.calls).toEqual([[swagger, 'default-config']]);
+        expect(swaggerlint.mock.calls).toEqual([
+            [swagger, {rules: 'default-config'}],
+        ]);
         expect(result).toEqual({
             code: 0,
             errors: [],
@@ -107,7 +109,7 @@ describe('cli function', () => {
         const {getConfig} = require('../utils/config');
         const {getSwaggerByPath} = require('../utils/swaggerfile');
 
-        getConfig.mockReturnValueOnce('lookedup-config');
+        getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
 
         const error = 'File at the provided path does not exist.';
         getSwaggerByPath.mockReturnValueOnce({swagger: {}, error});
@@ -133,7 +135,7 @@ describe('cli function', () => {
         const {getSwaggerByUrl} = require('../utils/swaggerfile');
         const {getConfig} = require('../utils/config');
 
-        getConfig.mockReturnValueOnce('lookedup-config');
+        getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
         getSwaggerByUrl.mockImplementation(() => Promise.reject(null));
 
         const url = 'https://lol.org/openapi';
@@ -158,7 +160,7 @@ describe('cli function', () => {
         const {getSwaggerByUrl} = require('../utils/swaggerfile');
         const {getConfig} = require('../utils/config');
 
-        getConfig.mockReturnValueOnce({config: 'lookedup-config'});
+        getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
         swaggerlint.mockImplementation(() => []);
         getSwaggerByUrl.mockImplementation(() => Promise.resolve({}));
 
@@ -166,7 +168,9 @@ describe('cli function', () => {
         const result = await cli({_: [url]});
 
         expect(getSwaggerByUrl.mock.calls).toEqual([[url]]);
-        expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);
+        expect(swaggerlint.mock.calls).toEqual([
+            [{}, {rules: 'lookedup-config'}],
+        ]);
         expect(result).toEqual({
             code: 0,
             errors: [],
@@ -180,7 +184,7 @@ describe('cli function', () => {
         const {getSwaggerByUrl} = require('../utils/swaggerfile');
         const errors = [{name: 'foo', location: [], msg: 'bar'}];
 
-        getConfig.mockReturnValueOnce({config: 'lookedup-config'});
+        getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
         swaggerlint.mockImplementation(() => errors);
         getSwaggerByUrl.mockImplementation(() => Promise.resolve({}));
 
@@ -188,7 +192,9 @@ describe('cli function', () => {
         const result = await cli({_: [url]});
 
         expect(getSwaggerByUrl.mock.calls).toEqual([[url]]);
-        expect(swaggerlint.mock.calls).toEqual([[{}, 'lookedup-config']]);
+        expect(swaggerlint.mock.calls).toEqual([
+            [{}, {rules: 'lookedup-config'}],
+        ]);
         expect(result).toEqual({
             code: 1,
             errors,

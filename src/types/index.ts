@@ -48,6 +48,7 @@ export type ConfigIgnore = {
     paths?: string[];
 };
 export type Config = {
+    extends?: string[];
     rules: {
         [ruleName: string]: RuleSetting;
     };

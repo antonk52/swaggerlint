@@ -31,6 +31,19 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
     }
 
     /**
+     * validate config.extends
+     */
+    if (
+        'extends' in config &&
+        config.extends &&
+        Array.isArray(config.extends)
+    ) {
+        if (!config.extends.every(e => typeof e === 'string')) {
+            return preLintError('Every value in `extends` has to be a string');
+        }
+    }
+
+    /**
      * handling `swagger-lint https://...`
      */
     if (urlOrPath.startsWith('http')) {
