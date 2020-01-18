@@ -42,7 +42,8 @@ export type CliResult = {
     swagger: SwaggerObject | void;
 };
 
-type RuleSetting = string[] | boolean;
+/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
+type RuleSetting = [string, Record<string, any>] | [string] | boolean;
 export type ConfigIgnore = {
     definitions?: string[];
     paths?: string[];

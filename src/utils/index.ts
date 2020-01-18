@@ -21,6 +21,11 @@ export function isSchemaObjectAllOfObject(
     return Array.isArray(arg.allOf);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isObject(arg: any): arg is object {
+    return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
+}
+
 const visitorSet = new Set([
     'SwaggerObject',
     'InfoObject',
