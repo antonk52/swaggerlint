@@ -59,12 +59,15 @@ export function isValidVisitorName(name: string): name is VisitorName {
 
 export const validCases = {
     camel: new Set(['camel', 'lower']), // someName
-    snake: new Set(['snake', 'lower']), // some_name
-    pascal: new Set(['pascal']), // SomeName
     constant: new Set(['constant']), // SOME_NAME
+    kebab: new Set(['kebab', 'lower']), // some-name
+    pascal: new Set(['pascal']), // SomeName
+    snake: new Set(['snake', 'lower']), // some_name
 };
 
-export function isValidCaseName(name: string): name is keyof typeof validCases {
+export function isValidCaseName(
+    name: string | void,
+): name is keyof typeof validCases {
     return name in validCases;
 }
 
