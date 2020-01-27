@@ -83,20 +83,22 @@ module.exports = {
 
 You can set any rule value to `false` to disable it or to `true` to enable and set its setting to default value.
 
-| rule name | value | setting | default |
-|------------------------|------------------|------------------|------------------|
-| `object-prop-casing`   | Casing for your object property names. | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | `camel` |
+| rule name | description | default |
+|------------------------|------------------|------------------|
+| `object-prop-casing`   | Casing for your object property names. | `camel` |
 | `no-empty-object-type` | Object types have to have their properties specified. |
 | `no-single-allof` | Object types should not have a redundant single `allOf` property. |
 | `latin-definitions-only` | Error when non Latin characters used in definition names. |
 | `path-param-required-field` | Helps to keep consistently set optional `required` property in path parameters. |
 | `expressive-path-summary` | Helps to have an intentional summary. |
 | `only-valid-mime-types` | Checks mime types against known from [`mime-db`](https://npm.im/mime-db). |
-| `parameter-casing` | Casing for your parameters. | `'camel'` \| `'snake'` \| `'pascal'` \| `'constant'` | `camel` |
+| `parameter-casing` | Casing for your parameters. | `camel` |
 | `required-operation-tags` | All operations must have tags. |
 | `required-tag-description` | All tags must have description. |
 | `required-parameter-description` | All parameters must have description. |
 | `no-trailing-slash` | All URLs must NOT end with a slash. |
+
+Additionally see the docs for additional settings for [`obj-prop-casing`](./src/rules/object-prop-casing/readme.md) and [`parameter-casing`](./src/rules/parameter-casing/readme.md).
 
 ### Acknowledgments
 
