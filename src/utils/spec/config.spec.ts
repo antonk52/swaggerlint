@@ -52,6 +52,17 @@ describe('utils/config', () => {
             expect(result.rules.http).toBe(false);
             expect(result.rules.https).toBe(true);
         });
+
+        it('throws when extending from non existing config', () => {
+            expect(() =>
+                resolveConfigExtends({
+                    extends: ['foobar'],
+                    rules: {},
+                }),
+            ).toThrowError(
+                '"foobar" in extends of your config cannot be found. Make sure it exists in your node_modules.',
+            );
+        });
     });
     describe('getConfig function', () => {
         it('returns config by path', () => {

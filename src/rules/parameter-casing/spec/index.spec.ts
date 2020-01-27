@@ -43,18 +43,22 @@ describe(`rule "${rule.name}"`, () => {
                     parameters: [
                         {
                             name: 'petType',
+                            in: 'query',
                             type: 'string',
                         },
                         {
                             name: 'PET_STORE',
+                            in: 'query',
                             type: 'string',
                         },
                         {
                             name: 'pet-age',
+                            in: 'query',
                             type: 'string',
                         },
                         {
                             name: 'pet_color',
+                            in: 'query',
                             type: 'string',
                         },
                     ],
@@ -85,5 +89,146 @@ describe(`rule "${rule.name}"`, () => {
         ];
 
         expect(result).toEqual(expected);
+    });
+
+    it('should not error for all ignored property names', () => {
+        const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                    parameters: [
+                        {
+                            name: 'petType',
+                            in: 'query',
+                            type: 'string',
+                        },
+                        {
+                            name: 'PET_STORE',
+                            in: 'query',
+                            type: 'string',
+                        },
+                        {
+                            name: 'pet-age',
+                            in: 'query',
+                            type: 'string',
+                        },
+                        {
+                            name: 'pet_color',
+                            in: 'query',
+                            type: 'string',
+                        },
+                    ],
+                },
+            },
+        };
+        const modConfig = _merge(mod, swaggerSample);
+        const result = swaggerlint(modConfig, {
+            rules: {[rule.name]: ['camel', {ignore: ['PET_STORE', 'pet-age']}]},
+        });
+        const expected = [
+            {
+                msg:
+                    'Parameter "pet_color" has wrong casing. Should be "petColor".',
+                name: 'parameter-casing',
+                location: ['paths', '/url', 'parameters', '3'],
+            },
+        ];
+
+        expect(result).toEqual(expected);
+    });
+
+    it('allows to set different casing for different parameters(in)', () => {
+        const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                    parameters: [
+                        {
+                            name: 'pet-type',
+                            in: 'path',
+                            type: 'string',
+                        },
+                        {
+                            name: 'petStore',
+                            in: 'body',
+                            type: 'string',
+                        },
+                        {
+                            name: 'pet_color',
+                            in: 'query',
+                            type: 'string',
+                        },
+                    ],
+                },
+            },
+        };
+        const modConfig = _merge(mod, swaggerSample);
+        const result = swaggerlint(modConfig, {
+            rules: {[rule.name]: ['camel', {query: 'snake', path: 'kebab'}]},
+        });
+
+        expect(result).toEqual([]);
+    });
+
+    it('allos to ignore parameter names', () => {
+        const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                    parameters: [
+                        {
+                            name: 'pet-type',
+                            in: 'path',
+                            type: 'string',
+                        },
+                        {
+                            name: 'petStore',
+                            in: 'body',
+                            type: 'string',
+                        },
+                        {
+                            name: 'pet_color',
+                            in: 'query',
+                            type: 'string',
+                        },
+                    ],
+                },
+            },
+        };
+        const modConfig = _merge(mod, swaggerSample);
+        const result = swaggerlint(modConfig, {
+            rules: {
+                [rule.name]: ['camel', {ignore: ['pet-type', 'pet_color']}],
+            },
+        });
+
+        expect(result).toEqual([]);
     });
 });

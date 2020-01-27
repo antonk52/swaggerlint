@@ -34,8 +34,20 @@ export function resolveConfigExtends(baseConfig: ConfigWithExtends): Config {
     const toBeMergedConfigs: ConfigNoExtends[] = [omitExtends(baseConfig)];
 
     function resolveExtends(conf: ConfigWithExtends): void {
-        [...conf.extends].reverse().forEach(name => {
-            const resolvedName = require.resolve(name);
+        [...conf.extends].reverse().forEach(function resolveEachName(name) {
+            if (typeof name !== 'string') {
+                throw 'Every item in "extends" has to be a string.';
+            }
+            let resolvedName;
+            try {
+                resolvedName = require.resolve(name);
+            } catch (e) {
+                if (e.code && e.code === 'MODULE_NOT_FOUND') {
+                    throw `"${name}" in extends of your config cannot be found. Make sure it exists in your node_modules.`;
+                } else {
+                    throw e;
+                }
+            }
             if (processedConfigs.has(resolvedName)) return;
             processedConfigs.add(resolvedName);
             const nextConf = require(name);
@@ -91,14 +103,24 @@ export function getConfig(configPath: string | void): GetConfigResult {
         const lookedupConfig = cosmiResult?.config;
 
         if (lookedupConfig) {
-            const config = lookedupConfig.extends
-                ? resolveConfigExtends(lookedupConfig)
-                : mergeConfigs(defaultConfig, lookedupConfig);
-
-            return {
-                config,
-                error: null,
-            };
+            if (lookedupConfig.extends) {
+                try {
+                    return {
+                        config: resolveConfigExtends(lookedupConfig),
+                        error: null,
+                    };
+                } catch (e) {
+                    return {
+                        config: defaultConfig,
+                        error: e,
+                    };
+                }
+            } else {
+                return {
+                    config: mergeConfigs(defaultConfig, lookedupConfig),
+                    error: null,
+                };
+            }
         } else {
             return {
                 config: defaultConfig,

@@ -9,7 +9,7 @@ const config: Config = {
         'no-trailing-slash': true,
         'object-prop-casing': ['camel'],
         'only-valid-mime-types': true,
-        'parameter-casing': ['camel'],
+        'parameter-casing': ['camel', {header: 'kebab'}],
         'required-operation-tags': true,
         'required-parameter-description': true,
         'required-tag-description': true,

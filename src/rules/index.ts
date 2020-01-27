@@ -11,7 +11,9 @@ import requiredOperationTags from './required-operation-tags';
 import requiredParameterDescription from './required-parameter-description';
 import requiredTagDescription from './required-tag-description';
 
-const rules = {
+import {Rule} from '../types';
+
+const rules: Record<string, Rule> = {
     [expressivePathSummary.name]: expressivePathSummary,
     [latinDefinitionsOnly.name]: latinDefinitionsOnly,
     [noEmptyObjectType.name]: noEmptyObjectType,

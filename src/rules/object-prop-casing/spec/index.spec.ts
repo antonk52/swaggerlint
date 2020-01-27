@@ -89,6 +89,52 @@ describe(`rule "${rule.name}"`, () => {
         expect(result).toEqual(expected);
     });
 
+    it('should not error for ignored property names', () => {
+        const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+            definitions: {
+                lolkekDTO: {
+                    type: 'object',
+                    properties: {
+                        'some-casing': {type: 'string'},
+                        SOME_CASING: {type: 'string'},
+                        SomeCasing: {type: 'string'},
+                    },
+                },
+            },
+        };
+        const modConfig = _merge(mod, swaggerSample);
+        const result = swaggerlint(modConfig, {
+            rules: {
+                [rule.name]: ['camel', {ignore: ['SOME_CASING', 'SomeCasing']}],
+            },
+        });
+        const location = ['definitions', 'lolkekDTO', 'properties'];
+        const expected = [
+            {
+                msg:
+                    'Property "some-casing" has wrong casing. Should be "someCasing".',
+                name: 'object-prop-casing',
+                location,
+            },
+        ];
+
+        expect(result).toEqual(expected);
+    });
+
     it('should NOT error for all non camel cased property names', () => {
         const mod = {
             definitions: {

@@ -21,6 +21,11 @@ export function isSchemaObjectAllOfObject(
     return Array.isArray(arg.allOf);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isObject(arg: any): arg is object {
+    return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
+}
+
 const visitorSet = new Set([
     'SwaggerObject',
     'InfoObject',
@@ -52,14 +57,24 @@ export function isValidVisitorName(name: string): name is VisitorName {
     return visitorSet.has(name);
 }
 
-export const validCases = {
+type ValidCasesObj = {
+    camel: Set<'camel' | 'lower'>;
+    constant: Set<'constant'>;
+    kebab: Set<'kebab' | 'lower'>;
+    pascal: Set<'pascal'>;
+    snake: Set<'snake' | 'lower'>;
+};
+export const validCases: ValidCasesObj = {
     camel: new Set(['camel', 'lower']), // someName
-    snake: new Set(['snake', 'lower']), // some_name
-    pascal: new Set(['pascal']), // SomeName
     constant: new Set(['constant']), // SOME_NAME
+    kebab: new Set(['kebab', 'lower']), // some-name
+    pascal: new Set(['pascal']), // SomeName
+    snake: new Set(['snake', 'lower']), // some_name
 };
 
-export function isValidCaseName(name: string): name is keyof typeof validCases {
+export function isValidCaseName(
+    name: string | void,
+): name is keyof typeof validCases {
     return name in validCases;
 }
 

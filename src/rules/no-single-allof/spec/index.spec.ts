@@ -16,7 +16,7 @@ const swaggerSample: SwaggerObject = {
 describe(`rule "${rule.name}"`, () => {
     const config: Config = {
         rules: {
-            [rule.name]: [],
+            [rule.name]: true,
         },
     };
 
