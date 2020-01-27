@@ -28,6 +28,8 @@ import {
 
 export * from './swagger';
 
+export type CaseName = 'camel' | 'snake' | 'kebab' | 'constant' | 'pascal';
+
 export type CliOptions = {
     _: string[];
     version?: string | boolean;
@@ -105,8 +107,13 @@ type RuleVisitor = Partial<{
     ExampleObject: RuleVisitorFunction<ExampleObject>;
 }>;
 
-export type Rule = {
+type RulePrimitive = {
     name: string;
-    isValidSetting?: (setting: RuleSetting) => boolean | {msg: string};
     visitor: RuleVisitor;
 };
+type RuleWithSetting = RulePrimitive & {
+    isValidSetting: (setting: RuleSetting) => boolean | {msg: string};
+    defaultSetting: RuleSetting;
+};
+
+export type Rule = RulePrimitive | RuleWithSetting;

@@ -16,7 +16,8 @@ const rule: Rule = {
                 typeof settingCasingName === 'string' &&
                 isValidCaseName(settingCasingName)
             ) {
-                const validPropCases = validCases[settingCasingName];
+                const validPropCases: Set<string> =
+                    validCases[settingCasingName];
                 if (isRef(node)) return;
                 if ('properties' in node && node.properties) {
                     Object.keys(node.properties).forEach(propName => {
@@ -66,6 +67,7 @@ const rule: Rule = {
             return true;
         } else return false;
     },
+    defaultSetting: ['camel'],
 };
 
 export default rule;

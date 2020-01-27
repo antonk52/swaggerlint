@@ -1,5 +1,5 @@
 import Case from 'case';
-import {Rule, ParameterObject} from '../../types';
+import {Rule, ParameterObject, CaseName} from '../../types';
 import {validCases, isValidCaseName, isObject} from '../../utils';
 
 const name = 'parameter-casing';
@@ -52,10 +52,21 @@ const rule: Rule = {
                 if (IGNORE_PARAMETER_NAMES.has(node.name)) return;
 
                 const nodeCase = Case.of(node.name);
-                if (!cases[node.in].has(nodeCase)) {
+                const paramLocation = node.in;
+                if (!cases[paramLocation].has(nodeCase)) {
+                    const shouldBeCase: CaseName = cases[paramLocation]
+                        .values()
+                        .next().value;
+                    if (
+                        isValidCaseName(shouldBeCase) &&
+                        !(shouldBeCase in Case)
+                    ) {
+                        return;
+                    }
+
                     const correctVersion =
                         settingCasingName in validCases
-                            ? Case[settingCasingName](node.name)
+                            ? Case[shouldBeCase](node.name)
                             : '';
 
                     report(
@@ -105,6 +116,7 @@ const rule: Rule = {
             return true;
         } else return false;
     },
+    defaultSetting: ['camel', {header: 'kebab'}],
 };
 
 export default rule;

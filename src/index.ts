@@ -48,13 +48,18 @@ export function swaggerlint(swagger: any, config: Config): LintError[] {
         if (setting === false) {
             return;
         } else if (setting === true) {
-            const defaultSetting = defaultConfig.rules[ruleName];
-            if (typeof defaultSetting !== 'undefined') {
-                setting = defaultConfig.rules[ruleName];
+            const defaultConfigSetting = defaultConfig.rules[ruleName];
+            if (typeof defaultConfigSetting !== 'undefined') {
+                setting = defaultConfigSetting;
+            } else if ('defaultSetting' in rule) {
+                setting = rule.defaultSetting;
             }
         }
 
-        if (typeof rule.isValidSetting === 'function') {
+        if (
+            'isValidSetting' in rule &&
+            typeof rule.isValidSetting === 'function'
+        ) {
             if (!rule.isValidSetting(setting)) {
                 errors.push({
                     msg: 'Invalid rule setting',

@@ -57,7 +57,14 @@ export function isValidVisitorName(name: string): name is VisitorName {
     return visitorSet.has(name);
 }
 
-export const validCases = {
+type ValidCasesObj = {
+    camel: Set<'camel' | 'lower'>;
+    constant: Set<'constant'>;
+    kebab: Set<'kebab' | 'lower'>;
+    pascal: Set<'pascal'>;
+    snake: Set<'snake' | 'lower'>;
+};
+export const validCases: ValidCasesObj = {
     camel: new Set(['camel', 'lower']), // someName
     constant: new Set(['constant']), // SOME_NAME
     kebab: new Set(['kebab', 'lower']), // some-name
