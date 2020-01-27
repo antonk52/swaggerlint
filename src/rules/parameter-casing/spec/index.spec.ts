@@ -187,4 +187,48 @@ describe(`rule "${rule.name}"`, () => {
 
         expect(result).toEqual([]);
     });
+
+    it('allos to ignore parameter names', () => {
+        const mod = {
+            paths: {
+                '/url': {
+                    get: {
+                        responses: {
+                            default: {
+                                description: 'default response',
+                                schema: {
+                                    $ref: '#/definitions/lolkekDTO',
+                                },
+                            },
+                        },
+                    },
+                    parameters: [
+                        {
+                            name: 'pet-type',
+                            in: 'path',
+                            type: 'string',
+                        },
+                        {
+                            name: 'petStore',
+                            in: 'body',
+                            type: 'string',
+                        },
+                        {
+                            name: 'pet_color',
+                            in: 'query',
+                            type: 'string',
+                        },
+                    ],
+                },
+            },
+        };
+        const modConfig = _merge(mod, swaggerSample);
+        const result = swaggerlint(modConfig, {
+            rules: {
+                [rule.name]: ['camel', {ignore: ['pet-type', 'pet_color']}],
+            },
+        });
+
+        expect(result).toEqual([]);
+    });
 });
