@@ -100,6 +100,10 @@ You can set any rule value to `false` to disable it or to `true` to enable and s
 
 Additionally see the docs for additional settings for [`obj-prop-casing`](./src/rules/object-prop-casing/readme.md) and [`parameter-casing`](./src/rules/parameter-casing/readme.md).
 
+## Documentation
+
+- [How to write a rule](./docs/how-to-write-a-rule.md)
+
 ### Acknowledgments
 
 This tool has been inspired by already existing swagger validation checkers:
