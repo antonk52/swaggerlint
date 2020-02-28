@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'expressive-path-summary';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         OperationObject: ({node, report}) => {

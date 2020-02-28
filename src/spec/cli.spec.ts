@@ -4,7 +4,7 @@ jest.mock('fs', () => ({
     existsSync: jest.fn(),
 }));
 jest.mock('js-yaml');
-jest.mock('../index', () => ({
+jest.mock('../swaggerlint', () => ({
     swaggerlint: jest.fn(),
 }));
 jest.mock('../utils', () => ({

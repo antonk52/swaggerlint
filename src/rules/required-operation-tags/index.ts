@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'required-operation-tags';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         OperationObject: ({node, report, location}) => {

@@ -11,9 +11,9 @@ import requiredOperationTags from './required-operation-tags';
 import requiredParameterDescription from './required-parameter-description';
 import requiredTagDescription from './required-tag-description';
 
-import {Rule} from '../types';
+import {SwaggerlintRule} from '../types';
 
-const rules: Record<string, Rule> = {
+const rules: Record<string, SwaggerlintRule> = {
     [expressivePathSummary.name]: expressivePathSummary,
     [latinDefinitionsOnly.name]: latinDefinitionsOnly,
     [noEmptyObjectType.name]: noEmptyObjectType,

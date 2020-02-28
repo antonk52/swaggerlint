@@ -1,5 +1,5 @@
 import Case from 'case';
-import {Rule, ParameterObject, CaseName} from '../../types';
+import {SwaggerlintRule, ParameterObject, CaseName} from '../../types';
 import {validCases, isValidCaseName, isObject} from '../../utils';
 
 const name = 'parameter-casing';
@@ -19,7 +19,7 @@ const PARAMETER_LOCATIONS: ParameterObject['in'][] = [
     'body',
 ];
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         ParameterObject: ({node, report, setting}) => {

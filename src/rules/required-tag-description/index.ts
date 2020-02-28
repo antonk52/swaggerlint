@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'required-tag-description';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         TagObject: ({node, report}) => {

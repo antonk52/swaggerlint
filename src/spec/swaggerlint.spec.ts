@@ -1,5 +1,5 @@
-import {swaggerlint} from '../index';
-import {SwaggerObject, Config} from '../types';
+import {swaggerlint} from '../swaggerlint';
+import {SwaggerObject, SwaggerlintConfig} from '../types';
 
 jest.mock('../walker', () => jest.fn());
 jest.mock('../defaultConfig', () => ({
@@ -99,7 +99,7 @@ describe('swaggerlint', () => {
         const rules = require('../rules');
         rules['known-rule'].isValidSetting.mockReturnValueOnce(false);
 
-        const config: Config = {
+        const config: SwaggerlintConfig = {
             rules: {
                 'known-rule': ['invalid-setting'],
             },

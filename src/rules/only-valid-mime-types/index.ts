@@ -1,4 +1,9 @@
-import {Rule, Report, SwaggerObject, OperationObject} from '../../types';
+import {
+    SwaggerlintRule,
+    Report,
+    SwaggerObject,
+    OperationObject,
+} from '../../types';
 import mimeDB from 'mime-db';
 
 const name = 'only-valid-mime-types';
@@ -38,7 +43,7 @@ function onlyValidMimeTypeCheck({node, report, location}: Param): void {
     }
 }
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         SwaggerObject: arg => onlyValidMimeTypeCheck(arg),

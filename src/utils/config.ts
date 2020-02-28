@@ -1,10 +1,13 @@
 import path from 'path';
 import {cosmiconfigSync} from 'cosmiconfig';
-import {Config} from '../types';
+import {SwaggerlintConfig} from '../types';
 import defaultConfig from '../defaultConfig';
 const pkg = require('../../package.json');
 
-function mergeConfigs(defConf: Config, userConf: Config): Config {
+function mergeConfigs(
+    defConf: SwaggerlintConfig,
+    userConf: SwaggerlintConfig,
+): SwaggerlintConfig {
     return {
         extends: [...(defConf.extends ?? []), ...(userConf.extends ?? [])],
         rules: {
@@ -22,14 +25,16 @@ function omitExtends({
     /* eslint-disable @typescript-eslint/no-unused-vars */
     extends: ext,
     ...rest
-}: Config): Omit<Config, 'extends'> {
+}: SwaggerlintConfig): Omit<SwaggerlintConfig, 'extends'> {
     return rest;
 }
 
-type ConfigWithExtends = Config & {extends: string[]};
-type ConfigNoExtends = Omit<Config, 'extends'>;
+type ConfigWithExtends = SwaggerlintConfig & {extends: string[]};
+type ConfigNoExtends = Omit<SwaggerlintConfig, 'extends'>;
 
-export function resolveConfigExtends(baseConfig: ConfigWithExtends): Config {
+export function resolveConfigExtends(
+    baseConfig: ConfigWithExtends,
+): SwaggerlintConfig {
     const processedConfigs = new Set<string>([]);
     const toBeMergedConfigs: ConfigNoExtends[] = [omitExtends(baseConfig)];
 
@@ -63,7 +68,7 @@ export function resolveConfigExtends(baseConfig: ConfigWithExtends): Config {
     /**
      * default config is always the base of any config
      */
-    const result = toBeMergedConfigs.reduce<Config>(
+    const result = toBeMergedConfigs.reduce<SwaggerlintConfig>(
         (acc, conf) => mergeConfigs(acc, conf),
         defaultConfig,
     );
@@ -72,7 +77,7 @@ export function resolveConfigExtends(baseConfig: ConfigWithExtends): Config {
 }
 
 type GetConfigResult = {
-    config: Config;
+    config: SwaggerlintConfig;
     error: null | string;
 };
 

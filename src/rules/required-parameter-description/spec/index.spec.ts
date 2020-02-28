@@ -1,5 +1,5 @@
 import rule from '../';
-import {SwaggerObject, Config} from '../../../types';
+import {SwaggerObject, SwaggerlintConfig} from '../../../types';
 import {swaggerlint} from '../../../';
 import _merge from 'lodash.merge';
 
@@ -14,7 +14,7 @@ const swaggerSample: SwaggerObject = {
 };
 
 describe(`rule "${rule.name}"`, () => {
-    const config: Config = {
+    const config: SwaggerlintConfig = {
         rules: {
             [rule.name]: true,
         },

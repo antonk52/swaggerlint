@@ -1,9 +1,9 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 import {isRef} from '../../utils';
 
 const name = 'no-empty-object-type';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         SchemaObject: ({node, report}) => {

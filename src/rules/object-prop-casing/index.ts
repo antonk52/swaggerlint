@@ -1,10 +1,10 @@
 import Case from 'case';
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 import {isRef, validCases, isValidCaseName, isObject} from '../../utils';
 
 const name = 'object-prop-casing';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         SchemaObject: ({node, report, setting, location}) => {

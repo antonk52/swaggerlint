@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'no-single-allof';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         SchemaObject: ({node, report}) => {
