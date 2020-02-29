@@ -1,4 +1,4 @@
-import {swaggerlint} from './index';
+import {swaggerlint} from './swaggerlint';
 import {LintError, CliOptions, CliResult, SwaggerObject} from './types';
 import {getConfig} from './utils/config';
 import {getSwaggerByPath, getSwaggerByUrl} from './utils/swaggerfile';

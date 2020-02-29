@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'latin-definitions-only';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         DefinitionsObject: ({node, report}) => {

@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'no-trailing-slash';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         PathsObject: ({node, report}) => {

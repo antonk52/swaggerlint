@@ -1,6 +1,6 @@
-import {Config} from './types';
+import {SwaggerlintConfig} from './types';
 
-const config: Config = {
+const config: SwaggerlintConfig = {
     rules: {
         'expressive-path-summary': true,
         'latin-definitions-only': true,

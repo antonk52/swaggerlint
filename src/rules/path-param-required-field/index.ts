@@ -1,8 +1,8 @@
-import {Rule} from '../../types';
+import {SwaggerlintRule} from '../../types';
 
 const name = 'path-param-required-field';
 
-const rule: Rule = {
+const rule: SwaggerlintRule = {
     name,
     visitor: {
         ParameterObject: ({node, report}) => {

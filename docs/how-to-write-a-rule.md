@@ -128,9 +128,9 @@ module.exports = {
 If you use `typescript` you can leverage the types.
 
 ```ts
-import {Rule} from 'swaggerlint'
+import {SwaggerlintRule} from 'swaggerlint'
 
-const myCustomRule: Rule = {
+const myCustomRule: SwaggerlintRule = {
     name: 'my-custom-rule',
     visitor: {
         /**
