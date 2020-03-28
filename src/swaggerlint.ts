@@ -1,13 +1,12 @@
 import {LintError, SwaggerlintConfig, VisitorName} from './types';
-import {isValidVisitorName, isSwaggerObject} from './utils';
+import {isValidVisitorName, isSwaggerObject, isObject, hasKey} from './utils';
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
 import walker from './walker';
 
 export function swaggerlint(
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    swagger: any,
+    swagger: unknown,
     config: SwaggerlintConfig,
 ): LintError[] {
     const errors: LintError[] = [];
@@ -15,7 +14,11 @@ export function swaggerlint(
     if (!isSwaggerObject(swagger)) {
         let msg = `Swaggerlint only supports Swagger/OpenAPI v2.0;`;
 
-        if ('openapi' in swagger) {
+        if (
+            isObject(swagger) &&
+            hasKey('openapi', swagger) &&
+            typeof swagger.openapi === 'string'
+        ) {
             msg += ` You have supplied OpenAPI ${swagger.openapi}`;
         }
 

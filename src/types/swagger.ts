@@ -8,7 +8,6 @@
  * https://swagger.io/specification/v2/
  *
  */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 
 /**
  * https://swagger.io/specification/v2/#contactObject
@@ -25,7 +24,7 @@ export type ContactObject = {
 export type LicenseObject = {
     name: string;
     url?: string;
-    [s: string]: any;
+    [s: string]: unknown;
 };
 
 /**
@@ -192,7 +191,7 @@ export type ParameterObject =
           description: string;
           required?: boolean;
           type: 'file';
-          default?: any;
+          default?: unknown;
           allowEmptyValue?: boolean;
       }
     /**
@@ -209,7 +208,7 @@ export type ParameterObject =
           maxItems?: number;
           minItems?: number;
           uniqueItems?: boolean;
-          default?: any[];
+          default?: unknown[];
           allowEmptyValue?: boolean;
       };
 
@@ -286,19 +285,19 @@ type StringFormat =
     | 'password'
     | 'email'
     | 'uuid';
-type SchemaObjectCreator<T, F, D> = {
-    format?: F;
-    type?: T;
+type SchemaObjectCreator<Type, Format, Default> = {
+    format?: Format;
+    type?: Type;
     title?: string;
     description?: string;
-    default?: D;
-    enum?: D[];
+    default?: Default;
+    enum?: Default[];
     // fixed fields
     discriminator?: string;
     readOnly?: boolean;
     xml?: XMLObject;
     externalDocs?: ExternalDocumentationObject;
-    example?: any;
+    example?: unknown;
 };
 
 type NumberAddon = Partial<{
@@ -306,7 +305,7 @@ type NumberAddon = Partial<{
     exclusiveMaximum: boolean;
     minimum: number;
     exclusiveMinimum: boolean;
-    multipleOf?: number;
+    multipleOf: number;
 }>;
 type StringAddon = Partial<{
     maxLength: number;
@@ -325,18 +324,22 @@ type ObjectAddon = Partial<{
     additionalProperties?: SchemaObject | ReferenceObject;
     properties: {[name: string]: SchemaObject};
 }>;
-type SchemaObjectArray = SchemaObjectCreator<'array', any, SchemaObject[]> & {
+type SchemaObjectArray = SchemaObjectCreator<
+    'array',
+    unknown,
+    SchemaObject[]
+> & {
     items: SchemaObject;
 } & ArrayAddon;
 type SchemaObjectObject = SchemaObjectCreator<
     'object',
-    any,
-    Record<string, any>
+    unknown,
+    Record<string, unknown>
 > &
     ObjectAddon;
 export type SchemaObjectAllOfObject = SchemaObjectCreator<
     'object',
-    any,
+    unknown,
     SchemaObject[]
 > & {
     allOf: (ReferenceObject | SchemaObjectObject)[];
@@ -347,7 +350,7 @@ export type SchemaObject =
     | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
-    | SchemaObjectCreator<'boolean', any, boolean>
+    | SchemaObjectCreator<'boolean', unknown, boolean>
     | SchemaObjectObject
     | SchemaObjectArray
     | SchemaObjectAllOfObject;
@@ -373,7 +376,7 @@ export type ResponseObject = {
  * https://swagger.io/specification/v2/#example-object
  */
 export type ExampleObject = {
-    [mineType: string]: any;
+    [mineType: string]: unknown;
 };
 
 /**
@@ -413,7 +416,7 @@ export type HeaderObject =
           maxItems?: number;
           minItems?: number;
           uniqueItems?: boolean;
-      } & CommonHeaderObject<any>);
+      } & CommonHeaderObject<unknown>);
 
 /**
  * https://swagger.io/specification/v2/#security-scheme-object
