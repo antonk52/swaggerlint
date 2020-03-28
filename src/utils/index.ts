@@ -7,7 +7,9 @@ import {
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export const log = isDev ? (x: string) => console.log(`--> ${x}`) : () => null;
+export const log = isDev
+    ? (x: string): void => console.log(`--> ${x}`)
+    : (): null => null;
 
 export function isRef(arg: Record<string, unknown>): arg is ReferenceObject {
     return typeof arg.$ref === 'string';

@@ -5,7 +5,7 @@ const name = 'required-parameter-description';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        ParameterObject: ({node, report}) => {
+        ParameterObject: ({node, report}): void => {
             if (!('description' in node) || !node.description) {
                 report(`"${node.name}" parameter is missing description.`);
             }

@@ -1,4 +1,6 @@
 import {getConfig, resolveConfigExtends} from '../config';
+import {SwaggerlintConfig} from '../../types';
+import {cosmiconfigSync} from 'cosmiconfig';
 
 jest.mock('cosmiconfig', () => ({
     cosmiconfigSync: jest.fn(),
@@ -66,11 +68,11 @@ describe('utils/config', () => {
     });
     describe('getConfig function', () => {
         it('returns config by path', () => {
-            const {cosmiconfigSync} = require('cosmiconfig');
             const config = {rules: {userRule: true}};
 
+            // @ts-ignore
             cosmiconfigSync.mockImplementationOnce(() => ({
-                load: () => ({config}),
+                load: (): {config: SwaggerlintConfig} => ({config}),
             }));
 
             const result = getConfig('./some-path');
@@ -90,10 +92,9 @@ describe('utils/config', () => {
         });
 
         it('returns an error if provided path does not exist', () => {
-            const {cosmiconfigSync} = require('cosmiconfig');
-
+            // @ts-ignore
             cosmiconfigSync.mockImplementationOnce(() => ({
-                load: () => ({config: null}),
+                load: (): {config: null} => ({config: null}),
             }));
 
             const result = getConfig('./some-path');
@@ -102,10 +103,12 @@ describe('utils/config', () => {
         });
 
         it('returns config by searching for it', () => {
-            const {cosmiconfigSync} = require('cosmiconfig');
             const config = {rules: {userRule: true}};
-            const search = jest.fn(() => ({config}));
+            const search = jest.fn((): {config: SwaggerlintConfig} => ({
+                config,
+            }));
 
+            // @ts-ignore
             cosmiconfigSync.mockImplementationOnce(() => ({search}));
 
             const result = getConfig();
@@ -127,10 +130,10 @@ describe('utils/config', () => {
         });
 
         it('returns defaultConfig if could not find a config', () => {
-            const {cosmiconfigSync} = require('cosmiconfig');
             const defaultConfig = require('../../defaultConfig');
             const search = jest.fn(() => ({config: null}));
 
+            // @ts-ignore
             cosmiconfigSync.mockImplementationOnce(() => ({search}));
 
             const result = getConfig();

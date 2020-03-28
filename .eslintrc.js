@@ -13,7 +13,14 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     rules: {
         indent: ['error', 4, { "SwitchCase": 1 }],
-        '@typescript-eslint/explicit-function-return-type': 0,
         '@typescript-eslint/no-var-requires': 0,
     },
+    overrides: [
+        {
+            files: ['src/**/*.spec.*'],
+            rules: {
+                '@typescript-eslint/ban-ts-ignore': 0,
+            },
+        },
+    ],
 };

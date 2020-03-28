@@ -34,7 +34,7 @@ function shallowStringify(swagger: SwaggerObject, location: string[]): string {
 function toOneLinerFormat(
     {msg, name, location}: LintError,
     swagger: SwaggerObject | void,
-) {
+): string {
     const hasLocation = location.length;
     const locationInfo = hasLocation ? ` in ${location.join('.')}` : '';
     const ruleName = dim(name);

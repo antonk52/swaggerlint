@@ -6,7 +6,7 @@ const name = 'no-empty-object-type';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        SchemaObject: ({node, report}) => {
+        SchemaObject: ({node, report}): void => {
             if (isRef(node)) return;
             if (node.type !== 'object') return;
 

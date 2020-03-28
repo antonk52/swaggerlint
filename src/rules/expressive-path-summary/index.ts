@@ -5,7 +5,7 @@ const name = 'expressive-path-summary';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        OperationObject: ({node, report}) => {
+        OperationObject: ({node, report}): void => {
             const {summary} = node;
             if (summary) {
                 if (summary.split(' ').length < 2) {

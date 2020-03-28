@@ -24,7 +24,7 @@ const PARAMETER_LOCATIONS: ParameterObject['in'][] = [
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        ParameterObject: ({node, report, setting}) => {
+        ParameterObject: ({node, report, setting}): void => {
             if (typeof setting === 'boolean') return;
 
             const [settingCasingName, opts = {}] = setting;
