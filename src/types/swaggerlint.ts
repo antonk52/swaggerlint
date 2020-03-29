@@ -44,8 +44,7 @@ export type CliResult = {
     swagger: SwaggerObject | void;
 };
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-type AbstractObject = Record<string, any>;
+type AbstractObject = Record<string, unknown>;
 
 type SwaggerlintRuleSetting = [string, AbstractObject] | [string] | boolean;
 

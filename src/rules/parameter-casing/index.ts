@@ -1,14 +1,16 @@
 import Case from 'case';
 import {SwaggerlintRule, ParameterObject, CaseName} from '../../types';
-import {validCases, isValidCaseName, isObject} from '../../utils';
+import {validCases, isValidCaseName, isObject, hasKey} from '../../utils';
 
 const name = 'parameter-casing';
 
 function getCasesSetFromOptions(
-    option: string | void,
+    option: unknown,
     defaultCase: Set<string>,
 ): Set<string> {
-    return isValidCaseName(option) ? validCases[option] : null ?? defaultCase;
+    return typeof option === 'string' && isValidCaseName(option)
+        ? validCases[option]
+        : defaultCase;
 }
 
 const PARAMETER_LOCATIONS: ParameterObject['in'][] = [
@@ -22,7 +24,7 @@ const PARAMETER_LOCATIONS: ParameterObject['in'][] = [
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        ParameterObject: ({node, report, setting}) => {
+        ParameterObject: ({node, report, setting}): void => {
             if (typeof setting === 'boolean') return;
 
             const [settingCasingName, opts = {}] = setting;
@@ -46,7 +48,7 @@ const rule: SwaggerlintRule = {
                 };
 
                 const IGNORE_PARAMETER_NAMES = new Set<string>(
-                    opts.ignore ?? [],
+                    Array.isArray(opts.ignore) ? opts.ignore : [],
                 );
 
                 if (IGNORE_PARAMETER_NAMES.has(node.name)) return;
@@ -91,14 +93,14 @@ const rule: SwaggerlintRule = {
         if (option.length === 1) return true;
 
         if (isObject(second)) {
-            if ('ignore' in second) {
-                const ignore = second.ignore;
+            if (hasKey('ignore', second)) {
+                const {ignore} = second;
                 if (!Array.isArray(ignore))
                     return {
                         msg: 'Setting contains "ignore" which is not an array.',
                     };
 
-                const isEachIgnoreItemString = second.ignore.every(
+                const isEachIgnoreItemString = ignore.every(
                     (x: unknown) => typeof x === 'string',
                 );
                 if (!isEachIgnoreItemString) {

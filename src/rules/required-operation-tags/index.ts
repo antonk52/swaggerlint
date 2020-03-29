@@ -5,7 +5,7 @@ const name = 'required-operation-tags';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        OperationObject: ({node, report, location}) => {
+        OperationObject: ({node, report, location}): void => {
             if (!Array.isArray(node.tags) || node.tags.length < 1) {
                 const method = location[location.length - 1];
                 const url = location[location.length - 2];

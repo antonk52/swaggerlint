@@ -5,7 +5,7 @@ const name = 'latin-definitions-only';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        DefinitionsObject: ({node, report}) => {
+        DefinitionsObject: ({node, report}): void => {
             Object.keys(node).forEach(name => {
                 const rest = name
                     // def name may contain latin chars

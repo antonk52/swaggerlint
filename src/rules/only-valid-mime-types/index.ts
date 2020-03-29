@@ -46,8 +46,8 @@ function onlyValidMimeTypeCheck({node, report, location}: Param): void {
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        SwaggerObject: arg => onlyValidMimeTypeCheck(arg),
-        OperationObject: arg => onlyValidMimeTypeCheck(arg),
+        SwaggerObject: onlyValidMimeTypeCheck,
+        OperationObject: onlyValidMimeTypeCheck,
     },
 };
 

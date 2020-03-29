@@ -7,22 +7,21 @@ import {
 
 const isDev = process.env.NODE_ENV === 'development';
 
-export const log = isDev ? (x: string) => console.log(`--> ${x}`) : () => null;
+export const log = isDev
+    ? (x: string): void => console.log(`--> ${x}`)
+    : (): null => null;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isRef(arg: Record<string, any>): arg is ReferenceObject {
+export function isRef(arg: Record<string, unknown>): arg is ReferenceObject {
     return typeof arg.$ref === 'string';
 }
 
 export function isSchemaObjectAllOfObject(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    arg: Record<string, any>,
+    arg: Record<string, unknown>,
 ): arg is SchemaObjectAllOfObject {
     return Array.isArray(arg.allOf);
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function isObject(arg: any): arg is object {
+export function isObject(arg: unknown): arg is object {
     return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
@@ -78,12 +77,13 @@ export function isValidCaseName(
     return name in validCases;
 }
 
-/* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-export function isSwaggerObject(arg: any): arg is SwaggerObject {
-    return (
-        typeof arg === 'object' &&
-        !Array.isArray(arg) &&
-        arg !== null &&
-        arg.swagger === '2.0'
-    );
+export function hasKey<K extends string>(
+    key: K,
+    obj: object,
+): obj is {[key in K]: unknown} {
+    return key in obj;
+}
+
+export function isSwaggerObject(arg: unknown): arg is SwaggerObject {
+    return isObject(arg) && hasKey('swagger', arg) && arg.swagger === '2.0';
 }

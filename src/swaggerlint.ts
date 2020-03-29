@@ -1,13 +1,12 @@
 import {LintError, SwaggerlintConfig, VisitorName} from './types';
-import {isValidVisitorName, isSwaggerObject} from './utils';
+import {isValidVisitorName, isSwaggerObject, isObject, hasKey} from './utils';
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
 import walker from './walker';
 
 export function swaggerlint(
-    /* eslint-disable-next-line @typescript-eslint/no-explicit-any */
-    swagger: any,
+    swagger: unknown,
     config: SwaggerlintConfig,
 ): LintError[] {
     const errors: LintError[] = [];
@@ -15,7 +14,11 @@ export function swaggerlint(
     if (!isSwaggerObject(swagger)) {
         let msg = `Swaggerlint only supports Swagger/OpenAPI v2.0;`;
 
-        if ('openapi' in swagger) {
+        if (
+            isObject(swagger) &&
+            hasKey('openapi', swagger) &&
+            typeof swagger.openapi === 'string'
+        ) {
             msg += ` You have supplied OpenAPI ${swagger.openapi}`;
         }
 
@@ -88,8 +91,11 @@ export function swaggerlint(
                 case 'SwaggerObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -99,8 +105,11 @@ export function swaggerlint(
                 case 'InfoObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -110,8 +119,11 @@ export function swaggerlint(
                 case 'PathsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -121,8 +133,11 @@ export function swaggerlint(
                 case 'DefinitionsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -132,8 +147,11 @@ export function swaggerlint(
                 case 'ParametersDefinitionsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -143,8 +161,11 @@ export function swaggerlint(
                 case 'ResponsesDefinitionsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -155,8 +176,11 @@ export function swaggerlint(
                 case 'SecurityDefinitionsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -166,8 +190,11 @@ export function swaggerlint(
                 case 'SecuritySchemeObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -177,8 +204,11 @@ export function swaggerlint(
                 case 'ScopesObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -188,8 +218,11 @@ export function swaggerlint(
                 case 'SecurityRequirementObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -199,8 +232,11 @@ export function swaggerlint(
                 case 'TagObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -210,8 +246,11 @@ export function swaggerlint(
                 case 'ExternalDocumentationObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -221,8 +260,11 @@ export function swaggerlint(
                 case 'ContactObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -232,8 +274,11 @@ export function swaggerlint(
                 case 'LicenseObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -243,8 +288,11 @@ export function swaggerlint(
                 case 'PathItemObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -254,8 +302,11 @@ export function swaggerlint(
                 case 'OperationObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -265,8 +316,11 @@ export function swaggerlint(
                 case 'ParameterObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -276,8 +330,11 @@ export function swaggerlint(
                 case 'ResponsesObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -287,8 +344,11 @@ export function swaggerlint(
                 case 'ResponseObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -298,8 +358,11 @@ export function swaggerlint(
                 case 'SchemaObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -309,8 +372,11 @@ export function swaggerlint(
                 case 'XMLObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -320,8 +386,11 @@ export function swaggerlint(
                 case 'HeadersObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -331,8 +400,11 @@ export function swaggerlint(
                 case 'HeaderObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -342,8 +414,11 @@ export function swaggerlint(
                 case 'ItemsObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,
@@ -353,8 +428,11 @@ export function swaggerlint(
                 case 'ExampleObject':
                     return visitors[visitorName].forEach(({node, location}) => {
                         const check = rule.visitor[visitorName];
-                        const report = (msg: string, rLocation?: string[]) =>
-                            errors.push({
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void void errors.push({
                                 msg,
                                 name: ruleName,
                                 location: rLocation ?? location,

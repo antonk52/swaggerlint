@@ -7,7 +7,7 @@ import {CliOptions} from './types';
 import {green} from 'kleur';
 const pkg = require('../package.json');
 
-function program() {
+function program(): void {
     const {version, v, help, h, ...options} = minimist<CliOptions>(
         process.argv.slice(2),
     );

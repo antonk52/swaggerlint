@@ -7,11 +7,13 @@ const name = 'object-prop-casing';
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        SchemaObject: ({node, report, setting, location}) => {
+        SchemaObject: ({node, report, setting, location}): void => {
             if (typeof setting === 'boolean') return;
 
             const [settingCasingName, opts = {}] = setting;
-            const IGNORE_PROPERTIES = new Set<string>(opts.ignore ?? []);
+            const IGNORE_PROPERTIES = new Set<string>(
+                Array.isArray(opts.ignore) ? opts.ignore : [],
+            );
             if (
                 typeof settingCasingName === 'string' &&
                 isValidCaseName(settingCasingName)
@@ -53,11 +55,10 @@ const rule: SwaggerlintRule = {
         if (option.length === 1) return true;
 
         if (isObject(second)) {
-            const isIgnoreAnArray =
-                'ignore' in second && Array.isArray(second.ignore);
-            if (!isIgnoreAnArray) return false;
+            const {ignore} = second;
+            if (!Array.isArray(ignore)) return false;
 
-            const isEachIgnoreItemString = second.ignore.every(
+            const isEachIgnoreItemString = ignore.every(
                 (x: unknown) => typeof x === 'string',
             );
             if (!isEachIgnoreItemString) {
