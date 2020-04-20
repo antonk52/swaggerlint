@@ -40,9 +40,9 @@ Options:
         process.exit(0);
     }
 
-    cli(options).then(({code, errors, swagger}) => {
+    cli(options).then(({code, errors, schema}) => {
         if (code === 1) {
-            logErrors(errors, swagger);
+            logErrors(errors, schema);
         } else {
             console.log(green('No errors found'));
         }

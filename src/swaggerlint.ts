@@ -1,5 +1,10 @@
-import {LintError, SwaggerlintConfig, VisitorName} from './types';
-import {isValidVisitorName, isSwaggerObject, isObject, hasKey} from './utils';
+import {LintError, SwaggerlintConfig, SwaggerVisitorName} from './types';
+import {
+    isValidSwaggerVisitorName,
+    isSwaggerObject,
+    isObject,
+    hasKey,
+} from './utils';
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
@@ -76,9 +81,11 @@ export function swaggerlint(
             }
         }
 
-        const ruleVisitorKeys = Object.keys(rule.visitor) as VisitorName[];
+        const ruleVisitorKeys = Object.keys(
+            rule.visitor,
+        ) as SwaggerVisitorName[];
         ruleVisitorKeys.forEach(visitorName => {
-            if (!isValidVisitorName(visitorName)) return;
+            if (!isValidSwaggerVisitorName(visitorName)) return;
 
             /**
              * This looks horrific
