@@ -70,6 +70,9 @@ type _SchemaStringObject = _MakeSchemaObject<{
     minLength?: number;
     pattern?: string;
     enum?: string[];
+    allOf?: _SchemaStringObject[];
+    oneOf?: _SchemaStringObject[];
+    anyOf?: _SchemaStringObject[];
 }>;
 
 type _CommonNumericSchemObjectFields = {
@@ -84,6 +87,9 @@ type _SchemaIntegerObject = _MakeSchemaObject<
     {
         type: 'integer';
         format?: 'int32' | 'int64';
+        allOf?: _SchemaIntegerObject[];
+        oneOf?: _SchemaIntegerObject[];
+        anyOf?: _SchemaIntegerObject[];
     } & _CommonNumericSchemObjectFields
 >;
 
@@ -91,12 +97,17 @@ type _SchemaNumberObject = _MakeSchemaObject<
     {
         type: 'number';
         format?: 'float' | 'double';
+        allOf?: _SchemaNumberObject[];
+        oneOf?: _SchemaNumberObject[];
+        anyOf?: _SchemaNumberObject[];
     } & _CommonNumericSchemObjectFields
 >;
 
 type _SchemaBooleanObject = _MakeSchemaObject<{
-    type: 'number';
-    format?: 'float' | 'double';
+    type: 'boolean';
+    allOf?: _SchemaBooleanObject[];
+    oneOf?: _SchemaBooleanObject[];
+    anyOf?: _SchemaBooleanObject[];
 }>;
 
 type _SchemaArrayObject = _MakeSchemaObject<{
@@ -105,19 +116,20 @@ type _SchemaArrayObject = _MakeSchemaObject<{
     minItems?: number;
     uniqueItems?: number;
     items: SchemaObject;
+    allOf?: _SchemaArrayObject[];
+    oneOf?: _SchemaArrayObject[];
+    anyOf?: _SchemaArrayObject[];
 }>;
 
-type _SchemaObjectObject = _MakeSchemaObject<
-    | {type: 'object'; allOf: SchemaObject[]}
-    | {type: 'object'; oneOf: SchemaObject[]}
-    | {type: 'object'; anyOf: SchemaObject[]}
-    | {
-          type: 'object';
-          properties: SchemaObject[];
-          required?: string[];
-          additionalProperties?: SchemaObject;
-      }
->;
+type _SchemaObjectObject = _MakeSchemaObject<{
+    type: 'object';
+    properties: SchemaObject[];
+    required?: string[];
+    additionalProperties?: SchemaObject;
+    allOf?: _SchemaObjectObject[];
+    oneOf?: _SchemaObjectObject[];
+    anyOf?: _SchemaObjectObject[];
+}>;
 
 /**
  * https://swagger.io/specification/#schemaObject
