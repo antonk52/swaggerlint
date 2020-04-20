@@ -10,6 +10,127 @@
  */
 
 /**
+ * https://swagger.io/specification/#discriminatorObject
+ */
+export type DiscriminatorObject = {
+    /**
+     * The name of the property in the payload that will hold the discriminator value.
+     */
+    propertyName: string;
+    /**
+     * An object to hold mappings between payload values and schema names or references.
+     */
+    mapping?: Record<string, string>;
+};
+
+/**
+ * https://swagger.io/specification/#xmlObject
+ */
+export type XMLObject = {
+    name?: string;
+    namespace?: string;
+    prefix?: string;
+    attribute?: boolean;
+    wrapped?: boolean;
+};
+
+type _CommonSchemaObjectFields = {
+    /**
+     * Default value is `false`.
+     */
+    nullable?: boolean;
+    discriminator?: DiscriminatorObject;
+    /**
+     * Default value is `false`.
+     */
+    readOnly?: boolean;
+    /**
+     * Default value is `false`.
+     */
+    writeOnly?: boolean;
+    xml: XMLObject;
+    externalDocs?: ExternalDocumentationObject;
+    example?: unknown;
+    /**
+     * Default value is `false`.
+     */
+    deprecated?: boolean;
+    required?: boolean;
+    default?: unknown;
+};
+
+type _MakeSchemaObject<O extends Record<string, unknown>> =
+    | ReferenceObject
+    | (_CommonSchemaObjectFields & O);
+
+type _SchemaStringObject = _MakeSchemaObject<{
+    type: 'string';
+    format?: 'byte' | 'binary' | 'date' | 'date-time' | 'password' | 'email';
+    maxLength?: number;
+    minLength?: number;
+    pattern?: string;
+    enum?: string[];
+}>;
+
+type _CommonNumericSchemObjectFields = {
+    multipleOf?: number;
+    maximum?: number;
+    exclusiveMaximum?: number;
+    minimum?: number;
+    exclusiveMinimum?: number;
+};
+
+type _SchemaIntegerObject = _MakeSchemaObject<
+    {
+        type: 'integer';
+        format?: 'int32' | 'int64';
+    } & _CommonNumericSchemObjectFields
+>;
+
+type _SchemaNumberObject = _MakeSchemaObject<
+    {
+        type: 'number';
+        format?: 'float' | 'double';
+    } & _CommonNumericSchemObjectFields
+>;
+
+type _SchemaBooleanObject = _MakeSchemaObject<{
+    type: 'number';
+    format?: 'float' | 'double';
+}>;
+
+type _SchemaArrayObject = _MakeSchemaObject<{
+    type: 'array';
+    maxItems?: number;
+    minItems?: number;
+    uniqueItems?: number;
+    items: SchemaObject;
+}>;
+
+type _SchemaObjectObject = _MakeSchemaObject<
+    | {type: 'object'; allOf: SchemaObject[]}
+    | {type: 'object'; oneOf: SchemaObject[]}
+    | {type: 'object'; anyOf: SchemaObject[]}
+    | {
+          type: 'object';
+          properties: SchemaObject[];
+          required?: string[];
+          additionalProperties?: SchemaObject;
+      }
+>;
+
+/**
+ * https://swagger.io/specification/#schemaObject
+ */
+export type SchemaObject =
+    | _SchemaStringObject
+    | _SchemaIntegerObject
+    | _SchemaNumberObject
+    | _SchemaBooleanObject
+    | _SchemaObjectObject
+    | _SchemaArrayObject;
+
+/**
  * https://swagger.io/specification/#specificationExtensions
  *
  * The extensions properties are implemented as patterned fields that are always prefixed by `"x-"`.
@@ -345,9 +466,69 @@ export type ResponseObject = {
 };
 
 /**
- * TODO: implement this
+ * https://swagger.io/specification/#responsesObject
  */
-export type PathsObject = {} & SpecificationExtensions;
+export type ResponsesObject = {
+    /**
+     * The documentation of responses other than the ones declared for specific HTTP response codes. Use this field to cover undeclared responses. A `Reference Object` can link to a response that the `OpenAPI Object's components/responses` section defines.
+     */
+    default?: ResponseObject | ReferenceObject;
+} & {
+    /**
+     * Any `HTTP status code` can be used as the property name, but only one property per code, to describe the expected response for that HTTP status code. A Reference Object can link to a response that is defined in the `OpenAPI Object's components/responses` section. This field MUST be enclosed in quotation marks (for example, "200") for compatibility between JSON and YAML. To define a range of response codes, this field MAY contain the uppercase wildcard character X. For example, 2XX represents all response codes between `[200-299]`. Only the following range definitions are allowed: `1XX`, `2XX`, `3XX`, `4XX`, and `5XX`. If a response is defined using an explicit code, the explicit code definition takes precedence over the range definition for that code.
+     */
+    [httpStatusCode: string]: ResponseObject | ReferenceObject;
+};
+
+/**
+ * https://swagger.io/specification/#operationObject
+ */
+export type OperationObject = {
+    tags?: string[];
+    summary?: string;
+    description?: string;
+    externalDocs?: ExternalDocumentationObject;
+    operaionId?: string;
+    parameters: (ParameterObject | ReferenceObject)[];
+    requestBody?: RequestBodyObject | ReferenceObject;
+    /**
+     * The list of possible responses as they are returned from executing this operation.
+     */
+    responses: ResponsesObject;
+    callbacks?: Record<string, CallbackObject | ReferenceObject>;
+    /**
+     * Declares this operation to be deprecated. Consumers SHOULD refrain from usage of the declared operation. Default value is `false`.
+     */
+    deprecated?: boolean;
+    security?: SecurityRequirementObject[];
+    servers: ServerObject[];
+};
+
+/**
+ * https://swagger.io/specification/#pathItemObject
+ */
+export type PathItemObject =
+    | ReferenceObject
+    | {
+          summary?: string;
+          description?: string;
+          get?: OperationObject;
+          put?: OperationObject;
+          post?: OperationObject;
+          delete?: OperationObject;
+          options?: OperationObject;
+          head?: OperationObject;
+          patch?: OperationObject;
+          trace?: OperationObject;
+          servers?: ServerObject[];
+          parameters?: (ParameterObject | ReferenceObject)[];
+      };
+
+/**
+ * https://swagger.io/specification/#pathsObject
+ */
+export type PathsObject = Record<string, PathItemObject> &
+    SpecificationExtensions;
 
 /**
  * https://swagger.io/specification/#componentsObject
