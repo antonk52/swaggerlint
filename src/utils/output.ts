@@ -5,11 +5,11 @@ import {bold, red, dim, grey} from 'kleur';
 const PAD = 6;
 
 function shallowStringify(
-    swagger: Swagger.SwaggerObject | OpenAPI.OpenAPIObject,
+    schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject,
     location: string[],
 ): string {
     let topLevelObject = true;
-    const objToStringify = _get(swagger, location);
+    const objToStringify = _get(schema, location);
     const stringifiedObj = JSON.stringify(
         objToStringify,
         (_, value) => {

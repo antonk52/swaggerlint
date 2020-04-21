@@ -22,6 +22,10 @@ export function isObject(arg: unknown): arg is object {
     return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
+/**
+ * TODO: extract swagger v2 specific utils into separate file
+ */
+
 const swaggerVisitorSet = new Set([
     'SwaggerObject',
     'InfoObject',
