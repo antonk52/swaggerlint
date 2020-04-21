@@ -1,8 +1,6 @@
 import * as Swagger from './swagger';
 import * as OpenAPI from './openapi';
 
-export * from './swagger';
-
 export type CaseName = 'camel' | 'snake' | 'kebab' | 'constant' | 'pascal';
 
 export type CliOptions = {
@@ -138,6 +136,10 @@ type SwaggerlintRulePrimitive = {
     visitor: SwaggerRuleVisitor;
 };
 type SwaggerlintRuleWithSetting = SwaggerlintRulePrimitive & {
+    /**
+     * Verification of valid setting for the rule,
+     * no need to verify boolean settings.
+     */
     isValidSetting: (
         setting: SwaggerlintRuleSetting,
     ) => boolean | {msg: string};

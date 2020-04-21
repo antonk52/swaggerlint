@@ -1,4 +1,4 @@
-import {SchemaObjectAllOfObject, SwaggerVisitorName, Swagger} from '../types';
+import {SwaggerVisitorName, Swagger} from '../types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -14,7 +14,7 @@ export function isRef(
 
 export function isSchemaObjectAllOfObject(
     arg: Record<string, unknown>,
-): arg is SchemaObjectAllOfObject {
+): arg is Swagger.SchemaObjectAllOfObject {
     return Array.isArray(arg.allOf);
 }
 
