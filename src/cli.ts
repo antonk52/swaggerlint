@@ -1,5 +1,5 @@
 import {swaggerlint} from './swaggerlint';
-import {LintError, CliOptions, CliResult, SwaggerObject} from './types';
+import {LintError, CliOptions, CliResult, Swagger, OpenAPI} from './types';
 import {getConfig} from './utils/config';
 import {getSwaggerByPath, getSwaggerByUrl} from './utils/swaggerfile';
 import {log} from './utils';
@@ -10,13 +10,13 @@ function preLintError(msg: string): CliResult {
     return {
         code: 1,
         errors: [{name, msg, location: []}],
-        swagger: undefined,
+        schema: undefined,
     };
 }
 
 export async function cli(opts: CliOptions): Promise<CliResult> {
     let errors: LintError[] = [];
-    let swagger: void | SwaggerObject;
+    let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
 
     const {config, error: configError} = getConfig(opts.config);
     if (configError) {
@@ -49,21 +49,22 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
     if (urlOrPath.startsWith('http')) {
         const url = urlOrPath;
         log(`fetching for ${url}`);
-        const swaggerFromUrl: SwaggerObject | null = await getSwaggerByUrl(
-            url,
-        ).catch((e: string) => {
-            log('error fetching url');
-            log(e);
+        type FromUrl = Swagger.SwaggerObject | OpenAPI.OpenAPIObject | null;
+        const swaggerFromUrl: FromUrl = await getSwaggerByUrl(url).catch(
+            (e: string) => {
+                log('error fetching url');
+                log(e);
 
-            return null;
-        });
+                return null;
+            },
+        );
         if (swaggerFromUrl === null) {
             return preLintError(
                 'Cannot fetch swagger scheme from the provided url',
             );
         } else {
             log(`got response`);
-            swagger = Object.freeze(swaggerFromUrl);
+            schema = Object.freeze(swaggerFromUrl);
             errors = swaggerlint(swaggerFromUrl, config);
         }
     } else {
@@ -76,13 +77,13 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
             return preLintError(result.error);
         }
 
-        swagger = Object.freeze(result.swagger);
+        schema = Object.freeze(result.swagger);
         errors = swaggerlint(result.swagger, config);
     }
 
     return {
         errors,
         code: errors.length ? 1 : 0,
-        swagger,
+        schema,
     };
 }

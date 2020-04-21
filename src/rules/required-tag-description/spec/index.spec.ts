@@ -1,9 +1,9 @@
 import rule from '../';
-import {SwaggerObject, SwaggerlintConfig} from '../../../types';
+import {Swagger, SwaggerlintConfig} from '../../../types';
 import {swaggerlint} from '../../../';
 import _merge from 'lodash.merge';
 
-const swaggerSample: SwaggerObject = {
+const swaggerSample: Swagger.SwaggerObject = {
     swagger: '2.0',
     info: {
         title: 'stub',

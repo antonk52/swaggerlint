@@ -81,8 +81,8 @@ describe('cli function', () => {
         const {getConfig} = require('../utils/config');
         const {getSwaggerByPath} = require('../utils/swaggerfile');
 
-        const swagger = {file: 'swagger'};
-        getSwaggerByPath.mockReturnValueOnce({swagger});
+        const schema = {file: 'swagger'};
+        getSwaggerByPath.mockReturnValueOnce({swagger: schema});
 
         getConfig.mockReturnValueOnce({
             error: null,
@@ -95,12 +95,12 @@ describe('cli function', () => {
 
         expect(getConfig.mock.calls.length === 1).toBe(true);
         expect(swaggerlint.mock.calls).toEqual([
-            [swagger, {rules: 'default-config'}],
+            [schema, {rules: 'default-config'}],
         ]);
         expect(result).toEqual({
             code: 0,
             errors: [],
-            swagger,
+            schema,
         });
     });
 
@@ -112,7 +112,7 @@ describe('cli function', () => {
         getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
 
         const error = 'File at the provided path does not exist.';
-        getSwaggerByPath.mockReturnValueOnce({swagger: {}, error});
+        getSwaggerByPath.mockReturnValueOnce({schema: {}, error});
 
         const path = 'lol/kek/foo/bar';
         const result = await cli({_: [path]});
@@ -174,7 +174,7 @@ describe('cli function', () => {
         expect(result).toEqual({
             code: 0,
             errors: [],
-            swagger: {},
+            schema: {},
         });
     });
 
@@ -198,7 +198,7 @@ describe('cli function', () => {
         expect(result).toEqual({
             code: 1,
             errors,
-            swagger: {},
+            schema: {},
         });
     });
 });

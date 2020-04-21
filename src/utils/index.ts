@@ -1,9 +1,4 @@
-import {
-    ReferenceObject,
-    SchemaObjectAllOfObject,
-    VisitorName,
-    SwaggerObject,
-} from '../types';
+import {SwaggerVisitorName, Swagger} from '../types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -11,13 +6,15 @@ export const log = isDev
     ? (x: string): void => console.log(`--> ${x}`)
     : (): null => null;
 
-export function isRef(arg: Record<string, unknown>): arg is ReferenceObject {
+export function isRef(
+    arg: Record<string, unknown>,
+): arg is Swagger.ReferenceObject {
     return typeof arg.$ref === 'string';
 }
 
 export function isSchemaObjectAllOfObject(
     arg: Record<string, unknown>,
-): arg is SchemaObjectAllOfObject {
+): arg is Swagger.SchemaObjectAllOfObject {
     return Array.isArray(arg.allOf);
 }
 
@@ -25,7 +22,11 @@ export function isObject(arg: unknown): arg is object {
     return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
-const visitorSet = new Set([
+/**
+ * TODO: extract swagger v2 specific utils into separate file
+ */
+
+const swaggerVisitorSet = new Set([
     'SwaggerObject',
     'InfoObject',
     'PathsObject',
@@ -52,8 +53,10 @@ const visitorSet = new Set([
     'ItemsObject',
     'ExampleObject',
 ]);
-export function isValidVisitorName(name: string): name is VisitorName {
-    return visitorSet.has(name);
+export function isValidSwaggerVisitorName(
+    name: string,
+): name is SwaggerVisitorName {
+    return swaggerVisitorSet.has(name);
 }
 
 type ValidCasesObj = {
@@ -84,6 +87,6 @@ export function hasKey<K extends string>(
     return key in obj;
 }
 
-export function isSwaggerObject(arg: unknown): arg is SwaggerObject {
+export function isSwaggerObject(arg: unknown): arg is Swagger.SwaggerObject {
     return isObject(arg) && hasKey('swagger', arg) && arg.swagger === '2.0';
 }

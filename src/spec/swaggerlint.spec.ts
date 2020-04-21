@@ -1,5 +1,5 @@
 import {swaggerlint} from '../swaggerlint';
-import {SwaggerObject, SwaggerlintConfig} from '../types';
+import {Swagger, SwaggerlintConfig} from '../types';
 
 jest.mock('../walker', () => jest.fn());
 jest.mock('../defaultConfig', () => ({
@@ -15,7 +15,7 @@ jest.mock('../rules', () => ({
 }));
 
 describe('swaggerlint', () => {
-    const swagger: SwaggerObject = {
+    const swagger: Swagger.SwaggerObject = {
         swagger: '2.0',
         info: {
             title: 'Sample swagger object',

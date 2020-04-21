@@ -1,9 +1,4 @@
-import {
-    SwaggerlintRule,
-    Report,
-    SwaggerObject,
-    OperationObject,
-} from '../../types';
+import {SwaggerlintRule, Report, Swagger} from '../../types';
 import mimeDB from 'mime-db';
 
 const name = 'only-valid-mime-types';
@@ -13,7 +8,7 @@ function isValidMimeType(maybeMime: string): boolean {
 }
 
 type Param = {
-    node: SwaggerObject | OperationObject;
+    node: Swagger.SwaggerObject | Swagger.OperationObject;
     report: Report;
     location: string[];
 };

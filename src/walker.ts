@@ -1,35 +1,6 @@
 import {isRef} from './utils';
 
-import {
-    SwaggerObject,
-    InfoObject,
-    PathsObject,
-    DefinitionsObject,
-    ParametersDefinitionsObject,
-    ResponsesDefinitionsObject,
-    SecurityDefinitionsObject,
-    SecuritySchemeObject,
-    ScopesObject,
-    SecurityRequirementObject,
-    TagObject,
-    ExternalDocumentationObject,
-    ContactObject,
-    LicenseObject,
-    PathItemObject,
-    OperationObject,
-    ParameterObject,
-    ReferenceObject,
-    ResponsesObject,
-    ResponseObject,
-    SchemaObject,
-    XMLObject,
-    HeadersObject,
-    HeaderObject,
-    ItemsObject,
-    ExampleObject,
-    LintError,
-    ConfigIgnore,
-} from './types';
+import {Swagger, LintError, ConfigIgnore} from './types';
 
 type OneOrNone<T> = [T] | [];
 type NodeWithLocation<T> = {
@@ -38,40 +9,42 @@ type NodeWithLocation<T> = {
 };
 
 type Visitors = {
-    SwaggerObject: [NodeWithLocation<SwaggerObject>];
-    InfoObject: [NodeWithLocation<InfoObject>];
-    PathsObject: [NodeWithLocation<PathsObject>];
+    SwaggerObject: [NodeWithLocation<Swagger.SwaggerObject>];
+    InfoObject: [NodeWithLocation<Swagger.InfoObject>];
+    PathsObject: [NodeWithLocation<Swagger.PathsObject>];
 
-    DefinitionsObject: OneOrNone<NodeWithLocation<DefinitionsObject>>;
+    DefinitionsObject: OneOrNone<NodeWithLocation<Swagger.DefinitionsObject>>;
     ParametersDefinitionsObject: OneOrNone<
-        NodeWithLocation<ParametersDefinitionsObject>
+        NodeWithLocation<Swagger.ParametersDefinitionsObject>
     >;
     ResponsesDefinitionsObject: OneOrNone<
-        NodeWithLocation<ResponsesDefinitionsObject>
+        NodeWithLocation<Swagger.ResponsesDefinitionsObject>
     >;
     SecurityDefinitionsObject: OneOrNone<
-        NodeWithLocation<SecurityDefinitionsObject>
+        NodeWithLocation<Swagger.SecurityDefinitionsObject>
     >;
-    SecuritySchemeObject: NodeWithLocation<SecuritySchemeObject>[];
-    ScopesObject: NodeWithLocation<ScopesObject>[];
-    SecurityRequirementObject: NodeWithLocation<SecurityRequirementObject>[];
-    TagObject: NodeWithLocation<TagObject>[];
-    ExternalDocumentationObject: NodeWithLocation<
-        ExternalDocumentationObject
+    SecuritySchemeObject: NodeWithLocation<Swagger.SecuritySchemeObject>[];
+    ScopesObject: NodeWithLocation<Swagger.ScopesObject>[];
+    SecurityRequirementObject: NodeWithLocation<
+        Swagger.SecurityRequirementObject
     >[];
-    ContactObject: OneOrNone<NodeWithLocation<ContactObject>>;
-    LicenseObject: OneOrNone<NodeWithLocation<LicenseObject>>;
-    PathItemObject: NodeWithLocation<PathItemObject>[];
-    OperationObject: NodeWithLocation<OperationObject>[];
-    ParameterObject: NodeWithLocation<ParameterObject>[];
-    ResponsesObject: NodeWithLocation<ResponsesObject>[];
-    ResponseObject: NodeWithLocation<ResponseObject>[];
-    SchemaObject: NodeWithLocation<SchemaObject>[];
-    XMLObject: NodeWithLocation<XMLObject>[];
-    HeadersObject: NodeWithLocation<HeadersObject>[];
-    HeaderObject: NodeWithLocation<HeaderObject>[];
-    ItemsObject: NodeWithLocation<ItemsObject>[];
-    ExampleObject: NodeWithLocation<ExampleObject>[];
+    TagObject: NodeWithLocation<Swagger.TagObject>[];
+    ExternalDocumentationObject: NodeWithLocation<
+        Swagger.ExternalDocumentationObject
+    >[];
+    ContactObject: OneOrNone<NodeWithLocation<Swagger.ContactObject>>;
+    LicenseObject: OneOrNone<NodeWithLocation<Swagger.LicenseObject>>;
+    PathItemObject: NodeWithLocation<Swagger.PathItemObject>[];
+    OperationObject: NodeWithLocation<Swagger.OperationObject>[];
+    ParameterObject: NodeWithLocation<Swagger.ParameterObject>[];
+    ResponsesObject: NodeWithLocation<Swagger.ResponsesObject>[];
+    ResponseObject: NodeWithLocation<Swagger.ResponseObject>[];
+    SchemaObject: NodeWithLocation<Swagger.SchemaObject>[];
+    XMLObject: NodeWithLocation<Swagger.XMLObject>[];
+    HeadersObject: NodeWithLocation<Swagger.HeadersObject>[];
+    HeaderObject: NodeWithLocation<Swagger.HeaderObject>[];
+    ItemsObject: NodeWithLocation<Swagger.ItemsObject>[];
+    ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
 };
 
 const httpsMethods: ['get', 'put', 'post', 'delete', 'options', 'head'] = [
@@ -92,7 +65,7 @@ type WalkerResult =
       };
 
 function walker(
-    swagger: SwaggerObject,
+    swagger: Swagger.SwaggerObject,
     ignore: ConfigIgnore = {},
 ): WalkerResult {
     try {
@@ -168,7 +141,7 @@ function walker(
         /* eslint-enable indent */
 
         function populateSchemaObject(
-            schema: SchemaObject,
+            schema: Swagger.SchemaObject,
             path: string[],
         ): void {
             if (isRef(schema)) {
@@ -225,7 +198,7 @@ function walker(
         }
 
         function populateItemsObject(
-            itemsObj: ItemsObject,
+            itemsObj: Swagger.ItemsObject,
             path: string[],
         ): void {
             visitors.ItemsObject.push({node: itemsObj, location: path});
@@ -236,7 +209,7 @@ function walker(
         }
 
         function populateParams(
-            parameter: ParameterObject,
+            parameter: Swagger.ParameterObject,
             path: string[],
         ): void {
             visitors.ParameterObject.push({
@@ -254,7 +227,7 @@ function walker(
         }
 
         function populateResponseObject(
-            response: ResponseObject | ReferenceObject,
+            response: Swagger.ResponseObject | Swagger.ReferenceObject,
             path: string[],
         ): void {
             if (isRef(response)) {

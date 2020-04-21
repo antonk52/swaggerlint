@@ -1,5 +1,5 @@
 import Case from 'case';
-import {SwaggerlintRule, ParameterObject, CaseName} from '../../types';
+import {SwaggerlintRule, CaseName, Swagger} from '../../types';
 import {validCases, isValidCaseName, isObject, hasKey} from '../../utils';
 
 const name = 'parameter-casing';
@@ -13,7 +13,7 @@ function getCasesSetFromOptions(
         : defaultCase;
 }
 
-const PARAMETER_LOCATIONS: ParameterObject['in'][] = [
+const PARAMETER_LOCATIONS: Swagger.ParameterObject['in'][] = [
     'query',
     'header',
     'path',

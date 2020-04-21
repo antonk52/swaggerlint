@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import yaml from 'js-yaml';
 import fetch from 'node-fetch';
-import {SwaggerObject} from '../types';
+import {Swagger} from '../types';
 
 function isYamlPath(p: string): boolean {
     const ext = path.extname(p);
@@ -11,7 +11,7 @@ function isYamlPath(p: string): boolean {
 }
 
 type ResultSuccess = {
-    swagger: SwaggerObject;
+    swagger: Swagger.SwaggerObject;
 };
 type ResultFail = {
     swagger: null;
@@ -33,7 +33,7 @@ export function getSwaggerByPath(pth: string): Result {
     const isYaml = isYamlPath(swaggerPath);
 
     try {
-        const swagger: SwaggerObject = isYaml
+        const swagger: Swagger.SwaggerObject = isYaml
             ? yaml.safeLoad(fs.readFileSync(swaggerPath, 'utf8'))
             : require(swaggerPath);
 
@@ -48,7 +48,9 @@ export function getSwaggerByPath(pth: string): Result {
     }
 }
 
-export async function getSwaggerByUrl(url: string): Promise<SwaggerObject> {
+export async function getSwaggerByUrl(
+    url: string,
+): Promise<Swagger.SwaggerObject> {
     return fetch(url).then(x =>
         isYamlPath(url) ? x.text().then(yaml.safeLoad) : x.json(),
     );

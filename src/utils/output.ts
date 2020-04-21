@@ -1,12 +1,15 @@
-import {LintError, SwaggerObject} from '../types';
+import {LintError, Swagger, OpenAPI} from '../types';
 import _get from 'lodash.get';
 import {bold, red, dim, grey} from 'kleur';
 
 const PAD = 6;
 
-function shallowStringify(swagger: SwaggerObject, location: string[]): string {
+function shallowStringify(
+    schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject,
+    location: string[],
+): string {
     let topLevelObject = true;
-    const objToStringify = _get(swagger, location);
+    const objToStringify = _get(schema, location);
     const stringifiedObj = JSON.stringify(
         objToStringify,
         (_, value) => {
@@ -33,7 +36,7 @@ function shallowStringify(swagger: SwaggerObject, location: string[]): string {
 
 function toOneLinerFormat(
     {msg, name, location}: LintError,
-    swagger: SwaggerObject | void,
+    swagger: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
 ): string {
     const hasLocation = location.length;
     const locationInfo = hasLocation ? ` in ${location.join('.')}` : '';
@@ -51,7 +54,7 @@ function toOneLinerFormat(
 
 export function logErrors(
     errors: LintError[],
-    swagger: SwaggerObject | void,
+    swagger: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
 ): void {
     console.log(errors.map(x => toOneLinerFormat(x, swagger)).join('\n'));
     console.log('\n');
