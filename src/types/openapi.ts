@@ -40,6 +40,7 @@ type _CommonSchemaObjectFields = {
      */
     nullable?: boolean;
     discriminator?: DiscriminatorObject;
+    description?: string;
     /**
      * Default value is `false`.
      */
@@ -242,7 +243,7 @@ export type ReferenceObject = {
 /**
  * https://swagger.io/specification/#callbackObject
  */
-export type CallbackObject = Record<string, PathItemObject> &
+export type CallbackObject = Record<string, PathItemObject | ReferenceObject> &
     SpecificationExtensions;
 
 /**
@@ -519,27 +520,25 @@ export type OperationObject = {
 /**
  * https://swagger.io/specification/#pathItemObject
  */
-export type PathItemObject =
-    | ReferenceObject
-    | {
-          summary?: string;
-          description?: string;
-          get?: OperationObject;
-          put?: OperationObject;
-          post?: OperationObject;
-          delete?: OperationObject;
-          options?: OperationObject;
-          head?: OperationObject;
-          patch?: OperationObject;
-          trace?: OperationObject;
-          servers?: ServerObject[];
-          parameters?: (ParameterObject | ReferenceObject)[];
-      };
+export type PathItemObject = {
+    summary?: string;
+    description?: string;
+    get?: OperationObject;
+    put?: OperationObject;
+    post?: OperationObject;
+    delete?: OperationObject;
+    options?: OperationObject;
+    head?: OperationObject;
+    patch?: OperationObject;
+    trace?: OperationObject;
+    servers?: ServerObject[];
+    parameters?: (ParameterObject | ReferenceObject)[];
+};
 
 /**
  * https://swagger.io/specification/#pathsObject
  */
-export type PathsObject = Record<string, PathItemObject> &
+export type PathsObject = Record<string, PathItemObject | ReferenceObject> &
     SpecificationExtensions;
 
 /**
