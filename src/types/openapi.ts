@@ -423,6 +423,7 @@ type _CommonParameterObjectFields = {
      * Default value is false.
      */
     required?: boolean;
+    schema?: SchemaObject | ReferenceObject;
 };
 
 type _PathParameterObject = {
