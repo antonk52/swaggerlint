@@ -401,7 +401,7 @@ type _SimpleParam = {
     style?: string;
     explode?: boolean;
     allowReserved?: boolean;
-    schema?: SchemaObject | ReferenceObject;
+    schema: SchemaObject | ReferenceObject;
     example?: unknown;
     exmaples?: Record<string, ExampleObject | ReferenceObject>;
 };
@@ -423,7 +423,6 @@ type _CommonParameterObjectFields = {
      * Default value is false.
      */
     required?: boolean;
-    schema?: SchemaObject | ReferenceObject;
 };
 
 type _PathParameterObject = {
