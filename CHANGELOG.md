@@ -1,3 +1,19 @@
+## v0.0.7
+Features:
+- Improved OpenAPI v3 types, thanks @havok187!
+## v0.0.6
+Features:
+- Improved OpenAPI v3 types
+## v0.0.5
+Features:
+- Added documentation on how to write a new rule
+- Improved typescript types
+- Added OpenAPI v3 types
+## v0.0.4
+Features:
+- Link to a docker image
+- Extendable config
+- parameter-casing rule extended settings
 ## v0.0.3
 Features:
 - Visitor based rules
