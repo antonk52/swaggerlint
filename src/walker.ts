@@ -1,51 +1,6 @@
 import {isRef} from './utils';
 
-import {Swagger, LintError, ConfigIgnore} from './types';
-
-type OneOrNone<T> = [T] | [];
-type NodeWithLocation<T> = {
-    node: T;
-    location: string[];
-};
-
-type Visitors = {
-    SwaggerObject: [NodeWithLocation<Swagger.SwaggerObject>];
-    InfoObject: [NodeWithLocation<Swagger.InfoObject>];
-    PathsObject: [NodeWithLocation<Swagger.PathsObject>];
-
-    DefinitionsObject: OneOrNone<NodeWithLocation<Swagger.DefinitionsObject>>;
-    ParametersDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.ParametersDefinitionsObject>
-    >;
-    ResponsesDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.ResponsesDefinitionsObject>
-    >;
-    SecurityDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.SecurityDefinitionsObject>
-    >;
-    SecuritySchemeObject: NodeWithLocation<Swagger.SecuritySchemeObject>[];
-    ScopesObject: NodeWithLocation<Swagger.ScopesObject>[];
-    SecurityRequirementObject: NodeWithLocation<
-        Swagger.SecurityRequirementObject
-    >[];
-    TagObject: NodeWithLocation<Swagger.TagObject>[];
-    ExternalDocumentationObject: NodeWithLocation<
-        Swagger.ExternalDocumentationObject
-    >[];
-    ContactObject: OneOrNone<NodeWithLocation<Swagger.ContactObject>>;
-    LicenseObject: OneOrNone<NodeWithLocation<Swagger.LicenseObject>>;
-    PathItemObject: NodeWithLocation<Swagger.PathItemObject>[];
-    OperationObject: NodeWithLocation<Swagger.OperationObject>[];
-    ParameterObject: NodeWithLocation<Swagger.ParameterObject>[];
-    ResponsesObject: NodeWithLocation<Swagger.ResponsesObject>[];
-    ResponseObject: NodeWithLocation<Swagger.ResponseObject>[];
-    SchemaObject: NodeWithLocation<Swagger.SchemaObject>[];
-    XMLObject: NodeWithLocation<Swagger.XMLObject>[];
-    HeadersObject: NodeWithLocation<Swagger.HeadersObject>[];
-    HeaderObject: NodeWithLocation<Swagger.HeaderObject>[];
-    ItemsObject: NodeWithLocation<Swagger.ItemsObject>[];
-    ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
-};
+import {Swagger, SwaggerVisitors, LintError, ConfigIgnore} from './types';
 
 const httpsMethods: ['get', 'put', 'post', 'delete', 'options', 'head'] = [
     'get',
@@ -58,7 +13,7 @@ const httpsMethods: ['get', 'put', 'post', 'delete', 'options', 'head'] = [
 
 type WalkerResult =
     | {
-          visitors: Visitors;
+          visitors: SwaggerVisitors;
       }
     | {
           errors: LintError[];
@@ -75,7 +30,7 @@ function walker(
         const {securityDefinitions, security, definitions} = swagger;
 
         /* eslint-disable indent */
-        const visitors: Visitors = {
+        const visitors: SwaggerVisitors = {
             SwaggerObject: [{node: swagger, location: []}],
             InfoObject: [{node: swagger.info, location: ['info']}],
             PathsObject: [{node: swagger.paths, location: ['paths']}],

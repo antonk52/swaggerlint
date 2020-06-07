@@ -50,7 +50,7 @@ type RuleVisitorFunction<T> = (a: {
 
 export type SwaggerVisitorName = keyof SwaggerRuleVisitor;
 
-type SwaggerRuleVisitor = Partial<{
+export type SwaggerRuleVisitor = Partial<{
     SwaggerObject: RuleVisitorFunction<Swagger.SwaggerObject>;
     InfoObject: RuleVisitorFunction<Swagger.InfoObject>;
     PathsObject: RuleVisitorFunction<Swagger.PathsObject>;
@@ -88,6 +88,51 @@ type SwaggerRuleVisitor = Partial<{
     ItemsObject: RuleVisitorFunction<Swagger.ItemsObject>;
     ExampleObject: RuleVisitorFunction<Swagger.ExampleObject>;
 }>;
+
+type OneOrNone<T> = [T] | [];
+type NodeWithLocation<T> = {
+    node: T;
+    location: string[];
+};
+
+export type SwaggerVisitors = {
+    SwaggerObject: [NodeWithLocation<Swagger.SwaggerObject>];
+    InfoObject: [NodeWithLocation<Swagger.InfoObject>];
+    PathsObject: [NodeWithLocation<Swagger.PathsObject>];
+
+    DefinitionsObject: OneOrNone<NodeWithLocation<Swagger.DefinitionsObject>>;
+    ParametersDefinitionsObject: OneOrNone<
+        NodeWithLocation<Swagger.ParametersDefinitionsObject>
+    >;
+    ResponsesDefinitionsObject: OneOrNone<
+        NodeWithLocation<Swagger.ResponsesDefinitionsObject>
+    >;
+    SecurityDefinitionsObject: OneOrNone<
+        NodeWithLocation<Swagger.SecurityDefinitionsObject>
+    >;
+    SecuritySchemeObject: NodeWithLocation<Swagger.SecuritySchemeObject>[];
+    ScopesObject: NodeWithLocation<Swagger.ScopesObject>[];
+    SecurityRequirementObject: NodeWithLocation<
+        Swagger.SecurityRequirementObject
+    >[];
+    TagObject: NodeWithLocation<Swagger.TagObject>[];
+    ExternalDocumentationObject: NodeWithLocation<
+        Swagger.ExternalDocumentationObject
+    >[];
+    ContactObject: OneOrNone<NodeWithLocation<Swagger.ContactObject>>;
+    LicenseObject: OneOrNone<NodeWithLocation<Swagger.LicenseObject>>;
+    PathItemObject: NodeWithLocation<Swagger.PathItemObject>[];
+    OperationObject: NodeWithLocation<Swagger.OperationObject>[];
+    ParameterObject: NodeWithLocation<Swagger.ParameterObject>[];
+    ResponsesObject: NodeWithLocation<Swagger.ResponsesObject>[];
+    ResponseObject: NodeWithLocation<Swagger.ResponseObject>[];
+    SchemaObject: NodeWithLocation<Swagger.SchemaObject>[];
+    XMLObject: NodeWithLocation<Swagger.XMLObject>[];
+    HeadersObject: NodeWithLocation<Swagger.HeadersObject>[];
+    HeaderObject: NodeWithLocation<Swagger.HeaderObject>[];
+    ItemsObject: NodeWithLocation<Swagger.ItemsObject>[];
+    ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
+};
 
 export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
 
