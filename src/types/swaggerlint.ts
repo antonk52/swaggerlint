@@ -19,7 +19,10 @@ export type CliResult = {
 
 type AbstractObject = Record<string, unknown>;
 
-type SwaggerlintRuleSetting = [string, AbstractObject] | [string] | boolean;
+export type SwaggerlintRuleSetting =
+    | [string, AbstractObject]
+    | [string]
+    | boolean;
 
 export type ConfigIgnore = {
     definitions?: string[];

@@ -12,6 +12,9 @@ jest.mock('../rules', () => ({
         visitor: {},
         isValidSetting: jest.fn(() => true),
     },
+    'always-valid-rule': {
+        visitor: {},
+    },
 }));
 
 describe('swaggerlint', () => {
@@ -69,7 +72,7 @@ describe('swaggerlint', () => {
         ]);
     });
 
-    it('has no errors when rules are off', () => {
+    it('has an error when no rules are enabled', () => {
         const walker = require('../walker');
         walker.mockReturnValueOnce({
             visitors: {
@@ -85,7 +88,14 @@ describe('swaggerlint', () => {
 
         const result = swaggerlint(swagger, config);
 
-        expect(result).toEqual([]);
+        expect(result).toEqual([
+            {
+                location: [],
+                msg:
+                    'Found 0 enabled rules. Swaggerlint requires at least one rule enabled.',
+                name: 'swaggerlint-core',
+            },
+        ]);
     });
 
     it('returns an error when rule setting validation does not pass', () => {
@@ -102,6 +112,7 @@ describe('swaggerlint', () => {
         const config: SwaggerlintConfig = {
             rules: {
                 'known-rule': ['invalid-setting'],
+                'always-valid-rule': true,
             },
         };
         const result = swaggerlint(swagger, config);
