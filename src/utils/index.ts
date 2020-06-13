@@ -87,6 +87,24 @@ export function hasKey<K extends string>(
     return key in obj;
 }
 
+export function isInfoObject(arg: unknown): arg is Swagger.InfoObject {
+    return (
+        isObject(arg) &&
+        hasKey('title', arg) &&
+        hasKey('version', arg) &&
+        typeof arg.title === 'string' &&
+        typeof arg.version === 'string'
+    );
+}
+
 export function isSwaggerObject(arg: unknown): arg is Swagger.SwaggerObject {
-    return isObject(arg) && hasKey('swagger', arg) && arg.swagger === '2.0';
+    return (
+        isObject(arg) &&
+        hasKey('swagger', arg) &&
+        arg.swagger === '2.0' &&
+        hasKey('info', arg) &&
+        hasKey('paths', arg) &&
+        isObject(arg.paths) &&
+        isInfoObject(arg.info)
+    );
 }
