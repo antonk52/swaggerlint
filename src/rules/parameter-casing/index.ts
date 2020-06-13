@@ -24,7 +24,7 @@ const PARAMETER_LOCATIONS: Swagger.ParameterObject['in'][] = [
 const rule: SwaggerlintRule = {
     name,
     visitor: {
-        ParameterObject: ({node, report, setting}): void => {
+        ParameterObject: ({node, report, location, setting}): void => {
             if (typeof setting === 'boolean') return;
 
             const [settingCasingName, opts = {}] = setting;
@@ -77,6 +77,7 @@ const rule: SwaggerlintRule = {
                                 ? ` Should be "${correctVersion}".`
                                 : ''
                         }`,
+                        [...location, 'name'],
                     );
                 }
             }
