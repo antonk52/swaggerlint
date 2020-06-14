@@ -64,25 +64,25 @@ describe(`rule "${rule.name}"`, () => {
                 msg:
                     'Property "some-casing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
-                location,
+                location: [...location, 'some-casing'],
             },
             {
                 msg:
                     'Property "some_casing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
-                location,
+                location: [...location, 'some_casing'],
             },
             {
                 msg:
                     'Property "SOME_CASING" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
-                location,
+                location: [...location, 'SOME_CASING'],
             },
             {
                 msg:
                     'Property "SomeCasing" has wrong casing. Should be "someCasing".',
                 name: 'object-prop-casing',
-                location,
+                location: [...location, 'SomeCasing'],
             },
         ];
 
@@ -122,7 +122,12 @@ describe(`rule "${rule.name}"`, () => {
                 [rule.name]: ['camel', {ignore: ['SOME_CASING', 'SomeCasing']}],
             },
         });
-        const location = ['definitions', 'lolkekDTO', 'properties'];
+        const location = [
+            'definitions',
+            'lolkekDTO',
+            'properties',
+            'some-casing',
+        ];
         const expected = [
             {
                 msg:
