@@ -1,7 +1,6 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
 
 const swaggerSample: Swagger.SwaggerObject = {
     swagger: '2.0',
