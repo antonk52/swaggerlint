@@ -114,7 +114,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'body';
-          description: string;
+          description?: string;
           required?: boolean;
           schema: SchemaObject;
       }
@@ -124,13 +124,14 @@ export type ParameterObject =
     | {
           name: string;
           in: 'path';
+          description?: string;
           required: true;
           type: 'string' | 'number' | 'integer' | 'boolean';
       }
     | {
           name: string;
           in: 'query' | 'header' | 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'string';
           format?: StringFormat;
@@ -144,7 +145,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'query' | 'header' | 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'number';
           format?: NumberFormat;
@@ -160,7 +161,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'query' | 'header' | 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'integer';
           format?: IntegerFormat;
@@ -176,7 +177,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'query' | 'header' | 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'boolean';
           default?: boolean;
@@ -188,7 +189,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'file';
           default?: unknown;
@@ -200,7 +201,7 @@ export type ParameterObject =
     | {
           name: string;
           in: 'query' | 'header' | 'formData';
-          description: string;
+          description?: string;
           required?: boolean;
           type: 'array';
           items: ItemsObject;
