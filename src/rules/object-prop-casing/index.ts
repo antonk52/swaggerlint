@@ -37,7 +37,7 @@ const rule: SwaggerlintRule = {
                                         ? ` Should be "${correctVersion}".`
                                         : ''
                                 }`,
-                                [...location, 'properties'],
+                                [...location, 'properties', propName],
                             );
                         }
                     });
