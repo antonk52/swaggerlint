@@ -61,7 +61,7 @@ describe(`rule "${rule.name}"`, () => {
             {
                 msg: 'Url cannot end with a slash "/url/".',
                 name: 'no-trailing-slash',
-                location: ['paths'],
+                location: ['paths', '/url/'],
             },
         ];
 
@@ -78,7 +78,7 @@ describe(`rule "${rule.name}"`, () => {
             {
                 msg: 'Host url cannot end with a slash.',
                 name: 'no-trailing-slash',
-                location: [],
+                location: ['host'],
             },
         ];
 

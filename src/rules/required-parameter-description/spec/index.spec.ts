@@ -72,6 +72,12 @@ describe(`rule "${rule.name}"`, () => {
                     required: true,
                     type: 'string',
                 },
+                {
+                    name: 'emptyDesc',
+                    in: 'query',
+                    description: '',
+                    type: 'string',
+                },
             ],
         };
         const modConfig = _merge(mod, swaggerSample);
@@ -91,6 +97,11 @@ describe(`rule "${rule.name}"`, () => {
                 msg: '"petAge" parameter is missing description.',
                 name: 'required-parameter-description',
                 location: ['parameters', '0'],
+            },
+            {
+                msg: '"emptyDesc" parameter is missing description.',
+                name: 'required-parameter-description',
+                location: ['parameters', '2', 'description'],
             },
         ];
 

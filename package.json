@@ -29,14 +29,14 @@
         "url": "https://github.com/antonk52/swaggerlint/issues"
     },
     "devDependencies": {
-        "@types/jest": "^24.0.23",
-        "@types/js-yaml": "^3.12.1",
+        "@types/jest": "^24.9.1",
+        "@types/js-yaml": "^3.12.4",
         "@types/lodash.get": "^4.4.6",
         "@types/lodash.merge": "^4.6.6",
-        "@types/mime-db": "^1.27.0",
+        "@types/mime-db": "^1.43.0",
         "@types/minimist": "^1.2.0",
-        "@types/node": "^12.12.17",
-        "@types/node-fetch": "^2.5.4",
+        "@types/node": "^12.12.47",
+        "@types/node-fetch": "^2.5.7",
         "@typescript-eslint/eslint-plugin": "^2.12.0",
         "@typescript-eslint/parser": "^2.12.0",
         "eslint": "^6.7.2",
@@ -45,9 +45,9 @@
         "jest": "^24.9.0",
         "lodash.merge": "^4.6.2",
         "prettier": "^1.19.1",
-        "ts-jest": "^24.2.0",
-        "ts-node": "^8.5.4",
-        "typescript": "^3.9.2"
+        "ts-jest": "^24.3.0",
+        "ts-node": "^8.10.2",
+        "typescript": "^3.9.5"
     },
     "dependencies": {
         "case": "^1.6.2",

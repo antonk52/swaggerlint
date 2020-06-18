@@ -72,19 +72,19 @@ describe(`rule "${rule.name}"`, () => {
                 msg:
                     'Parameter "PET_STORE" has wrong casing. Should be "petStore".',
                 name: 'parameter-casing',
-                location: ['paths', '/url', 'parameters', '1'],
+                location: ['paths', '/url', 'parameters', '1', 'name'],
             },
             {
                 msg:
                     'Parameter "pet-age" has wrong casing. Should be "petAge".',
                 name: 'parameter-casing',
-                location: ['paths', '/url', 'parameters', '2'],
+                location: ['paths', '/url', 'parameters', '2', 'name'],
             },
             {
                 msg:
                     'Parameter "pet_color" has wrong casing. Should be "petColor".',
                 name: 'parameter-casing',
-                location: ['paths', '/url', 'parameters', '3'],
+                location: ['paths', '/url', 'parameters', '3', 'name'],
             },
         ];
 
@@ -139,7 +139,7 @@ describe(`rule "${rule.name}"`, () => {
                 msg:
                     'Parameter "pet_color" has wrong casing. Should be "petColor".',
                 name: 'parameter-casing',
-                location: ['paths', '/url', 'parameters', '3'],
+                location: ['paths', '/url', 'parameters', '3', 'name'],
             },
         ];
 

@@ -1,4 +1,9 @@
-import {LintError, SwaggerlintConfig} from './types';
+import {
+    LintError,
+    SwaggerlintConfig,
+    SwaggerlintRule,
+    SwaggerlintRuleSetting,
+} from './types';
 import {
     isValidSwaggerVisitorName,
     isSwaggerObject,
@@ -44,43 +49,73 @@ export function swaggerlint(
 
     const {visitors} = walkerResult;
 
-    Object.keys(config.rules).forEach(ruleName => {
-        const rule = rules[ruleName];
-        if (!rule) {
-            return errors.push({
-                msg: `swaggerlint.config.js contains unknown rule "${ruleName}"`,
-                name: 'swaggerlint-core',
-                location: [],
-            });
-        }
+    type ValidatedRule = {
+        rule: SwaggerlintRule;
+        setting: SwaggerlintRuleSetting;
+    };
 
-        let setting = config.rules[ruleName];
-
-        if (setting === false) {
-            return;
-        } else if (setting === true) {
-            const defaultConfigSetting = defaultConfig.rules[ruleName];
-            if (typeof defaultConfigSetting !== 'undefined') {
-                setting = defaultConfigSetting;
-            } else if ('defaultSetting' in rule) {
-                setting = rule.defaultSetting;
-            }
-        }
-
-        if (
-            'isValidSetting' in rule &&
-            typeof rule.isValidSetting === 'function'
-        ) {
-            if (!rule.isValidSetting(setting)) {
+    const validatedRules: ValidatedRule[] = Object.keys(config.rules).reduce(
+        (acc, ruleName) => {
+            const rule = rules[ruleName];
+            if (!rule) {
                 errors.push({
-                    msg: 'Invalid rule setting',
-                    name: ruleName,
+                    msg: `swaggerlint.config.js contains unknown rule "${ruleName}"`,
+                    name: 'swaggerlint-core',
                     location: [],
                 });
-                return;
-            }
-        }
 
+                return acc;
+            }
+
+            let setting = config.rules[ruleName];
+
+            if (setting === false) {
+                return acc;
+            } else if (setting === true) {
+                const defaultConfigSetting = defaultConfig.rules[ruleName];
+                if (typeof defaultConfigSetting !== 'undefined') {
+                    setting = defaultConfigSetting;
+                } else if ('defaultSetting' in rule) {
+                    setting = rule.defaultSetting;
+                }
+            }
+
+            if (
+                'isValidSetting' in rule &&
+                typeof rule.isValidSetting === 'function'
+            ) {
+                if (!rule.isValidSetting(setting)) {
+                    errors.push({
+                        msg: 'Invalid rule setting',
+                        name: ruleName,
+                        location: [],
+                    });
+                    return acc;
+                }
+            }
+
+            acc.push({
+                rule,
+                setting,
+            });
+
+            return acc;
+        },
+        [] as ValidatedRule[],
+    );
+
+    if (validatedRules.length === 0) {
+        errors.push({
+            msg:
+                'Found 0 enabled rules. Swaggerlint requires at least one rule enabled.',
+            name: 'swaggerlint-core',
+            location: [],
+        });
+
+        return errors;
+    }
+
+    validatedRules.forEach(({rule, setting}) => {
         Object.keys(rule.visitor).forEach(visitorName => {
             if (!isValidSwaggerVisitorName(visitorName)) return;
 
@@ -96,7 +131,7 @@ export function swaggerlint(
                     const report = (msg: string, rLocation?: string[]): void =>
                         void errors.push({
                             msg,
-                            name: ruleName,
+                            name: rule.name,
                             location: rLocation ?? location,
                         });
                     if (typeof check === 'function') {
