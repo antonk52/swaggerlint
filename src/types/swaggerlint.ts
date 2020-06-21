@@ -137,6 +137,26 @@ export type SwaggerVisitors = {
     ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
 };
 
+// prettier-ignore
+export type OpenAPIVisitors = {
+    OpenAPIObject: [NodeWithLocation<OpenAPI.OpenAPIObject>];
+    InfoObject: [NodeWithLocation<OpenAPI.InfoObject>];
+    PathsObject: [NodeWithLocation<OpenAPI.PathsObject>];
+    ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
+        SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
+        ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
+        ParameterObjects: NodeWithLocation<OpenAPI.ParameterObject>[];
+        ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
+        RequestBodyObject: NodeWithLocation<OpenAPI.RequestBodyObject>[];
+        HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
+        SecuritySchemeObject: NodeWithLocation<OpenAPI.SecuritySchemeObject>[];
+        LinkObject: NodeWithLocation<OpenAPI.LinkObject>[];
+        CallbackObject: NodeWithLocation<OpenAPI.CallbackObject>[];
+    SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
+    TagObject: NodeWithLocation<OpenAPI.TagObject>[];
+    ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
+};
+
 export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
 
 type OpenAPIRuleVisitor = Partial<{

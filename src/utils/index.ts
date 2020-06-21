@@ -2,6 +2,15 @@ import {SwaggerVisitorName, Swagger} from '../types';
 
 const isDev = process.env.NODE_ENV === 'development';
 
+export const httpMethods = [
+    'get',
+    'put',
+    'post',
+    'delete',
+    'options',
+    'head',
+] as const;
+
 export const log = isDev
     ? (x: string): void => console.log(`--> ${x}`)
     : (): null => null;

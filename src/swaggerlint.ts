@@ -3,6 +3,8 @@ import {
     SwaggerlintConfig,
     SwaggerlintRule,
     SwaggerlintRuleSetting,
+    Swagger,
+    OpenAPI,
 } from './types';
 import {
     isValidSwaggerVisitorName,
@@ -10,38 +12,65 @@ import {
     isObject,
     hasKey,
 } from './utils';
+
+import * as openapiUtils from './utils/openapi';
+
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
 import walker from './walker';
+import {walkOpenApi} from './walkerOpenAPI';
+
+type Validated =
+    | {
+          _type: 'swagger';
+          schema: Swagger.SwaggerObject;
+      }
+    | {
+          _type: 'openAPI';
+          schema: OpenAPI.OpenAPIObject;
+      }
+    | null;
+
+function validateInput(schema: unknown): Validated {
+    if (isSwaggerObject(schema)) {
+        return {
+            _type: 'swagger',
+            schema,
+        };
+    }
+
+    if (openapiUtils.isValidOpenAPIObject(schema)) {
+        return {
+            _type: 'openAPI',
+            schema,
+        };
+    }
+
+    return null;
+}
 
 export function swaggerlint(
-    swagger: unknown,
+    input: unknown,
     config: SwaggerlintConfig,
 ): LintError[] {
     const errors: LintError[] = [];
+    const validated = validateInput(input);
 
-    if (!isSwaggerObject(swagger)) {
-        let msg = `Swaggerlint only supports Swagger/OpenAPI v2.0;`;
-
-        if (
-            isObject(swagger) &&
-            hasKey('openapi', swagger) &&
-            typeof swagger.openapi === 'string'
-        ) {
-            msg += ` You have supplied OpenAPI ${swagger.openapi}`;
-        }
-
+    if (validated === null) {
         return [
             {
-                msg,
+                msg: 'You have supplier neither OpenAPI nor Swagger schema',
                 name: 'swaggerlint-core',
                 location: [],
             },
         ];
     }
 
-    const walkerResult = walker(swagger, config.ignore);
+    const walkerResult =
+        validated._type === 'swagger'
+            ? walker(validated.schema, config.ignore)
+            : walkOpenApi(validated.schema, config.ignore);
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;

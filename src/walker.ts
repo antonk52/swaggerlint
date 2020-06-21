@@ -1,15 +1,6 @@
-import {isRef} from './utils';
+import {isRef, httpMethods} from './utils';
 
 import {Swagger, SwaggerVisitors, LintError, ConfigIgnore} from './types';
-
-const httpsMethods: ['get', 'put', 'post', 'delete', 'options', 'head'] = [
-    'get',
-    'put',
-    'post',
-    'delete',
-    'options',
-    'head',
-];
 
 type WalkerResult =
     | {
@@ -239,7 +230,7 @@ function walker(
                 location: ['paths', pathUrl],
             });
 
-            httpsMethods.forEach(method => {
+            httpMethods.forEach(method => {
                 const operationObject = path[method];
 
                 if (operationObject) {
