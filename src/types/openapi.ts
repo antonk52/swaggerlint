@@ -375,7 +375,7 @@ export type EncodingObject = {
 export type MediaTypeObject = {
     schema?: SchemaObject | ReferenceObject;
     example?: unknown;
-    exmaples?: Record<string, ExampleObject | ReferenceObject>;
+    examples?: Record<string, ExampleObject | ReferenceObject>;
     /**
      * A map between a property name and its encoding information. The key, being the property name, MUST exist in the schema as a property. The encoding object SHALL only apply to `requestBody` objects when the media type is `multipart` or `application/x-www-form-urlencoded`.
      */

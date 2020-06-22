@@ -152,6 +152,7 @@ export type OpenAPIVisitors = {
         ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
         ParameterObject: NodeWithLocation<OpenAPI.ParameterObject>[];
         MediaTypeObject: NodeWithLocation<OpenAPI.MediaTypeObject>[];
+        EncodingObject: NodeWithLocation<OpenAPI.EncodingObject>[];
         ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
         RequestBodyObject: NodeWithLocation<OpenAPI.RequestBodyObject>[];
         HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];

@@ -34,6 +34,7 @@ export function walkOpenApi(
         ParameterObject: [],
         MediaTypeObject: [],
         ExampleObject: [],
+        EncodingObject: [],
         RequestBodyObject: [],
         HeaderObject: [],
         SecuritySchemeObject: [],
@@ -60,6 +61,20 @@ export function walkOpenApi(
     };
     /* eslint-enable indent */
 
+    function handleHeaderObject(
+        HeaderObject: OpenAPI.HeaderObject,
+        location: string[],
+    ): void {
+        // TODO explore header object
+    }
+
+    function handleSchemaObject(
+        SchemaObject: OpenAPI.SchemaObject,
+        location: string[],
+    ): void {
+        // TODO explore schema object
+    }
+
     function handleMediaTypeObject(
         MediaTypeObject: OpenAPI.MediaTypeObject,
         location: string[],
@@ -69,7 +84,70 @@ export function walkOpenApi(
             location,
         });
 
-        // TODO: explore MediaTypeObject
+        if (MediaTypeObject.schema) {
+            if (oaUtils.isRef(MediaTypeObject.schema)) {
+                visitors.ReferenceObject.push({
+                    node: MediaTypeObject.schema,
+                    location: [...location, 'schema'],
+                });
+            } else {
+                handleSchemaObject(MediaTypeObject.schema, [
+                    ...location,
+                    'schema',
+                ]);
+            }
+        }
+
+        const {examples} = MediaTypeObject;
+        if (examples) {
+            Object.keys(examples).forEach(key => {
+                const example = examples[key];
+                if (oaUtils.isRef(example)) {
+                    visitors.ReferenceObject.push({
+                        node: example,
+                        location: [...location, 'examples', key],
+                    });
+                } else {
+                    visitors.ExampleObject.push({
+                        node: example,
+                        location: [...location, 'examples', key],
+                    });
+                }
+            });
+        }
+
+        const {encoding} = MediaTypeObject;
+        if (encoding) {
+            Object.keys(encoding).forEach(encodingKey => {
+                const EncodingObject = encoding[encodingKey];
+                const encodingLocation = [...location, 'encoding', encodingKey];
+                visitors.EncodingObject.push({
+                    node: EncodingObject,
+                    location: encodingLocation,
+                });
+
+                const {headers} = EncodingObject;
+                if (headers) {
+                    Object.keys(headers).forEach(headerKey => {
+                        const HeaderObject = headers[headerKey];
+                        const headerLocation = [
+                            ...encodingLocation,
+                            'headers',
+                            headerKey,
+                        ];
+
+                        if (oaUtils.isRef(HeaderObject)) {
+                            visitors.ReferenceObject.push({
+                                node: HeaderObject,
+                                location: headerLocation,
+                            });
+                        } else {
+                            handleHeaderObject(HeaderObject, headerLocation);
+                        }
+                    });
+                }
+            });
+        }
     }
 
     function handleRequestBodyObject(
