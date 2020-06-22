@@ -502,7 +502,7 @@ export type OperationObject = {
     description?: string;
     externalDocs?: ExternalDocumentationObject;
     operaionId?: string;
-    parameters: (ParameterObject | ReferenceObject)[];
+    parameters?: (ParameterObject | ReferenceObject)[];
     requestBody?: RequestBodyObject | ReferenceObject;
     /**
      * The list of possible responses as they are returned from executing this operation.

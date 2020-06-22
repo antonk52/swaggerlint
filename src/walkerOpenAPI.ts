@@ -72,6 +72,13 @@ export function walkOpenApi(
         // TODO: explore MediaTypeObject
     }
 
+    function handleRequestBodyObject(
+        RequestBodyObject: OpenAPI.RequestBodyObject,
+        location: string[],
+    ): void {
+        // TODO: explore RequestBodyObject
+    }
+
     function handleParameterObject(
         ParameterObject: OpenAPI.ParameterObject,
         location: string[],
@@ -136,7 +143,47 @@ export function walkOpenApi(
             location,
         });
 
-        // TODO: explore operation object
+        if (OperationObject.externalDocs) {
+            visitors.ExternalDocumentationObject.push({
+                node: OperationObject.externalDocs,
+                location: [...location, 'externalDocs'],
+            });
+        }
+
+        if (OperationObject.parameters) {
+            OperationObject.parameters.forEach((parameter, index) => {
+                const paramLocation = [
+                    ...location,
+                    'parameters',
+                    String(index),
+                ];
+
+                if (oaUtils.isRef(parameter)) {
+                    visitors.ReferenceObject.push({
+                        node: parameter,
+                        location: paramLocation,
+                    });
+                } else {
+                    handleParameterObject(parameter, paramLocation);
+                }
+            });
+        }
+
+        if (OperationObject.requestBody) {
+            const reqBodyLocation = [...location, 'requestBody'];
+
+            if (oaUtils.isRef(OperationObject.requestBody)) {
+                visitors.ReferenceObject.push({
+                    node: OperationObject.requestBody,
+                    location: reqBodyLocation,
+                });
+            } else {
+                handleRequestBodyObject(
+                    OperationObject.requestBody,
+                    reqBodyLocation,
+                );
+            }
+        }
     }
 
     Object.keys(schema.paths).forEach(pathUrl => {
