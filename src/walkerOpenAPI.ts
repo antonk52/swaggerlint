@@ -61,18 +61,63 @@ export function walkOpenApi(
     };
     /* eslint-enable indent */
 
-    function handleHeaderObject(
-        HeaderObject: OpenAPI.HeaderObject,
-        location: string[],
-    ): void {
-        // TODO explore header object
-    }
-
     function handleSchemaObject(
         SchemaObject: OpenAPI.SchemaObject,
         location: string[],
     ): void {
         // TODO explore schema object
+    }
+
+    function handleHeaderObject(
+        HeaderObject: OpenAPI.HeaderObject,
+        location: string[],
+    ): void {
+        visitors.HeaderObject.push({
+            node: HeaderObject,
+            location,
+        });
+
+        if ('schema' in HeaderObject) {
+            const {schema} = HeaderObject;
+            const schemaLoc = [...location, 'schema'];
+            if (oaUtils.isRef(schema)) {
+                visitors.ReferenceObject.push({
+                    node: schema,
+                    location: schemaLoc,
+                });
+            } else {
+                handleSchemaObject(schema, schemaLoc);
+            }
+        }
+        if ('examples' in HeaderObject && HeaderObject.examples) {
+            const {examples} = HeaderObject;
+            Object.keys(examples).forEach(exampleKey => {
+                const ExampleObject = examples[exampleKey];
+                const exampleLocation = [...location, 'examples', exampleKey];
+
+                if (oaUtils.isRef(ExampleObject)) {
+                    visitors.ReferenceObject.push({
+                        node: ExampleObject,
+                        location: exampleLocation,
+                    });
+                } else {
+                    visitors.ExampleObject.push({
+                        node: ExampleObject,
+                        location: exampleLocation,
+                    });
+                }
+            });
+        }
+
+        if ('content' in HeaderObject && HeaderObject.content) {
+            const {content} = HeaderObject;
+            Object.keys(content).forEach(contentKey => {
+                const MediaTypeObject = content[contentKey];
+                const mtoLocation = [...location, 'content', contentKey];
+                // eslint-disable-next-line @typescript-eslint/no-use-before-define
+                handleMediaTypeObject(MediaTypeObject, mtoLocation);
+            });
+        }
     }
 
     function handleMediaTypeObject(
@@ -154,7 +199,19 @@ export function walkOpenApi(
         RequestBodyObject: OpenAPI.RequestBodyObject,
         location: string[],
     ): void {
-        // TODO: explore RequestBodyObject
+        visitors.RequestBodyObject.push({
+            node: RequestBodyObject,
+            location,
+        });
+
+        const {content} = RequestBodyObject;
+        Object.keys(content).forEach(contentKey => {
+            const MediaTypeObject = content[contentKey];
+            visitors.MediaTypeObject.push({
+                node: MediaTypeObject,
+                location: [...location, 'content', contentKey],
+            });
+        });
     }
 
     function handleParameterObject(

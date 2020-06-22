@@ -49,7 +49,7 @@ type _CommonSchemaObjectFields = {
      * Default value is `false`.
      */
     writeOnly?: boolean;
-    xml: XMLObject;
+    xml?: XMLObject;
     externalDocs?: ExternalDocumentationObject;
     example?: unknown;
     /**
@@ -60,7 +60,7 @@ type _CommonSchemaObjectFields = {
     default?: unknown;
 };
 
-type _MakeSchemaObject<O extends Record<string, unknown>> =
+type _MakeSchemaObject<O extends object> =
     | ReferenceObject
     | (_CommonSchemaObjectFields & O);
 
@@ -466,7 +466,7 @@ export type ParameterObject =
 /**
  * https://swagger.io/specification/#headerObject
  */
-export type HeaderObject = Omit<ParameterObject, 'name' | 'in'>;
+export type HeaderObject = _MakeParam<{}>;
 
 /**
  * https://swagger.io/specification/#responseObject
