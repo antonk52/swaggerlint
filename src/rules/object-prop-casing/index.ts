@@ -1,6 +1,7 @@
 import Case from 'case';
 import {SwaggerlintRule} from '../../types';
-import {isRef, validCases, isValidCaseName, isObject} from '../../utils';
+import {validCases, isValidCaseName, isObject} from '../../utils';
+import {isRef} from '../../utils/swagger';
 
 const name = 'object-prop-casing';
 

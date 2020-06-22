@@ -1,5 +1,7 @@
 import {OpenAPI, OpenAPIVisitorName} from '../types';
-import {isObject, hasKey} from '.';
+import {isObject, hasKey, newerHttpMethods} from './common';
+
+export const httpMethods = newerHttpMethods;
 
 export function isRef(
     arg: Record<string, unknown>,

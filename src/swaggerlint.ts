@@ -6,12 +6,9 @@ import {
     Swagger,
     OpenAPI,
 } from './types';
-import {
-    isValidSwaggerVisitorName,
-    isSwaggerObject,
-    isObject,
-    hasKey,
-} from './utils';
+import {isValidSwaggerVisitorName, isObject, hasKey} from './utils';
+
+import {isSwaggerObject} from './utils/swagger';
 
 import * as openapiUtils from './utils/openapi';
 

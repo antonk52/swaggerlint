@@ -1,5 +1,5 @@
 import {SwaggerlintRule} from '../../types';
-import {isRef} from '../../utils';
+import {isRef} from '../../utils/swagger';
 
 const name = 'no-empty-object-type';
 

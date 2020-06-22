@@ -403,7 +403,7 @@ type _SimpleParam = {
     allowReserved?: boolean;
     schema: SchemaObject | ReferenceObject;
     example?: unknown;
-    exmaples?: Record<string, ExampleObject | ReferenceObject>;
+    examples?: Record<string, ExampleObject | ReferenceObject>;
 };
 
 type _ComplexParam = {

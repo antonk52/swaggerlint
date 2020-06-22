@@ -142,10 +142,16 @@ export type OpenAPIVisitors = {
     OpenAPIObject: [NodeWithLocation<OpenAPI.OpenAPIObject>];
     InfoObject: [NodeWithLocation<OpenAPI.InfoObject>];
     PathsObject: [NodeWithLocation<OpenAPI.PathsObject>];
+    PathItemObject: NodeWithLocation<OpenAPI.PathItemObject>[];
+    OperationObject: NodeWithLocation<OpenAPI.OperationObject>[];
+    ServerObject: NodeWithLocation<OpenAPI.ServerObject>[];
+    ServerVariableObject: NodeWithLocation<OpenAPI.ServerVariableObject>[];
+
     ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
         SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
         ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
-        ParameterObjects: NodeWithLocation<OpenAPI.ParameterObject>[];
+        ParameterObject: NodeWithLocation<OpenAPI.ParameterObject>[];
+        MediaTypeObject: NodeWithLocation<OpenAPI.MediaTypeObject>[];
         ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
         RequestBodyObject: NodeWithLocation<OpenAPI.RequestBodyObject>[];
         HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
@@ -155,6 +161,8 @@ export type OpenAPIVisitors = {
     SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
     TagObject: NodeWithLocation<OpenAPI.TagObject>[];
     ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
+
+    ReferenceObject: NodeWithLocation<OpenAPI.ReferenceObject>[];
 };
 
 export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;

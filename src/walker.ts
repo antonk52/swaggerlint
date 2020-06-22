@@ -1,4 +1,4 @@
-import {isRef, httpMethods} from './utils';
+import * as swUtils from './utils/swagger';
 
 import {Swagger, SwaggerVisitors, LintError, ConfigIgnore} from './types';
 
@@ -90,7 +90,7 @@ function walker(
             schema: Swagger.SchemaObject,
             path: string[],
         ): void {
-            if (isRef(schema)) {
+            if (swUtils.isRef(schema)) {
                 return;
             }
 
@@ -176,7 +176,7 @@ function walker(
             response: Swagger.ResponseObject | Swagger.ReferenceObject,
             path: string[],
         ): void {
-            if (isRef(response)) {
+            if (swUtils.isRef(response)) {
                 return;
             }
 
@@ -230,7 +230,7 @@ function walker(
                 location: ['paths', pathUrl],
             });
 
-            httpMethods.forEach(method => {
+            swUtils.httpMethods.forEach(method => {
                 const operationObject = path[method];
 
                 if (operationObject) {
@@ -253,7 +253,7 @@ function walker(
 
                     if (operationObject.parameters) {
                         operationObject.parameters.forEach((parameter, i) => {
-                            if (isRef(parameter)) {
+                            if (swUtils.isRef(parameter)) {
                                 return;
                             }
                             populateParams(parameter, [
@@ -305,7 +305,7 @@ function walker(
 
             if (path.parameters) {
                 path.parameters.forEach((parameter, i) => {
-                    if (isRef(parameter)) {
+                    if (swUtils.isRef(parameter)) {
                         return;
                     }
                     populateParams(parameter, [
