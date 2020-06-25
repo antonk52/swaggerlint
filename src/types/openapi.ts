@@ -514,7 +514,7 @@ export type OperationObject = {
      */
     deprecated?: boolean;
     security?: SecurityRequirementObject[];
-    servers: ServerObject[];
+    servers?: ServerObject[];
 };
 
 /**

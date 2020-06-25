@@ -12,6 +12,7 @@ type WalkerResult =
 
 export function walkOpenApi(
     schema: OpenAPI.OpenAPIObject,
+    // TODO: support ignore param
     // eslint-disable-next-line
     _: ConfigIgnore = {},
 ): WalkerResult {
@@ -66,6 +67,13 @@ export function walkOpenApi(
         location: string[],
     ): void {
         // TODO explore schema object
+    }
+
+    function handleResponseObject(
+        ResponseObject: OpenAPI.ResponseObject,
+        location: string[],
+    ): void {
+        // TODO explore response object
     }
 
     function handleHeaderObject(
@@ -319,6 +327,11 @@ export function walkOpenApi(
                 );
             }
         }
+
+        // TODO responses
+        // TODO callbacks
+        // TODO security
+        // TODO servers
     }
 
     Object.keys(schema.paths).forEach(pathUrl => {
@@ -393,9 +406,163 @@ export function walkOpenApi(
         }
     });
 
-    /**
-     * TODO: componentsObject
-     */
+    if (schema.components) {
+        if (schema.components.schemas) {
+            const {schemas} = schema.components;
+            Object.keys(schemas).forEach(schemaName => {
+                const SchemaObject = schemas[schemaName];
+                const location = ['components', 'schemas', schemaName];
+                if (oaUtils.isRef(SchemaObject)) {
+                    visitors.ReferenceObject.push({
+                        node: SchemaObject,
+                        location,
+                    });
+                } else {
+                    handleSchemaObject(SchemaObject, location);
+                }
+            });
+        }
+
+        if (schema.components.responses) {
+            const {responses} = schema.components;
+            Object.keys(responses).forEach(responseName => {
+                const ResponseObject = responses[responseName];
+                const location = ['components', 'responses', responseName];
+                if (oaUtils.isRef(ResponseObject)) {
+                    visitors.ReferenceObject.push({
+                        node: ResponseObject,
+                        location,
+                    });
+                } else {
+                    handleResponseObject(ResponseObject, location);
+                }
+            });
+        }
+
+        if (schema.components.parameters) {
+            const {parameters} = schema.components;
+            Object.keys(parameters).forEach(paramName => {
+                const ParameterObject = parameters[paramName];
+                const location = ['components', 'parameters', paramName];
+                if (oaUtils.isRef(ParameterObject)) {
+                    visitors.ReferenceObject.push({
+                        node: ParameterObject,
+                        location,
+                    });
+                } else {
+                    handleParameterObject(ParameterObject, location);
+                }
+            });
+        }
+
+        if (schema.components.examples) {
+            const {examples} = schema.components;
+            Object.keys(examples).forEach(exampleName => {
+                const ExampleObject = examples[exampleName];
+                const location = ['components', 'examples', exampleName];
+                if (oaUtils.isRef(ExampleObject)) {
+                    visitors.ReferenceObject.push({
+                        node: ExampleObject,
+                        location,
+                    });
+                } else {
+                    visitors.ExampleObject.push({
+                        node: ExampleObject,
+                        location,
+                    });
+                }
+            });
+        }
+
+        if (schema.components.requestBodies) {
+            const {requestBodies} = schema.components;
+            Object.keys(requestBodies).forEach(reqBodyName => {
+                const RequestBodyObject = requestBodies[reqBodyName];
+                const location = ['components', 'requestBodies', reqBodyName];
+                if (oaUtils.isRef(RequestBodyObject)) {
+                    visitors.ReferenceObject.push({
+                        node: RequestBodyObject,
+                        location,
+                    });
+                } else {
+                    handleRequestBodyObject(RequestBodyObject, location);
+                }
+            });
+        }
+
+        if (schema.components.headers) {
+            const {headers} = schema.components;
+            Object.keys(headers).forEach(headerName => {
+                const HeaderObject = headers[headerName];
+                const location = ['components', 'headers', headerName];
+                if (oaUtils.isRef(HeaderObject)) {
+                    visitors.ReferenceObject.push({
+                        node: HeaderObject,
+                        location,
+                    });
+                } else {
+                    handleHeaderObject(HeaderObject, location);
+                }
+            });
+        }
+
+        if (schema.components.securitySchemes) {
+            const {securitySchemes} = schema.components;
+            Object.keys(securitySchemes).forEach(ssName => {
+                const SecuritySchemeObject = securitySchemes[ssName];
+                const location = ['components', 'securitySchemes', ssName];
+                if (oaUtils.isRef(SecuritySchemeObject)) {
+                    visitors.ReferenceObject.push({
+                        node: SecuritySchemeObject,
+                        location,
+                    });
+                } else {
+                    visitors.SecuritySchemeObject.push({
+                        node: SecuritySchemeObject,
+                        location,
+                    });
+                }
+            });
+        }
+
+        if (schema.components.links) {
+            const {links} = schema.components;
+            Object.keys(links).forEach(linkName => {
+                const LinkObject = links[linkName];
+                const location = ['components', 'links', linkName];
+                if (oaUtils.isRef(LinkObject)) {
+                    visitors.ReferenceObject.push({
+                        node: LinkObject,
+                        location,
+                    });
+                } else {
+                    visitors.LinkObject.push({
+                        node: LinkObject,
+                        location,
+                    });
+                }
+            });
+        }
+
+        if (schema.components.callbacks) {
+            const {callbacks} = schema.components;
+            Object.keys(callbacks).forEach(cbName => {
+                const CallbackObject = callbacks[cbName];
+                const location = ['components', 'links', cbName];
+                if (oaUtils.isRef(CallbackObject)) {
+                    visitors.ReferenceObject.push({
+                        node: CallbackObject,
+                        location,
+                    });
+                } else {
+                    visitors.CallbackObject.push({
+                        node: CallbackObject,
+                        location,
+                    });
+                }
+            });
+        }
+    }
 
     return {visitors};
 }
