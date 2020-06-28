@@ -378,10 +378,65 @@ export function walkOpenApi(
             }
         }
 
-        // TODO responses
-        // TODO callbacks
-        // TODO security
-        // TODO servers
+        if (OperationObject.responses) {
+            Object.keys(OperationObject.responses).forEach(httpCode => {
+                const MaybeResponseObject = OperationObject.responses[httpCode];
+                const responseLocation = [...location, 'responses', httpCode];
+
+                if (oaUtils.isRef(MaybeResponseObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeResponseObject,
+                        location: responseLocation,
+                    });
+                } else {
+                    handleResponseObject(MaybeResponseObject, responseLocation);
+                }
+            });
+        }
+
+        if (OperationObject.callbacks) {
+            const {callbacks} = OperationObject;
+            Object.keys(callbacks).forEach(cbName => {
+                const MaybeCallbackObject = callbacks[cbName];
+                const cbLocation = [...location, 'callbacks', cbName];
+
+                if (oaUtils.isRef(MaybeCallbackObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeCallbackObject,
+                        location: cbLocation,
+                    });
+                } else {
+                    visitors.CallbackObject.push({
+                        node: MaybeCallbackObject,
+                        location: cbLocation,
+                    });
+                }
+            });
+        }
+
+        if (OperationObject.security) {
+            OperationObject.security.forEach(
+                (SecurityRequirementObject, index) => {
+                    const sroLoction = [...location, 'security', String(index)];
+
+                    visitors.SecurityRequirementObject.push({
+                        node: SecurityRequirementObject,
+                        location: sroLoction,
+                    });
+                },
+            );
+        }
+
+        if (OperationObject.servers) {
+            OperationObject.servers.forEach((ServerObject, index) => {
+                const sroLoction = [...location, 'servers', String(index)];
+
+                visitors.ServerObject.push({
+                    node: ServerObject,
+                    location: sroLoction,
+                });
+            });
+        }
     }
 
     Object.keys(schema.paths).forEach(pathUrl => {
