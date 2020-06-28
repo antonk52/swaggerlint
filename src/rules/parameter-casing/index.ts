@@ -23,7 +23,7 @@ const PARAMETER_LOCATIONS: Swagger.ParameterObject['in'][] = [
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         ParameterObject: ({node, report, location, setting}): void => {
             if (typeof setting === 'boolean') return;
 

@@ -7,7 +7,7 @@ const name = 'object-prop-casing';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SchemaObject: ({node, report, setting, location}): void => {
             if (typeof setting === 'boolean') return;
 

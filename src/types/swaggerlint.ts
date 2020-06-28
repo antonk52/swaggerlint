@@ -51,7 +51,7 @@ export type LintError = {
 };
 
 export type Report = (msg: string, location?: string[]) => void;
-type RuleVisitorFunction<T> = (a: {
+export type RuleVisitorFunction<T> = (a: {
     node: T;
     location: string[];
     report: Report;
@@ -146,80 +146,81 @@ export type SwaggerVisitors = {
 
 // prettier-ignore
 export type OpenAPIVisitors = {
-    OpenAPIObject: [NodeWithLocation<OpenAPI.OpenAPIObject>];
+    CallbackObject: NodeWithLocation<OpenAPI.CallbackObject>[];
+    ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
+    ContactObject: NodeWithLocation<OpenAPI.ContactObject>[];
+    DiscriminatorObject: NodeWithLocation<OpenAPI.DiscriminatorObject>[];
+    EncodingObject: NodeWithLocation<OpenAPI.EncodingObject>[];
+    ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
+    ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
+    HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
     InfoObject: [NodeWithLocation<OpenAPI.InfoObject>];
-    PathsObject: [NodeWithLocation<OpenAPI.PathsObject>];
-    PathItemObject: NodeWithLocation<OpenAPI.PathItemObject>[];
+    LicenseObject: NodeWithLocation<OpenAPI.LicenseObject>[];
+    LinkObject: NodeWithLocation<OpenAPI.LinkObject>[];
+    MediaTypeObject: NodeWithLocation<OpenAPI.MediaTypeObject>[];
+    OAuthFlowObject: NodeWithLocation<OpenAPI.OAuthFlowObject>[];
+    OAuthFlowsObject: NodeWithLocation<OpenAPI.OAuthFlowsObject>[];
+    OpenAPIObject: [NodeWithLocation<OpenAPI.OpenAPIObject>];
     OperationObject: NodeWithLocation<OpenAPI.OperationObject>[];
+    ParameterObject: NodeWithLocation<OpenAPI.ParameterObject>[];
+    PathItemObject: NodeWithLocation<OpenAPI.PathItemObject>[];
+    PathsObject: [NodeWithLocation<OpenAPI.PathsObject>];
+    ReferenceObject: NodeWithLocation<OpenAPI.ReferenceObject>[];
+    RequestBodyObject: NodeWithLocation<OpenAPI.RequestBodyObject>[];
+    ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
+    ResponsesObject: NodeWithLocation<OpenAPI.ResponsesObject>[];
+    SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
+    SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
+    SecuritySchemeObject: NodeWithLocation<OpenAPI.SecuritySchemeObject>[];
     ServerObject: NodeWithLocation<OpenAPI.ServerObject>[];
     ServerVariableObject: NodeWithLocation<OpenAPI.ServerVariableObject>[];
-
-    ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
-        SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
-        DiscriminatorObject: NodeWithLocation<OpenAPI.DiscriminatorObject>[];
-        XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
-        ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
-        ParameterObject: NodeWithLocation<OpenAPI.ParameterObject>[];
-        MediaTypeObject: NodeWithLocation<OpenAPI.MediaTypeObject>[];
-        EncodingObject: NodeWithLocation<OpenAPI.EncodingObject>[];
-        ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
-        RequestBodyObject: NodeWithLocation<OpenAPI.RequestBodyObject>[];
-        HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
-        SecuritySchemeObject: NodeWithLocation<OpenAPI.SecuritySchemeObject>[];
-        LinkObject: NodeWithLocation<OpenAPI.LinkObject>[];
-        CallbackObject: NodeWithLocation<OpenAPI.CallbackObject>[];
-    SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
     TagObject: NodeWithLocation<OpenAPI.TagObject>[];
-    ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
-
-    ReferenceObject: NodeWithLocation<OpenAPI.ReferenceObject>[];
+    XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
 };
 
 export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
 
 type OpenAPIRuleVisitor = Partial<{
-    DiscriminatorObject: RuleVisitorFunction<OpenAPI.DiscriminatorObject>;
-    XMLObject: RuleVisitorFunction<OpenAPI.XMLObject>;
-    SchemaObject: RuleVisitorFunction<OpenAPI.SchemaObject>;
-    SpecificationExtensions: RuleVisitorFunction<
-        OpenAPI.SpecificationExtensions
-    >;
-    LicenseObject: RuleVisitorFunction<OpenAPI.LicenseObject>;
+    CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject>;
+    ComponentsObject: OneOrNone<RuleVisitorFunction<OpenAPI.ComponentsObject>>;
     ContactObject: RuleVisitorFunction<OpenAPI.ContactObject>;
-    InfoObject: RuleVisitorFunction<OpenAPI.InfoObject>;
-    ServerVariableObject: RuleVisitorFunction<OpenAPI.ServerVariableObject>;
-    ServerObject: RuleVisitorFunction<OpenAPI.ServerObject>;
+    DiscriminatorObject: RuleVisitorFunction<OpenAPI.DiscriminatorObject>;
+    EncodingObject: RuleVisitorFunction<OpenAPI.EncodingObject>;
+    ExampleObject: RuleVisitorFunction<OpenAPI.ExampleObject>;
     ExternalDocumentationObject: RuleVisitorFunction<
         OpenAPI.ExternalDocumentationObject
     >;
-    TagObject: RuleVisitorFunction<OpenAPI.TagObject>;
+    HeaderObject: RuleVisitorFunction<OpenAPI.HeaderObject>;
+    InfoObject: RuleVisitorFunction<OpenAPI.InfoObject>;
+    LicenseObject: RuleVisitorFunction<OpenAPI.LicenseObject>;
+    LinkObject: RuleVisitorFunction<OpenAPI.LinkObject>;
+    MediaTypeObject: RuleVisitorFunction<OpenAPI.MediaTypeObject>;
+    OAuthFlowObject: RuleVisitorFunction<OpenAPI.OAuthFlowObject>;
+    OAuthFlowsObject: RuleVisitorFunction<OpenAPI.OAuthFlowsObject>;
+    OpenAPIObject: RuleVisitorFunction<OpenAPI.OpenAPIObject>;
+    OperationObject: RuleVisitorFunction<OpenAPI.OperationObject>;
+    ParameterObject: RuleVisitorFunction<OpenAPI.ParameterObject>;
+    PathItemObject: RuleVisitorFunction<OpenAPI.PathItemObject>;
+    PathsObject: RuleVisitorFunction<OpenAPI.PathsObject>;
+    ReferenceObject: RuleVisitorFunction<OpenAPI.ReferenceObject>;
+    RequestBodyObject: RuleVisitorFunction<OpenAPI.RequestBodyObject>;
+    ResponseObject: RuleVisitorFunction<OpenAPI.ResponseObject>;
+    ResponsesObject: RuleVisitorFunction<OpenAPI.ResponsesObject>;
+    SchemaObject: RuleVisitorFunction<OpenAPI.SchemaObject>;
     SecurityRequirementObject: RuleVisitorFunction<
         OpenAPI.SecurityRequirementObject
     >;
-    ReferenceObject: RuleVisitorFunction<OpenAPI.ReferenceObject>;
-    CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject>;
-    RuntimeExpression: RuleVisitorFunction<OpenAPI.RuntimeExpression>;
-    LinkObject: RuleVisitorFunction<OpenAPI.LinkObject>;
-    OAuthFlowObject: RuleVisitorFunction<OpenAPI.OAuthFlowObject>;
-    OAuthFlowsObject: RuleVisitorFunction<OpenAPI.OAuthFlowsObject>;
     SecuritySchemeObject: RuleVisitorFunction<OpenAPI.SecuritySchemeObject>;
-    ExampleObject: RuleVisitorFunction<OpenAPI.ExampleObject>;
-    EncodingObject: RuleVisitorFunction<OpenAPI.EncodingObject>;
-    MediaTypeObject: RuleVisitorFunction<OpenAPI.MediaTypeObject>;
-    RequestBodyObject: RuleVisitorFunction<OpenAPI.RequestBodyObject>;
-    ParameterObject: RuleVisitorFunction<OpenAPI.ParameterObject>;
-    HeaderObject: RuleVisitorFunction<OpenAPI.HeaderObject>;
-    ResponseObject: RuleVisitorFunction<OpenAPI.ResponseObject>;
-    ResponsesObject: RuleVisitorFunction<OpenAPI.ResponsesObject>;
-    OperationObject: RuleVisitorFunction<OpenAPI.OperationObject>;
-    PathItemObject: RuleVisitorFunction<OpenAPI.PathItemObject>;
-    PathsObject: RuleVisitorFunction<OpenAPI.PathsObject>;
-    ComponentsObject: RuleVisitorFunction<OpenAPI.ComponentsObject>;
+    ServerObject: RuleVisitorFunction<OpenAPI.ServerObject>;
+    ServerVariableObject: RuleVisitorFunction<OpenAPI.ServerVariableObject>;
+    TagObject: RuleVisitorFunction<OpenAPI.TagObject>;
+    XMLObject: RuleVisitorFunction<OpenAPI.XMLObject>;
 }>;
 
 type SwaggerlintRulePrimitive = {
     name: string;
-    visitor: SwaggerRuleVisitor;
+    swaggerVisitor?: SwaggerRuleVisitor;
+    openapiVisitor?: OpenAPIRuleVisitor;
 };
 type SwaggerlintRuleWithSetting = SwaggerlintRulePrimitive & {
     /**

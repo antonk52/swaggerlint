@@ -4,7 +4,7 @@ const name = 'no-trailing-slash';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         PathsObject: ({node, report, location}): void => {
             const urls = Object.keys(node);
 

@@ -9,11 +9,11 @@ jest.mock('../defaultConfig', () => ({
 }));
 jest.mock('../rules', () => ({
     'known-rule': {
-        visitor: {},
+        swaggerVisitor: {},
         isValidSetting: jest.fn(() => true),
     },
     'always-valid-rule': {
-        visitor: {},
+        swaggerVisitor: {},
     },
 }));
 

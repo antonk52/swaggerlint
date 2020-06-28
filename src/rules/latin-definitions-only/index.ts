@@ -4,7 +4,7 @@ const name = 'latin-definitions-only';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         DefinitionsObject: ({node, report, location}): void => {
             Object.keys(node).forEach(name => {
                 const rest = name

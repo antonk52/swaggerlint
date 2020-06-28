@@ -4,7 +4,7 @@ const name = 'required-operation-tags';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         OperationObject: ({node, report, location}): void => {
             if (!Array.isArray(node.tags) || node.tags.length < 1) {
                 const method = location[location.length - 1];

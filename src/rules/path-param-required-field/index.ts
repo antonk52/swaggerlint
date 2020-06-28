@@ -4,7 +4,7 @@ const name = 'path-param-required-field';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         ParameterObject: ({node, report}): void => {
             if (!('required' in node)) {
                 report(

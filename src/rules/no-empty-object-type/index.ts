@@ -5,7 +5,7 @@ const name = 'no-empty-object-type';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SchemaObject: ({node, report}): void => {
             if (isRef(node)) return;
             if (node.type !== 'object') return;

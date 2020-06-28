@@ -40,7 +40,7 @@ function onlyValidMimeTypeCheck({node, report, location}: Param): void {
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SwaggerObject: onlyValidMimeTypeCheck,
         OperationObject: onlyValidMimeTypeCheck,
     },
