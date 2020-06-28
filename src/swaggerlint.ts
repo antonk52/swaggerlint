@@ -67,7 +67,7 @@ export function swaggerlint(
     const walkerResult =
         validated._type === 'swagger'
             ? walker(validated.schema, config.ignore)
-            : walkOpenApi(validated.schema, config.ignore);
+            : walkOpenApi(validated.schema, config.ignore || {});
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;

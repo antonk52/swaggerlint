@@ -25,7 +25,14 @@ export type SwaggerlintRuleSetting =
     | boolean;
 
 export type ConfigIgnore = {
+    /**
+     * Swagger specific
+     */
     definitions?: string[];
+    /**
+     * OpenAPI specific
+     */
+    schemas?: string[];
     paths?: string[];
 };
 

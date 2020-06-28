@@ -12,10 +12,13 @@ type WalkerResult =
 
 export function walkOpenApi(
     schema: OpenAPI.OpenAPIObject,
-    // TODO: support ignore param
-    // eslint-disable-next-line
-    _: ConfigIgnore = {},
+    ignoreConfig: ConfigIgnore,
 ): WalkerResult {
+    const ignore = {
+        schemas: new Set(ignoreConfig.schemas || []),
+        paths: new Set(ignoreConfig.paths || []),
+    };
+
     console.log('walkOpenApi start');
     /* eslint-disable indent */
     const visitors: OpenAPIVisitors = {
@@ -545,6 +548,8 @@ export function walkOpenApi(
          */
         if (pathUrl.startsWith('x-')) return;
 
+        if (ignore.paths.has(pathUrl)) return;
+
         const node = schema.paths[pathUrl];
 
         if (oaUtils.isRef(node)) {
@@ -614,6 +619,8 @@ export function walkOpenApi(
         if (schema.components.schemas) {
             const {schemas} = schema.components;
             Object.keys(schemas).forEach(schemaName => {
+                if (ignore.schemas.has(schemaName)) return;
+
                 const SchemaObject = schemas[schemaName];
                 const location = ['components', 'schemas', schemaName];
                 if (oaUtils.isRef(SchemaObject)) {
