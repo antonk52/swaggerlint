@@ -69,13 +69,6 @@ export function walkOpenApi(
         // TODO explore schema object
     }
 
-    function handleResponseObject(
-        ResponseObject: OpenAPI.ResponseObject,
-        location: string[],
-    ): void {
-        // TODO explore response object
-    }
-
     function handleHeaderObject(
         HeaderObject: OpenAPI.HeaderObject,
         location: string[],
@@ -197,6 +190,63 @@ export function walkOpenApi(
                         } else {
                             handleHeaderObject(HeaderObject, headerLocation);
                         }
+                    });
+                }
+            });
+        }
+    }
+
+    function handleResponseObject(
+        ResponseObject: OpenAPI.ResponseObject,
+        location: string[],
+    ): void {
+        visitors.ResponseObject.push({
+            node: ResponseObject,
+            location,
+        });
+
+        const {headers} = ResponseObject;
+        if (headers) {
+            Object.keys(headers).forEach(headerName => {
+                const MaybeHeaderObject = headers[headerName];
+                const headerLocation = [...location, 'headers', headerName];
+
+                if (oaUtils.isRef(MaybeHeaderObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeHeaderObject,
+                        location: headerLocation,
+                    });
+                } else {
+                    handleHeaderObject(MaybeHeaderObject, headerLocation);
+                }
+            });
+        }
+
+        const {content} = ResponseObject;
+        if (content) {
+            Object.keys(content).forEach(contentName => {
+                const MediaTypeObject = content[contentName];
+                const contentLocation = [...location, 'content', contentName];
+
+                handleMediaTypeObject(MediaTypeObject, contentLocation);
+            });
+        }
+
+        const {links} = ResponseObject;
+        if (links) {
+            Object.keys(links).forEach(headerName => {
+                const MaybeLinkObject = links[headerName];
+                const linkLocation = [...location, 'links', headerName];
+
+                if (oaUtils.isRef(MaybeLinkObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeLinkObject,
+                        location: linkLocation,
+                    });
+                } else {
+                    visitors.LinkObject.push({
+                        node: MaybeLinkObject,
+                        location: linkLocation,
                     });
                 }
             });
