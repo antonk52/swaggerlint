@@ -60,9 +60,11 @@ type _CommonSchemaObjectFields = {
     default?: unknown;
 };
 
-type _MakeSchemaObject<O extends object> =
-    | ReferenceObject
-    | (_CommonSchemaObjectFields & O);
+type _MakeSchemaObject<O extends object> = O &
+    _CommonSchemaObjectFields &
+    SpecificationExtensions;
+
+type _RefOr<O> = ReferenceObject | O;
 
 type _SchemaStringObject = _MakeSchemaObject<{
     type: 'string';
@@ -71,9 +73,9 @@ type _SchemaStringObject = _MakeSchemaObject<{
     minLength?: number;
     pattern?: string;
     enum?: string[];
-    allOf?: _SchemaStringObject[];
-    oneOf?: _SchemaStringObject[];
-    anyOf?: _SchemaStringObject[];
+    allOf?: _RefOr<_SchemaStringObject>[];
+    oneOf?: _RefOr<_SchemaStringObject>[];
+    anyOf?: _RefOr<_SchemaStringObject>[];
 }>;
 
 type _CommonNumericSchemObjectFields = {
@@ -88,9 +90,9 @@ type _SchemaIntegerObject = _MakeSchemaObject<
     {
         type: 'integer';
         format?: 'int32' | 'int64';
-        allOf?: _SchemaIntegerObject[];
-        oneOf?: _SchemaIntegerObject[];
-        anyOf?: _SchemaIntegerObject[];
+        allOf?: _RefOr<_SchemaIntegerObject>[];
+        oneOf?: _RefOr<_SchemaIntegerObject>[];
+        anyOf?: _RefOr<_SchemaIntegerObject>[];
     } & _CommonNumericSchemObjectFields
 >;
 
@@ -98,17 +100,17 @@ type _SchemaNumberObject = _MakeSchemaObject<
     {
         type: 'number';
         format?: 'float' | 'double';
-        allOf?: _SchemaNumberObject[];
-        oneOf?: _SchemaNumberObject[];
-        anyOf?: _SchemaNumberObject[];
+        allOf?: _RefOr<_SchemaNumberObject>[];
+        oneOf?: _RefOr<_SchemaNumberObject>[];
+        anyOf?: _RefOr<_SchemaNumberObject>[];
     } & _CommonNumericSchemObjectFields
 >;
 
 type _SchemaBooleanObject = _MakeSchemaObject<{
     type: 'boolean';
-    allOf?: _SchemaBooleanObject[];
-    oneOf?: _SchemaBooleanObject[];
-    anyOf?: _SchemaBooleanObject[];
+    allOf?: _RefOr<_SchemaBooleanObject>[];
+    oneOf?: _RefOr<_SchemaBooleanObject>[];
+    anyOf?: _RefOr<_SchemaBooleanObject>[];
 }>;
 
 type _SchemaArrayObject = _MakeSchemaObject<{
@@ -116,20 +118,20 @@ type _SchemaArrayObject = _MakeSchemaObject<{
     maxItems?: number;
     minItems?: number;
     uniqueItems?: number;
-    items: SchemaObject;
-    allOf?: _SchemaArrayObject[];
-    oneOf?: _SchemaArrayObject[];
-    anyOf?: _SchemaArrayObject[];
+    items: _RefOr<SchemaObject>;
+    allOf?: _RefOr<_SchemaArrayObject>[];
+    oneOf?: _RefOr<_SchemaArrayObject>[];
+    anyOf?: _RefOr<_SchemaArrayObject>[];
 }>;
 
 type _SchemaObjectObject = _MakeSchemaObject<{
     type: 'object';
-    properties: SchemaObject[];
+    properties: Record<string, _RefOr<SchemaObject>>;
     required?: string[];
-    additionalProperties?: SchemaObject;
-    allOf?: _SchemaObjectObject[];
-    oneOf?: _SchemaObjectObject[];
-    anyOf?: _SchemaObjectObject[];
+    additionalProperties?: boolean | _RefOr<SchemaObject>;
+    allOf?: _RefOr<_SchemaObjectObject>[];
+    oneOf?: _RefOr<_SchemaObjectObject>[];
+    anyOf?: _RefOr<_SchemaObjectObject>[];
 }>;
 
 /**

@@ -149,6 +149,8 @@ export type OpenAPIVisitors = {
 
     ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
         SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
+        DiscriminatorObject: NodeWithLocation<OpenAPI.DiscriminatorObject>[];
+        XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
         ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
         ParameterObject: NodeWithLocation<OpenAPI.ParameterObject>[];
         MediaTypeObject: NodeWithLocation<OpenAPI.MediaTypeObject>[];

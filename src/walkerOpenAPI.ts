@@ -31,6 +31,8 @@ export function walkOpenApi(
             : [],
 
         SchemaObject: [],
+        DiscriminatorObject: [],
+        XMLObject: [],
         ResponseObject: [],
         ParameterObject: [],
         MediaTypeObject: [],
@@ -66,7 +68,104 @@ export function walkOpenApi(
         SchemaObject: OpenAPI.SchemaObject,
         location: string[],
     ): void {
-        // TODO explore schema object
+        visitors.SchemaObject.push({
+            node: SchemaObject,
+            location,
+        });
+
+        if (SchemaObject.discriminator) {
+            visitors.DiscriminatorObject.push({
+                node: SchemaObject.discriminator,
+                location: [...location, 'discriminator'],
+            });
+        }
+
+        if (SchemaObject.xml) {
+            visitors.XMLObject.push({
+                node: SchemaObject.xml,
+                location: [...location, 'xml'],
+            });
+        }
+
+        if (SchemaObject.externalDocs) {
+            visitors.ExternalDocumentationObject.push({
+                node: SchemaObject.externalDocs,
+                location: [...location, 'externalDocs'],
+            });
+        }
+
+        // handles: allOf, oneOf, anyOf
+        const sameTypeKeys = ['allOf', 'oneOf', 'anyOf'] as const;
+        sameTypeKeys.forEach(key => {
+            const items = SchemaObject[key] as
+                | (OpenAPI.SchemaObject | OpenAPI.ReferenceObject)[]
+                | void;
+            if (!items) return;
+
+            items.forEach((MaybeSchemaObject, index) => {
+                const maybeLocaction = [...location, key, String(index)];
+
+                if (oaUtils.isRef(MaybeSchemaObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeSchemaObject,
+                        location: maybeLocaction,
+                    });
+                } else {
+                    handleSchemaObject(MaybeSchemaObject, maybeLocaction);
+                }
+            });
+        });
+
+        if (SchemaObject.items) {
+            const items = SchemaObject.items as
+                | OpenAPI.ReferenceObject
+                | OpenAPI.SchemaObject;
+            const itemLoction = [...location, 'items'];
+            if (oaUtils.isRef(items)) {
+                visitors.ReferenceObject.push({
+                    node: items,
+                    location: itemLoction,
+                });
+            } else {
+                handleSchemaObject(items, itemLoction);
+            }
+        }
+
+        if (SchemaObject.properties) {
+            const properties = SchemaObject.properties as Record<
+                string,
+                OpenAPI.ReferenceObject | OpenAPI.SchemaObject
+            >;
+            Object.keys(properties).forEach(propName => {
+                const MaybeSchemaObject = properties[propName];
+                const propLocation = [...location, 'properties', propName];
+
+                if (oaUtils.isRef(MaybeSchemaObject)) {
+                    visitors.ReferenceObject.push({
+                        node: MaybeSchemaObject,
+                        location: propLocation,
+                    });
+                } else {
+                    handleSchemaObject(MaybeSchemaObject, propLocation);
+                }
+            });
+        }
+
+        if ('additionalProperties' in SchemaObject) {
+            if (typeof SchemaObject.additionalProperties === 'boolean') return;
+            const MaybeSchemaObject = SchemaObject.additionalProperties as
+                | OpenAPI.ReferenceObject
+                | OpenAPI.SchemaObject;
+            const propLocation = [...location, 'additionalProperties'];
+            if (oaUtils.isRef(MaybeSchemaObject)) {
+                visitors.ReferenceObject.push({
+                    node: MaybeSchemaObject,
+                    location: propLocation,
+                });
+            } else {
+                handleSchemaObject(MaybeSchemaObject, propLocation);
+            }
+        }
     }
 
     function handleHeaderObject(
