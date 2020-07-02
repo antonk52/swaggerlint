@@ -1,5 +1,5 @@
 import Case from 'case';
-import {SwaggerlintRule, CaseName, Swagger} from '../../types';
+import {SwaggerlintRule, CaseName, Swagger, OpenAPI} from '../../types';
 import {validCases, isValidCaseName, isObject, hasKey} from '../../utils';
 
 const name = 'parameter-casing';
@@ -13,11 +13,15 @@ function getCasesSetFromOptions(
         : defaultCase;
 }
 
-const PARAMETER_LOCATIONS: Swagger.ParameterObject['in'][] = [
+const PARAMETER_LOCATIONS: (
+    | Swagger.ParameterObject['in']
+    | OpenAPI.ParameterObject['in']
+)[] = [
     'query',
     'header',
     'path',
-    'formData',
+    'cookie', // OpenAPI specific
+    'formData', // Swagger specific
     'body',
 ];
 
@@ -45,6 +49,64 @@ const rule: SwaggerlintRule = {
                         defaultParamCase,
                     ),
                     body: getCasesSetFromOptions(opts.body, defaultParamCase),
+                };
+
+                const IGNORE_PARAMETER_NAMES = new Set<string>(
+                    Array.isArray(opts.ignore) ? opts.ignore : [],
+                );
+
+                if (IGNORE_PARAMETER_NAMES.has(node.name)) return;
+
+                const nodeCase = Case.of(node.name);
+                const paramLocation = node.in;
+                if (!cases[paramLocation].has(nodeCase)) {
+                    const shouldBeCase: CaseName = cases[paramLocation]
+                        .values()
+                        .next().value;
+                    if (
+                        isValidCaseName(shouldBeCase) &&
+                        !(shouldBeCase in Case)
+                    ) {
+                        return;
+                    }
+
+                    const correctVersion =
+                        settingCasingName in validCases
+                            ? Case[shouldBeCase](node.name)
+                            : '';
+
+                    report(
+                        `Parameter "${node.name}" has wrong casing.${
+                            correctVersion
+                                ? ` Should be "${correctVersion}".`
+                                : ''
+                        }`,
+                        [...location, 'name'],
+                    );
+                }
+            }
+        },
+    },
+    openapiVisitor: {
+        ParameterObject: ({node, report, location, setting}): void => {
+            if (typeof setting === 'boolean') return;
+            const [settingCasingName, opts = {}] = setting;
+            if (
+                typeof settingCasingName === 'string' &&
+                isValidCaseName(settingCasingName)
+            ) {
+                const defaultParamCase = validCases[settingCasingName];
+                const cases = {
+                    query: getCasesSetFromOptions(opts.query, defaultParamCase),
+                    header: getCasesSetFromOptions(
+                        opts.header,
+                        defaultParamCase,
+                    ),
+                    path: getCasesSetFromOptions(opts.path, defaultParamCase),
+                    cookie: getCasesSetFromOptions(
+                        opts.cookie,
+                        defaultParamCase,
+                    ),
                 };
 
                 const IGNORE_PARAMETER_NAMES = new Set<string>(

@@ -11,6 +11,13 @@ const rule: SwaggerlintRule = {
             }
         },
     },
+    openapiVisitor: {
+        SchemaObject: ({node, report}): void => {
+            if (node.allOf && node.allOf.length === 1) {
+                report('Redundant use of "allOf" with a single item in it.');
+            }
+        },
+    },
 };
 
 export default rule;

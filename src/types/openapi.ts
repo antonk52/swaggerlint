@@ -443,7 +443,7 @@ type _QueryParameterObject = {
 };
 
 type _HeaderParameterObject = {
-    name: 'Accept' | 'Content-Type' | 'Authorization';
+    name: string;
     in: 'header';
 };
 

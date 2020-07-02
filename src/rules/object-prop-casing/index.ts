@@ -47,6 +47,50 @@ const rule: SwaggerlintRule = {
             }
         },
     },
+    openapiVisitor: {
+        SchemaObject: ({node, report, location, setting}): void => {
+            if (typeof setting === 'boolean') return;
+
+            const [settingCasingName, opts = {}] = setting;
+            const IGNORE_PROPERTIES = new Set<string>(
+                Array.isArray(opts.ignore) ? opts.ignore : [],
+            );
+            if (
+                !(
+                    typeof settingCasingName === 'string' &&
+                    isValidCaseName(settingCasingName)
+                )
+            )
+                return;
+
+            const validPropCases: Set<string> = validCases[settingCasingName];
+            if (
+                'properties' in node &&
+                node.properties &&
+                typeof node.properties === 'object'
+            ) {
+                Object.keys(node.properties).forEach(propName => {
+                    if (IGNORE_PROPERTIES.has(propName)) return;
+                    const propCase = Case.of(propName);
+                    if (!validPropCases.has(propCase)) {
+                        const correctVersion =
+                            settingCasingName in validCases
+                                ? Case[settingCasingName](propName)
+                                : '';
+
+                        report(
+                            `Property "${propName}" has wrong casing.${
+                                correctVersion
+                                    ? ` Should be "${correctVersion}".`
+                                    : ''
+                            }`,
+                            [...location, 'properties', propName],
+                        );
+                    }
+                });
+            }
+        },
+    },
     isValidSetting: option => {
         if (typeof option !== 'object') return false;
 

@@ -25,6 +25,23 @@ const rule: SwaggerlintRule = {
             }
         },
     },
+    openapiVisitor: {
+        PathItemObject: ({report, location}): void => {
+            const url = location[location.length - 1];
+
+            if (url.endsWith('/')) {
+                report(`Url cannot end with a slash "${url}".`);
+            }
+        },
+        ServerObject: ({node, report, location}): void => {
+            if (node.url.endsWith('/')) {
+                report('Server url cannot end with a slash.', [
+                    ...location,
+                    'url',
+                ]);
+            }
+        },
+    },
 };
 
 export default rule;

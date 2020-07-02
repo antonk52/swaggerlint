@@ -44,6 +44,14 @@ const rule: SwaggerlintRule = {
         SwaggerObject: onlyValidMimeTypeCheck,
         OperationObject: onlyValidMimeTypeCheck,
     },
+    openapiVisitor: {
+        MediaTypeObject: ({location, report}): void => {
+            const mimeType = location[location.length - 1];
+            if (!isValidMimeType(mimeType)) {
+                report(`"${mimeType}" is not a valid mime type.`);
+            }
+        },
+    },
 };
 
 export default rule;
