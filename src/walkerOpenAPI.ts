@@ -1,6 +1,5 @@
 import {OpenAPI, OpenAPIVisitors, LintError, ConfigIgnore} from './types';
 import * as oaUtils from './utils/openapi';
-// import * as utils from './utils/common';
 
 type WalkerResult =
     | {
@@ -19,7 +18,6 @@ export function walkOpenApi(
         paths: new Set(ignoreConfig.paths || []),
     };
 
-    console.log('walkOpenApi start');
     /* eslint-disable indent */
     const visitors: OpenAPIVisitors = {
         OpenAPIObject: [{node: schema, location: []}],
@@ -76,6 +74,32 @@ export function walkOpenApi(
         OAuthFlowsObject: [],
     };
     /* eslint-enable indent */
+
+    function handleServerObject(
+        ServerObject: OpenAPI.ServerObject,
+        location: string[],
+    ): void {
+        visitors.ServerObject.push({
+            node: ServerObject,
+            location,
+        });
+
+        const {variables} = ServerObject;
+        if (variables) {
+            Object.keys(variables).forEach(key => {
+                const ServerVariableObject = variables[key];
+                const svoLocation = [...location, 'variables', key];
+                visitors.ServerVariableObject.push({
+                    node: ServerVariableObject,
+                    location: svoLocation,
+                });
+            });
+        }
+    }
+
+    schema.servers?.forEach((ServerObject, index) => {
+        handleServerObject(ServerObject, ['servers', String(index)]);
+    });
 
     function handleSchemaObject(
         SchemaObject: OpenAPI.SchemaObject,
@@ -361,7 +385,13 @@ export function walkOpenApi(
                         location: linkLocation,
                     });
 
-                    // TODO Server object
+                    const ServerObject = MaybeLinkObject.server;
+                    if (ServerObject) {
+                        handleServerObject(ServerObject, [
+                            ...linkLocation,
+                            'server',
+                        ]);
+                    }
                 }
             });
         }
@@ -547,14 +577,11 @@ export function walkOpenApi(
 
         if (OperationObject.servers) {
             OperationObject.servers.forEach((ServerObject, index) => {
-                const sroLoction = [...location, 'servers', String(index)];
-
-                visitors.ServerObject.push({
-                    node: ServerObject,
-                    location: sroLoction,
-                });
-
-                // TODO ServerVariableObject
+                handleServerObject(ServerObject, [
+                    ...location,
+                    'servers',
+                    String(index),
+                ]);
             });
         }
     }

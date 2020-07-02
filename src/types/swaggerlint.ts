@@ -182,7 +182,7 @@ export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
 
 type OpenAPIRuleVisitor = Partial<{
     CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject>;
-    ComponentsObject: OneOrNone<RuleVisitorFunction<OpenAPI.ComponentsObject>>;
+    ComponentsObject: RuleVisitorFunction<OpenAPI.ComponentsObject>;
     ContactObject: RuleVisitorFunction<OpenAPI.ContactObject>;
     DiscriminatorObject: RuleVisitorFunction<OpenAPI.DiscriminatorObject>;
     EncodingObject: RuleVisitorFunction<OpenAPI.EncodingObject>;
@@ -219,9 +219,10 @@ type OpenAPIRuleVisitor = Partial<{
 
 type SwaggerlintRulePrimitive = {
     name: string;
-    swaggerVisitor?: SwaggerRuleVisitor;
     openapiVisitor?: OpenAPIRuleVisitor;
+    swaggerVisitor?: SwaggerRuleVisitor;
 };
+
 type SwaggerlintRuleWithSetting = SwaggerlintRulePrimitive & {
     /**
      * Verification of valid setting for the rule,
