@@ -174,7 +174,7 @@ describe(`rule "${rule.name}"`, () => {
         });
     });
 
-    describe.only('openapi', () => {
+    describe('openapi', () => {
         it('should NOT error for an empty swagger sample', () => {
             const result = swaggerlint(openapiSample, config);
 
