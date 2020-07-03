@@ -32,7 +32,17 @@ export type ConfigIgnore = {
     /**
      * OpenAPI specific
      */
-    schemas?: string[];
+    components?: {
+        schemas?: string[];
+        responses?: string[];
+        parameters?: string[];
+        examples?: string[];
+        requestBodies?: string[];
+        headers?: string[];
+        securitySchemes?: string[];
+        links?: string[];
+        callbacks?: string[];
+    };
     paths?: string[];
 };
 
