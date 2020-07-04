@@ -155,49 +155,61 @@ describe(`rule "${rule.name}"`, () => {
         },
     };
 
-    it('should error for missing and poor path summaries, Swagger', () => {
-        const result = swaggerlint(swaggerSample, config);
+    describe('swagger', () => {
+        it('should error for missing and poor path summaries', () => {
+            const result = swaggerlint(swaggerSample, config);
 
-        const invalidSummary = {
-            location: ['paths', '/some/api/path', 'get', 'summary'],
-            msg:
-                'Every path summary should contain at least 2 words. This has "upload-image"',
-            name: rule.name,
-        };
-        const emptySummary = {
-            location: ['paths', '/some/api/path', 'delete', 'summary'],
-            msg:
-                'Every path summary should contain at least 2 words. This has ""',
-            name: rule.name,
-        };
-        const missingSummary = {
-            location: ['paths', '/some/api/path', 'post'],
-            msg: 'Every path has to have a summary.',
-            name: rule.name,
-        };
-        expect(result).toEqual([invalidSummary, missingSummary, emptySummary]);
+            const invalidSummary = {
+                location: ['paths', '/some/api/path', 'get', 'summary'],
+                msg:
+                    'Every path summary should contain at least 2 words. This has "upload-image"',
+                name: rule.name,
+            };
+            const emptySummary = {
+                location: ['paths', '/some/api/path', 'delete', 'summary'],
+                msg:
+                    'Every path summary should contain at least 2 words. This has ""',
+                name: rule.name,
+            };
+            const missingSummary = {
+                location: ['paths', '/some/api/path', 'post'],
+                msg: 'Every path has to have a summary.',
+                name: rule.name,
+            };
+            expect(result).toEqual([
+                invalidSummary,
+                missingSummary,
+                emptySummary,
+            ]);
+        });
     });
 
-    it('should error for missing and poor path summaries, OpenAPI', () => {
-        const result = swaggerlint(openapiSample, config);
+    describe('openAPI', () => {
+        it('should error for missing and poor path summaries', () => {
+            const result = swaggerlint(openapiSample, config);
 
-        const invalidSummary = {
-            location: ['paths', '/some/api/path', 'get', 'summary'],
-            msg:
-                'Every path summary should contain at least 2 words. This has "upload-image"',
-            name: rule.name,
-        };
-        const emptySummary = {
-            location: ['paths', '/some/api/path', 'delete', 'summary'],
-            msg:
-                'Every path summary should contain at least 2 words. This has ""',
-            name: rule.name,
-        };
-        const missingSummary = {
-            location: ['paths', '/some/api/path', 'post'],
-            msg: 'Every path has to have a summary.',
-            name: rule.name,
-        };
-        expect(result).toEqual([invalidSummary, missingSummary, emptySummary]);
+            const invalidSummary = {
+                location: ['paths', '/some/api/path', 'get', 'summary'],
+                msg:
+                    'Every path summary should contain at least 2 words. This has "upload-image"',
+                name: rule.name,
+            };
+            const emptySummary = {
+                location: ['paths', '/some/api/path', 'delete', 'summary'],
+                msg:
+                    'Every path summary should contain at least 2 words. This has ""',
+                name: rule.name,
+            };
+            const missingSummary = {
+                location: ['paths', '/some/api/path', 'post'],
+                msg: 'Every path has to have a summary.',
+                name: rule.name,
+            };
+            expect(result).toEqual([
+                invalidSummary,
+                missingSummary,
+                emptySummary,
+            ]);
+        });
     });
 });

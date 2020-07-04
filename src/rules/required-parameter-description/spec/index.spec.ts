@@ -1,27 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
-
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
-
-const openapiSample: OpenAPI.OpenAPIObject = {
-    openapi: '3.0.3',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
 const config: SwaggerlintConfig = {
     rules: {
@@ -32,13 +12,13 @@ const config: SwaggerlintConfig = {
 describe(`rule "${rule.name}"`, () => {
     describe('swagger', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(swaggerSample, config);
+            const result = swaggerlint(getSwaggerObject({}), config);
 
             expect(result).toEqual([]);
         });
 
         it('should error for a url ending with a slash', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -69,29 +49,33 @@ describe(`rule "${rule.name}"`, () => {
                         ],
                     },
                 },
-                parameters: [
-                    {
+                parameters: {
+                    petAge: {
                         name: 'petAge',
                         in: 'body',
                         required: true,
-                        type: 'string',
+                        schema: {
+                            type: 'string',
+                        },
                     },
-                    {
+                    petColor: {
                         name: 'petColor',
                         in: 'body',
                         description: 'color of required pet',
                         required: true,
-                        type: 'string',
+                        schema: {
+                            type: 'string',
+                        },
                     },
-                    {
+                    emptyDesc: {
                         name: 'emptyDesc',
                         in: 'query',
                         description: '',
                         type: 'string',
                     },
-                ],
+                },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
@@ -107,12 +91,12 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg: '"petAge" parameter is missing description.',
                     name: 'required-parameter-description',
-                    location: ['parameters', '0'],
+                    location: ['parameters', 'petAge'],
                 },
                 {
                     msg: '"emptyDesc" parameter is missing description.',
                     name: 'required-parameter-description',
-                    location: ['parameters', '2', 'description'],
+                    location: ['parameters', 'emptyDesc', 'description'],
                 },
             ];
 
@@ -122,7 +106,7 @@ describe(`rule "${rule.name}"`, () => {
 
     describe('openapi', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(openapiSample, config);
+            const result = swaggerlint(getOpenAPIObject({}), config);
 
             expect(result).toEqual([]);
         });
@@ -142,7 +126,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {

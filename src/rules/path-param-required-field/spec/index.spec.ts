@@ -1,17 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
-
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
 const config: SwaggerlintConfig = {
     rules: {
@@ -19,26 +9,16 @@ const config: SwaggerlintConfig = {
     },
 };
 
-const openapiSample: OpenAPI.OpenAPIObject = {
-    openapi: '3.0.3',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
-
 describe(`rule "${rule.name}"`, () => {
     describe('swagger', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(swaggerSample, config);
+            const result = swaggerlint(getSwaggerObject({}), config);
 
             expect(result).toEqual([]);
         });
 
-        it('should error for all non camel cased property names', () => {
-            const mod = {
+        it('should error for parameters missing "required" property', () => {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -46,9 +26,7 @@ describe(`rule "${rule.name}"`, () => {
                                 {
                                     in: 'query',
                                     name: 'sample',
-                                    schema: {
-                                        $ref: '',
-                                    },
+                                    type: 'string',
                                 },
                             ],
                             responses: {
@@ -63,7 +41,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
@@ -76,14 +54,15 @@ describe(`rule "${rule.name}"`, () => {
             expect(result).toEqual(expected);
         });
     });
+
     describe('openapi', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(openapiSample, config);
+            const result = swaggerlint(getOpenAPIObject({}), config);
 
             expect(result).toEqual([]);
         });
 
-        it('should error for all non camel cased property names', () => {
+        it('should error for parameters missing "required" property', () => {
             const mod: Partial<OpenAPI.OpenAPIObject> = {
                 components: {
                     parameters: {
@@ -97,7 +76,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {

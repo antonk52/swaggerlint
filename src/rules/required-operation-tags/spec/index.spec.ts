@@ -1,27 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
-
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
-
-const openapiSample: OpenAPI.OpenAPIObject = {
-    openapi: '3.0.3',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
 const config: SwaggerlintConfig = {
     rules: {
@@ -29,7 +9,7 @@ const config: SwaggerlintConfig = {
     },
 };
 
-const mod = {
+const mod: Partial<Swagger.SwaggerObject> = {
     paths: {
         '/url': {
             get: {
@@ -49,13 +29,13 @@ const mod = {
 describe(`rule "${rule.name}"`, () => {
     describe('swagger', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(swaggerSample, config);
+            const result = swaggerlint(getSwaggerObject({}), config);
 
             expect(result).toEqual([]);
         });
 
         it('should error for a tag missing description', () => {
-            const schema = _merge(mod, swaggerSample);
+            const schema = getSwaggerObject(mod);
             const result = swaggerlint(schema, config);
             const expected = [
                 {
@@ -68,15 +48,18 @@ describe(`rule "${rule.name}"`, () => {
             expect(result).toEqual(expected);
         });
     });
+
     describe('openapi', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(swaggerSample, config);
+            const result = swaggerlint(getOpenAPIObject({}), config);
 
             expect(result).toEqual([]);
         });
 
         it('should error for a tag missing description', () => {
-            const schema = _merge(mod, openapiSample);
+            // @ts-expect-error
+            const oMod: Partial<OpenAPI.OpenAPIObject> = {...mod};
+            const schema = getOpenAPIObject(oMod);
             const result = swaggerlint(schema, config);
             const expected = [
                 {

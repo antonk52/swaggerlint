@@ -1,27 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
-
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
-
-const openapiSample: OpenAPI.OpenAPIObject = {
-    openapi: '3.0.3',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
 describe(`rule "${rule.name}"`, () => {
     const config: SwaggerlintConfig = {
@@ -32,13 +12,13 @@ describe(`rule "${rule.name}"`, () => {
 
     describe('swagger', () => {
         it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(swaggerSample, config);
+            const result = swaggerlint(getSwaggerObject({}), config);
 
             expect(result).toEqual([]);
         });
 
         it('should error for all non camel cased property names', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -76,7 +56,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
@@ -103,7 +83,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('should not error for all ignored property names', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -141,7 +121,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {ignore: ['PET_STORE', 'pet-age']}],
@@ -160,7 +140,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('allows to set different casing for different parameters(in)', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -177,12 +157,16 @@ describe(`rule "${rule.name}"`, () => {
                             {
                                 name: 'pet-type',
                                 in: 'path',
+                                required: true,
                                 type: 'string',
                             },
                             {
                                 name: 'petStore',
                                 in: 'body',
                                 type: 'string',
+                                schema: {
+                                    $ref: '',
+                                },
                             },
                             {
                                 name: 'pet_color',
@@ -193,7 +177,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {query: 'snake', path: 'kebab'}],
@@ -204,7 +188,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('allows to ignore parameter names', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -221,11 +205,12 @@ describe(`rule "${rule.name}"`, () => {
                             {
                                 name: 'pet-type',
                                 in: 'path',
+                                required: true,
                                 type: 'string',
                             },
                             {
                                 name: 'petStore',
-                                in: 'body',
+                                in: 'query',
                                 type: 'string',
                             },
                             {
@@ -237,7 +222,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {ignore: ['pet-type', 'pet_color']}],
@@ -249,8 +234,8 @@ describe(`rule "${rule.name}"`, () => {
     });
 
     describe('openapi', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(openapiSample, config);
+        it('should NOT error for an empty openapi sample', () => {
+            const result = swaggerlint(getOpenAPIObject({}), config);
 
             expect(result).toEqual([]);
         });
@@ -290,7 +275,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
@@ -351,7 +336,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {ignore: ['PET_STORE', 'pet-age']}],
@@ -398,7 +383,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {query: 'snake', path: 'kebab'}],
@@ -437,7 +422,7 @@ describe(`rule "${rule.name}"`, () => {
                     },
                 },
             };
-            const modConfig = _merge(mod, openapiSample);
+            const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, {
                 rules: {
                     [rule.name]: ['camel', {ignore: ['pet-type', 'pet_color']}],

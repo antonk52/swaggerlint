@@ -1,17 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
-
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
-    },
-    paths: {},
-    tags: [],
-};
+import {getSwaggerObject} from '../../../utils/tests';
 
 describe(`rule "${rule.name}"`, () => {
     const config: SwaggerlintConfig = {
@@ -21,13 +11,13 @@ describe(`rule "${rule.name}"`, () => {
     };
 
     it('should NOT error for an empty swagger sample', () => {
-        const result = swaggerlint(swaggerSample, config);
+        const result = swaggerlint(getSwaggerObject({}), config);
 
         expect(result).toEqual([]);
     });
 
     it('should error for a SchemaObject with "allOf" property containing a single item', () => {
-        const mod = {
+        const mod: Partial<Swagger.SwaggerObject> = {
             paths: {
                 '/url': {
                     get: {
@@ -57,7 +47,7 @@ describe(`rule "${rule.name}"`, () => {
                 },
             },
         };
-        const modConfig = _merge(mod, swaggerSample);
+        const modConfig = getSwaggerObject(mod);
         const result = swaggerlint(modConfig, config);
         const location = ['definitions', 'Example'];
         const expected = [
@@ -72,7 +62,7 @@ describe(`rule "${rule.name}"`, () => {
     });
 
     it('should NOT error for a SchemaObject with "allOf" property containing multiple items', () => {
-        const mod = {
+        const mod: Partial<Swagger.SwaggerObject> = {
             paths: {
                 '/url': {
                     get: {
@@ -93,7 +83,6 @@ describe(`rule "${rule.name}"`, () => {
                     allOf: [
                         {
                             type: 'object',
-                            name: 'obj',
                             properties: {
                                 prop: {type: 'string'},
                                 anotherProp: {type: 'string'},
@@ -101,13 +90,12 @@ describe(`rule "${rule.name}"`, () => {
                         },
                         {
                             type: 'object',
-                            name: 'name',
                         },
                     ],
                 },
             },
         };
-        const modConfig = _merge(mod, swaggerSample);
+        const modConfig = getSwaggerObject(mod);
         const result = swaggerlint(modConfig, config);
 
         expect(result).toEqual([]);

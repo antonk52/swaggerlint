@@ -1,7 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
 const swaggerSample: Swagger.SwaggerObject = {
     swagger: '2.0',
@@ -37,7 +37,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('should error for all non camel cased property names', () => {
-            const mod = {
+            const mod: Partial<Swagger.SwaggerObject> = {
                 paths: {
                     '/url': {
                         get: {
@@ -57,7 +57,7 @@ describe(`rule "${rule.name}"`, () => {
                 produces: ['application/typescript'],
                 consumes: ['lol/kek'],
             };
-            const modConfig = _merge(mod, swaggerSample);
+            const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
@@ -94,7 +94,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('should error for all non camel cased property names', () => {
-            const mod = {
+            const mod: Partial<OpenAPI.OpenAPIObject> = {
                 components: {
                     responses: {
                         someReponse: {
