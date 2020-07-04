@@ -172,7 +172,7 @@ describe(`rule "${rule.name}"`, () => {
         };
         const missingSummary = {
             location: ['paths', '/some/api/path', 'post'],
-            msg: 'Every path has to have summary.',
+            msg: 'Every path has to have a summary.',
             name: rule.name,
         };
         expect(result).toEqual([invalidSummary, missingSummary, emptySummary]);
@@ -195,7 +195,7 @@ describe(`rule "${rule.name}"`, () => {
         };
         const missingSummary = {
             location: ['paths', '/some/api/path', 'post'],
-            msg: 'Every path has to have summary.',
+            msg: 'Every path has to have a summary.',
             name: rule.name,
         };
         expect(result).toEqual([invalidSummary, missingSummary, emptySummary]);

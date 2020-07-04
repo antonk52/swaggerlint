@@ -18,7 +18,7 @@ const operationObjectValidator: RuleVisitorFunction<
             );
         }
     } else {
-        report('Every path has to have summary.');
+        report('Every path has to have a summary.');
     }
 };
 const rule: SwaggerlintRule = {
