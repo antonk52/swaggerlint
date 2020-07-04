@@ -1,5 +1,4 @@
 import {LintError, Swagger, OpenAPI} from '../types';
-import _get from 'lodash.get';
 import {bold, red, dim, grey} from 'kleur';
 
 const PAD = 6;
@@ -9,9 +8,13 @@ function shallowStringify(
     location: string[],
 ): string {
     let topLevelObject = true;
-    const objToStringify = _get(schema, location);
+    const target = location.reduce(
+        // @ts-expect-error
+        (acc, key) => acc?.[key],
+        schema,
+    );
     const stringifiedObj = JSON.stringify(
-        objToStringify,
+        target,
         (_, value) => {
             if (Array.isArray(value)) {
                 return `Array(${value.length})`;
