@@ -543,7 +543,7 @@ export type OperationObject = {
     summary?: string;
     description?: string;
     externalDocs?: ExternalDocumentationObject;
-    operaionId?: string;
+    operationId?: string;
     parameters?: (ParameterObject | ReferenceObject)[];
     requestBody?: RequestBodyObject | ReferenceObject;
     /**
