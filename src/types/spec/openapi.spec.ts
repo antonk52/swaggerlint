@@ -249,4 +249,156 @@ describe('OpenAPI types', () => {
 
         PathItemObject;
     });
+
+    it('OperationObject', () => {
+        const OperationObject: OpenAPI.OperationObject = {
+            tags: ['pet'],
+            summary: 'Updates a pet in the store with form data',
+            operationId: 'updatePetWithForm',
+            parameters: [
+                {
+                    name: 'petId',
+                    in: 'path',
+                    description: 'ID of pet that needs to be updated',
+                    required: true,
+                    schema: {
+                        type: 'string',
+                    },
+                },
+            ],
+            requestBody: {
+                content: {
+                    'application/x-www-form-urlencoded': {
+                        schema: {
+                            type: 'object',
+                            properties: {
+                                name: {
+                                    description: 'Updated name of the pet',
+                                    type: 'string',
+                                },
+                                status: {
+                                    description: 'Updated status of the pet',
+                                    type: 'string',
+                                },
+                            },
+                            required: ['status'],
+                        },
+                    },
+                },
+            },
+            responses: {
+                '200': {
+                    description: 'Pet updated.',
+                    content: {
+                        'application/json': {},
+                        'application/xml': {},
+                    },
+                },
+                '405': {
+                    description: 'Method Not Allowed',
+                    content: {
+                        'application/json': {},
+                        'application/xml': {},
+                    },
+                },
+            },
+            security: [
+                {
+                    petstore_auth: ['write:pets', 'read:pets'],
+                },
+            ],
+        };
+
+        OperationObject;
+    });
+
+    it('ExternalDocumentationObject', () => {
+        const ExternalDocumentationObject: OpenAPI.ExternalDocumentationObject = {
+            description: 'Find more info here',
+            url: 'https://example.com',
+        };
+
+        ExternalDocumentationObject;
+    });
+
+    it('ParameterObject', () => {
+        const HeaderParameterObject: OpenAPI.ParameterObject = {
+            name: 'token',
+            in: 'header',
+            description: 'token to be passed as a header',
+            required: true,
+            schema: {
+                type: 'array',
+                items: {
+                    type: 'integer',
+                    format: 'int64',
+                },
+            },
+            style: 'simple',
+        };
+
+        HeaderParameterObject;
+
+        const PathParameterObject: OpenAPI.ParameterObject = {
+            name: 'username',
+            in: 'path',
+            description: 'username to fetch',
+            required: true,
+            schema: {
+                type: 'string',
+            },
+        };
+
+        PathParameterObject;
+
+        const QueryParameterObject: OpenAPI.ParameterObject = {
+            name: 'id',
+            in: 'query',
+            description: 'ID of the object to fetch',
+            required: false,
+            schema: {
+                type: 'array',
+                items: {
+                    type: 'string',
+                },
+            },
+            style: 'form',
+            explode: true,
+        };
+
+        QueryParameterObject;
+
+        const FreeFormQueryParam: OpenAPI.ParameterObject = {
+            in: 'query',
+            name: 'freeForm',
+            schema: {
+                type: 'object',
+                additionalProperties: {
+                    type: 'integer',
+                },
+            },
+            style: 'form',
+        };
+
+        FreeFormQueryParam;
+    });
+
+    it('SchemaObject', () => {
+        const SchemaObject: OpenAPI.SchemaObject = {
+            type: 'object',
+            properties: {
+                name: {
+                    description: 'Updated name of the pet',
+                    type: 'string',
+                },
+                status: {
+                    description: 'Updated status of the pet',
+                    type: 'string',
+                },
+            },
+            required: ['status'],
+        };
+
+        SchemaObject;
+    });
 });

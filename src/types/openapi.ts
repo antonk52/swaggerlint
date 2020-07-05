@@ -56,13 +56,12 @@ type _CommonSchemaObjectFields = {
      * Default value is `false`.
      */
     deprecated?: boolean;
-    required?: boolean;
     default?: unknown;
 };
 
-type _MakeSchemaObject<O extends object> = O &
-    _CommonSchemaObjectFields &
-    SpecificationExtensions;
+type _MakeSchemaObject<O extends object> = _CommonSchemaObjectFields &
+    SpecificationExtensions &
+    O;
 
 type _RefOr<O> = ReferenceObject | O;
 
@@ -126,13 +125,28 @@ type _SchemaArrayObject = _MakeSchemaObject<{
 
 type _SchemaObjectObject = _MakeSchemaObject<{
     type: 'object';
-    properties: Record<string, _RefOr<SchemaObject>>;
+    properties?: Record<string, _RefOr<SchemaObject>>;
     required?: string[];
-    additionalProperties?: boolean | _RefOr<SchemaObject>;
+    additionalProperties?: boolean | SchemaObject | _RefOr<SchemaObject>;
     allOf?: _RefOr<_SchemaObjectObject>[];
     oneOf?: _RefOr<_SchemaObjectObject>[];
     anyOf?: _RefOr<_SchemaObjectObject>[];
 }>;
+
+const SchemaObject: _SchemaObjectObject = {
+    type: 'object',
+    properties: {
+        name: {
+            description: 'Updated name of the pet',
+            type: 'string',
+        },
+        status: {
+            description: 'Updated status of the pet',
+            type: 'string',
+        },
+    },
+    required: ['status'],
+};
 
 /**
  * https://swagger.io/specification/#schemaObject
