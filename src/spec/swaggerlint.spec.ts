@@ -1,7 +1,12 @@
 import {swaggerlint} from '../swaggerlint';
-import {Swagger, SwaggerlintConfig} from '../types';
+import {SwaggerlintConfig} from '../types';
+import * as walker from '../walker';
+import {getSwaggerObject} from '../utils/tests';
 
-jest.mock('../walker', () => jest.fn());
+jest.mock('../walker', () => ({
+    walkSwagger: jest.fn(),
+    walkOpenAPI: jest.fn(),
+}));
 jest.mock('../defaultConfig', () => ({
     rules: {
         'known-rule': true,
@@ -18,18 +23,9 @@ jest.mock('../rules', () => ({
 }));
 
 describe('swaggerlint', () => {
-    const swagger: Swagger.SwaggerObject = {
-        swagger: '2.0',
-        info: {
-            title: 'Sample swagger object',
-            version: '1.0',
-        },
-        paths: {},
-        tags: [],
-    };
+    const swagger = getSwaggerObject({});
 
     it('returns and error when walker returns errors', () => {
-        const walker = require('../walker');
         const errors = [
             {
                 msg: 'err parsing swagger',
@@ -39,7 +35,7 @@ describe('swaggerlint', () => {
         ];
         const config = {rules: {}};
 
-        walker.mockReturnValueOnce({errors});
+        (walker.walkSwagger as jest.Mock).mockReturnValueOnce({errors});
 
         const result = swaggerlint(swagger, config);
 
@@ -47,8 +43,7 @@ describe('swaggerlint', () => {
     });
 
     it('throws an error only for unknown rules', () => {
-        const walker = require('../walker');
-        walker.mockReturnValueOnce({
+        (walker.walkSwagger as jest.Mock).mockReturnValueOnce({
             visitors: {
                 VisitorExample: [],
             },
@@ -73,8 +68,7 @@ describe('swaggerlint', () => {
     });
 
     it('has an error when no rules are enabled', () => {
-        const walker = require('../walker');
-        walker.mockReturnValueOnce({
+        (walker.walkSwagger as jest.Mock).mockReturnValueOnce({
             visitors: {
                 visitorexample: [],
             },
@@ -99,8 +93,7 @@ describe('swaggerlint', () => {
     });
 
     it('returns an error when rule setting validation does not pass', () => {
-        const walker = require('../walker');
-        walker.mockReturnValueOnce({
+        (walker.walkSwagger as jest.Mock).mockReturnValueOnce({
             visitors: {
                 visitorexample: [],
             },

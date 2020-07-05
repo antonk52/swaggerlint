@@ -17,8 +17,7 @@ import * as oaUtils from './utils/openapi';
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
-import walker from './walker';
-import {walkOpenApi} from './walkerOpenAPI';
+import * as walker from './walker';
 
 type Validated =
     | {
@@ -80,8 +79,8 @@ export function swaggerlint(
 
     const walkerResult =
         validated._type === 'swagger'
-            ? walker(validated.schema, config.ignore)
-            : walkOpenApi(validated.schema, config.ignore || {});
+            ? walker.walkSwagger(validated.schema, config.ignore)
+            : walker.walkOpenAPI(validated.schema, config.ignore || {});
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;

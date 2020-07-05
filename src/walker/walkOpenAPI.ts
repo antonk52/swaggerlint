@@ -1,18 +1,11 @@
-import {OpenAPI, OpenAPIVisitors, LintError, ConfigIgnore} from './types';
-import * as oaUtils from './utils/openapi';
+import {OpenAPI, OpenAPIVisitors, ConfigIgnore} from '../types';
+import * as oaUtils from '../utils/openapi';
+import {WalkerResult} from './types';
 
-type WalkerResult =
-    | {
-          visitors: OpenAPIVisitors;
-      }
-    | {
-          errors: LintError[];
-      };
-
-export function walkOpenApi(
+export function walkOpenAPI(
     schema: OpenAPI.OpenAPIObject,
     ignoreConfig: ConfigIgnore,
-): WalkerResult {
+): WalkerResult<OpenAPIVisitors> {
     const IGNORE = {
         schemas: new Set(ignoreConfig?.components?.schemas || []),
         responses: new Set(ignoreConfig?.components?.responses || []),

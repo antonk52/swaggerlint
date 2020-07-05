@@ -1,19 +1,12 @@
-import * as swUtils from './utils/swagger';
+import * as swUtils from '../utils/swagger';
 
-import {Swagger, SwaggerVisitors, LintError, ConfigIgnore} from './types';
+import {Swagger, SwaggerVisitors, ConfigIgnore} from '../types';
+import {WalkerResult} from './types';
 
-type WalkerResult =
-    | {
-          visitors: SwaggerVisitors;
-      }
-    | {
-          errors: LintError[];
-      };
-
-function walker(
+export function walkSwagger(
     swagger: Swagger.SwaggerObject,
     ignore: ConfigIgnore = {},
-): WalkerResult {
+): WalkerResult<SwaggerVisitors> {
     try {
         const DEFINITIONS_TO_IGNORE = new Set(ignore.definitions ?? []);
         const PATHS_TO_IGNORE = new Set(ignore.paths ?? []);
@@ -359,5 +352,3 @@ function walker(
         };
     }
 }
-
-export default walker;
