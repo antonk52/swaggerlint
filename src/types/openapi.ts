@@ -265,18 +265,7 @@ export type LinkObject = {
     server?: ServerObject;
 } & SpecificationExtensions;
 
-/**
- * https://swagger.io/specification/#oauthFlowObject
- */
-export type OAuthFlowObject = {
-    /**
-     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
-     */
-    authorizationUrl: string;
-    /**
-     * The token URL to be used for this flow. This MUST be in the form of a URL.
-     */
-    tokenUrl: string;
+type _CommonOauthFlowObjectFields = {
     /**
      * The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL.
      */
@@ -286,6 +275,36 @@ export type OAuthFlowObject = {
      */
     scopes: Record<string, string>;
 };
+type _OAuthFlowObjectImplicit = {
+    /**
+     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    authorizationUrl: string;
+} & _CommonOauthFlowObjectFields;
+type _OAuthFlowObjectAuthorizationCode = {
+    /**
+     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    authorizationUrl: string;
+    /**
+     * The token URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    tokenUrl: string;
+} & _CommonOauthFlowObjectFields;
+type _OAuthFlowObjectPasswordAndClientCredentials = {
+    /**
+     * The token URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    tokenUrl: string;
+} & _CommonOauthFlowObjectFields;
+
+/**
+ * https://swagger.io/specification/#oauthFlowObject
+ */
+export type OAuthFlowObject =
+    | _OAuthFlowObjectImplicit
+    | _OAuthFlowObjectAuthorizationCode
+    | _OAuthFlowObjectPasswordAndClientCredentials;
 
 /**
  * https://swagger.io/specification/#oauthFlowsObject
@@ -294,19 +313,19 @@ export type OAuthFlowsObject = {
     /**
      * Configuration for the OAuth Implicit flow
      */
-    implicit?: OAuthFlowObject;
+    implicit?: _OAuthFlowObjectImplicit;
     /**
      * Configuration for the OAuth Resource Owner Password flow
      */
-    password?: OAuthFlowObject;
+    password?: _OAuthFlowObjectPasswordAndClientCredentials;
     /**
      * Configuration for the OAuth Client Credentials flow.
      */
-    clientCredentials?: OAuthFlowObject;
+    clientCredentials?: _OAuthFlowObjectPasswordAndClientCredentials;
     /**
      * Configuration for the OAuth Authorization Code flow.
      */
-    authorizationCode?: OAuthFlowObject;
+    authorizationCode?: _OAuthFlowObjectAuthorizationCode;
 };
 
 /**
