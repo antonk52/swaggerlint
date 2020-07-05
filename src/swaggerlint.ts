@@ -5,8 +5,11 @@ import {
     SwaggerlintRuleSetting,
     SwaggerVisitors,
     OpenAPIVisitors,
+    NodeWithLocation,
     Swagger,
     OpenAPI,
+    RuleVisitorFunction,
+    OpenAPITypes,
 } from './types';
 import {isValidSwaggerVisitorName} from './utils';
 
@@ -202,19 +205,18 @@ export function swaggerlint(
             const {openapiVisitor} = rule;
             if (!openapiVisitor) return;
             Object.keys(openapiVisitor).forEach(visitorName => {
-                // TODO swagger & openapi visitor names checks
                 if (!oaUtils.isValidVisitorName(visitorName)) return;
 
-                const check = openapiVisitor[visitorName];
+                type CurrentObject = OpenAPITypes[typeof visitorName];
+                const check = openapiVisitor[
+                    visitorName
+                ] as RuleVisitorFunction<CurrentObject> | void;
+
+                if (check === undefined) return;
 
                 const specificVisitor = info.visitors[visitorName];
                 specificVisitor.forEach(
-                    /**
-                     * TODO: note the type for `node`
-                     * ts infers example object yet it can be any of the objects
-                     */
-                    // @ts-expect-error
-                    ({node, location}) => {
+                    ({node, location}: NodeWithLocation<CurrentObject>) => {
                         const report = (
                             msg: string,
                             rLocation?: string[],
@@ -224,15 +226,8 @@ export function swaggerlint(
                                 name: rule.name,
                                 location: rLocation ?? location,
                             });
-                        if (typeof check === 'function') {
-                            /**
-                             * ts manages to only infer example object here,
-                             * due to the checks above function call is supposed to be safe
-                             *
-                             * @see https://bit.ly/2MNEii7
-                             */
-                            check({node, location, setting, report});
-                        }
+
+                        check({node, location, setting, report});
                     },
                 );
             });

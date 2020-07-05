@@ -787,27 +787,29 @@ export function walkOpenAPI(
                         location,
                     });
 
-                    const OAuthFlowsObject = SecuritySchemeObject.flows;
+                    if ('flows' in SecuritySchemeObject) {
+                        const OAuthFlowsObject = SecuritySchemeObject.flows;
 
-                    visitors.OAuthFlowsObject.push({
-                        node: OAuthFlowsObject,
-                        location: [...location, 'flows'],
-                    });
-
-                    ([
-                        'implicit',
-                        'password',
-                        'clientCredentials',
-                        'authorizationCode',
-                    ] as const).forEach(prop => {
-                        const OAuthFlowObject = OAuthFlowsObject[prop];
-                        if (!OAuthFlowObject) return;
-
-                        visitors.OAuthFlowObject.push({
-                            node: OAuthFlowObject,
-                            location: [...location, 'flows', prop],
+                        visitors.OAuthFlowsObject.push({
+                            node: OAuthFlowsObject,
+                            location: [...location, 'flows'],
                         });
-                    });
+
+                        ([
+                            'implicit',
+                            'password',
+                            'clientCredentials',
+                            'authorizationCode',
+                        ] as const).forEach(prop => {
+                            const OAuthFlowObject = OAuthFlowsObject[prop];
+                            if (!OAuthFlowObject) return;
+
+                            visitors.OAuthFlowObject.push({
+                                node: OAuthFlowObject,
+                                location: [...location, 'flows', prop],
+                            });
+                        });
+                    }
                 }
             });
         }

@@ -110,7 +110,7 @@ export type SwaggerRuleVisitor = Partial<{
 }>;
 
 type OneOrNone<T> = [T] | [];
-type NodeWithLocation<T> = {
+export type NodeWithLocation<T> = {
     node: T;
     location: string[];
 };
@@ -186,6 +186,39 @@ export type OpenAPIVisitors = {
     ServerVariableObject: NodeWithLocation<OpenAPI.ServerVariableObject>[];
     TagObject: NodeWithLocation<OpenAPI.TagObject>[];
     XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
+};
+
+export type OpenAPITypes = {
+    CallbackObject: OpenAPI.CallbackObject;
+    ComponentsObject: OpenAPI.ComponentsObject;
+    ContactObject: OpenAPI.ContactObject;
+    DiscriminatorObject: OpenAPI.DiscriminatorObject;
+    EncodingObject: OpenAPI.EncodingObject;
+    ExampleObject: OpenAPI.ExampleObject;
+    ExternalDocumentationObject: OpenAPI.ExternalDocumentationObject;
+    HeaderObject: OpenAPI.HeaderObject;
+    InfoObject: OpenAPI.InfoObject;
+    LicenseObject: OpenAPI.LicenseObject;
+    LinkObject: OpenAPI.LinkObject;
+    MediaTypeObject: OpenAPI.MediaTypeObject;
+    OAuthFlowObject: OpenAPI.OAuthFlowObject;
+    OAuthFlowsObject: OpenAPI.OAuthFlowsObject;
+    OpenAPIObject: OpenAPI.OpenAPIObject;
+    OperationObject: OpenAPI.OperationObject;
+    ParameterObject: OpenAPI.ParameterObject;
+    PathItemObject: OpenAPI.PathItemObject;
+    PathsObject: OpenAPI.PathsObject;
+    ReferenceObject: OpenAPI.ReferenceObject;
+    RequestBodyObject: OpenAPI.RequestBodyObject;
+    ResponseObject: OpenAPI.ResponseObject;
+    ResponsesObject: OpenAPI.ResponsesObject;
+    SchemaObject: OpenAPI.SchemaObject;
+    SecurityRequirementObject: OpenAPI.SecurityRequirementObject;
+    SecuritySchemeObject: OpenAPI.SecuritySchemeObject;
+    ServerObject: OpenAPI.ServerObject;
+    ServerVariableObject: OpenAPI.ServerVariableObject;
+    TagObject: OpenAPI.TagObject;
+    XMLObject: OpenAPI.XMLObject;
 };
 
 export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
