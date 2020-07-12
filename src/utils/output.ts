@@ -55,12 +55,23 @@ function toOneLinerFormat(
         .join('\n');
 }
 
+export function logErrorCount(count: number): void {
+    console.log(bold(`You have ${count} error${!!count ? 's' : ''}.`));
+}
+
+type LogErrorsOptions = Partial<{
+    filename: string;
+    count: boolean;
+}>;
+
 export function logErrors(
     errors: LintError[],
-    swagger: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
+    schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
+    options: LogErrorsOptions = {},
 ): void {
-    console.log(errors.map(x => toOneLinerFormat(x, swagger)).join('\n'));
-    console.log('\n');
-    const hasErrs = !!errors.length;
-    console.log(bold(`You have ${errors.length} error${hasErrs ? 's' : ''}.`));
+    if (options.filename) console.log(`\n${bold(options.filename)}`);
+
+    console.log(errors.map(x => toOneLinerFormat(x, schema)).join('\n'));
+
+    if (options.count) logErrorCount(errors.length);
 }

@@ -2,7 +2,7 @@
 
 import minimist from 'minimist';
 import {cli} from './cli';
-import {logErrors} from './utils/output';
+import {logErrors, logErrorCount} from './utils/output';
 import {CliOptions} from './types';
 import {green} from 'kleur';
 const pkg = require('../package.json');
@@ -40,14 +40,30 @@ Options:
         process.exit(0);
     }
 
-    cli(options).then(({code, errors, schema}) => {
-        if (code === 1) {
-            logErrors(errors, schema);
+    cli(options).then(results => {
+        const exitCode = results.every(x => x.code === 0) ? 0 : 1;
+
+        if (results.length > 1) {
+            results.forEach(result => {
+                logErrors(result.errors, result.schema, {
+                    filename: result.src,
+                    count: false,
+                });
+            });
+            logErrorCount(
+                results.reduce((acc, el) => acc + el.errors.length, 0),
+            );
         } else {
-            console.log(green('No errors found'));
+            const {code, errors, schema} = results[0];
+
+            if (code === 1) {
+                logErrors(errors, schema, {count: true});
+            } else {
+                console.log(green('No errors found'));
+            }
         }
 
-        process.exit(code);
+        process.exit(exitCode);
     });
 }
 

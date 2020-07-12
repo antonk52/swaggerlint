@@ -6,28 +6,31 @@ import {log} from './utils';
 
 const name = 'swaggerlint-core';
 
-function preLintError(msg: string): CliResult {
+function preLintError({src, msg}: {src: string; msg: string}): CliResult {
     return {
+        src,
         code: 1,
         errors: [{name, msg, location: []}],
         schema: undefined,
     };
 }
 
-export async function cli(opts: CliOptions): Promise<CliResult> {
-    let errors: LintError[] = [];
+export async function cli(opts: CliOptions): Promise<CliResult[]> {
     let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
 
     const {config, error: configError} = getConfig(opts.config);
     if (configError) {
-        return preLintError(configError);
+        return [preLintError({msg: configError, src: ''})];
     }
 
-    const [urlOrPath] = opts._;
-    if (!urlOrPath) {
-        return preLintError(
-            'Neither url nor path were provided for your swagger scheme',
-        );
+    if (opts._.length === 0) {
+        return [
+            preLintError({
+                msg:
+                    'Neither url nor path were provided for your swagger scheme',
+                src: '',
+            }),
+        ];
     }
 
     /**
@@ -39,51 +42,77 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         Array.isArray(config.extends)
     ) {
         if (!config.extends.every(e => typeof e === 'string')) {
-            return preLintError('Every value in `extends` has to be a string');
+            return [
+                preLintError({
+                    msg: 'Every value in `extends` has to be a string',
+                    src: '', // TODO get config path
+                }),
+            ];
         }
     }
 
-    /**
-     * handling `swagger-lint https://...`
-     */
-    if (urlOrPath.startsWith('http')) {
-        const url = urlOrPath;
-        log(`fetching for ${url}`);
-        type FromUrl = Swagger.SwaggerObject | OpenAPI.OpenAPIObject | null;
-        const swaggerFromUrl: FromUrl = await getSwaggerByUrl(url).catch(
-            (e: string) => {
-                log('error fetching url');
-                log(e);
+    const schemaPaths = opts._.reduce((acc, schemaPath) => {
+        acc.push(schemaPath);
+        return acc;
+    }, [] as string[]);
 
-                return null;
-            },
-        );
-        if (swaggerFromUrl === null) {
-            return preLintError(
-                'Cannot fetch swagger scheme from the provided url',
-            );
-        } else {
-            log(`got response`);
-            schema = Object.freeze(swaggerFromUrl);
-            errors = swaggerlint(swaggerFromUrl, config);
-        }
-    } else {
+    const result: Promise<CliResult>[] = schemaPaths.map(async schemaPath => {
         /**
-         * handling `swagger-lint /path/to/swagger.json`
+         * handling `swagger-lint https://...`
          */
-        const result = getSwaggerByPath(urlOrPath);
+        if (schemaPath.startsWith('http')) {
+            const url = schemaPath;
+            log(`fetching for ${url}`);
+            type FromUrl = Swagger.SwaggerObject | OpenAPI.OpenAPIObject | null;
+            const swaggerFromUrl: FromUrl = await getSwaggerByUrl(url).catch(
+                (e: string) => {
+                    log('error fetching url');
+                    log(e);
 
-        if ('error' in result) {
-            return preLintError(result.error);
+                    return null;
+                },
+            );
+            if (swaggerFromUrl === null) {
+                return preLintError({
+                    msg: 'Cannot fetch swagger scheme from the provided url',
+                    src: url,
+                });
+            } else {
+                log(`got response`);
+                schema = Object.freeze(swaggerFromUrl);
+                const errors: LintError[] = swaggerlint(swaggerFromUrl, config);
+
+                const res: CliResult = {
+                    src: url,
+                    schema,
+                    errors,
+                    code: errors.length ? 1 : 0,
+                };
+
+                return res;
+            }
+        } else {
+            /**
+             * handling `swagger-lint /path/to/swagger.json`
+             */
+            const result = getSwaggerByPath(schemaPath);
+
+            if ('error' in result) {
+                return preLintError({msg: result.error, src: schemaPath});
+            }
+
+            const errors: LintError[] = swaggerlint(result.swagger, config);
+
+            const res: CliResult = {
+                src: schemaPath,
+                errors,
+                code: errors.length ? 1 : 0,
+                schema: Object.freeze(result.swagger),
+            };
+
+            return res;
         }
+    });
 
-        schema = Object.freeze(result.swagger);
-        errors = swaggerlint(result.swagger, config);
-    }
-
-    return {
-        errors,
-        code: errors.length ? 1 : 0,
-        schema,
-    };
+    return Promise.all(result);
 }

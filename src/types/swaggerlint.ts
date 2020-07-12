@@ -12,6 +12,7 @@ export type CliOptions = {
 
 type ExitCode = 0 | 1;
 export type CliResult = {
+    src: string;
     code: ExitCode;
     errors: LintError[];
     schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void;
