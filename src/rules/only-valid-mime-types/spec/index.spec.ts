@@ -1,7 +1,7 @@
 import rule from '../';
 import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
 import {swaggerlint} from '../../../';
-import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
+import {getSwaggerObject} from '../../../utils/tests';
 
 const swaggerSample: Swagger.SwaggerObject = {
     swagger: '2.0',
