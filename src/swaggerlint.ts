@@ -194,7 +194,7 @@ export function swaggerlint(
                              * @see https://bit.ly/2MNEii7
                              */
                             // @ts-expect-error
-                            check({node, location, setting, report});
+                            check({node, location, setting, report, config});
                         }
                     },
                 );
@@ -227,7 +227,7 @@ export function swaggerlint(
                                 location: rLocation ?? location,
                             });
 
-                        check({node, location, setting, report});
+                        check({node, location, setting, report, config});
                     },
                 );
             });

@@ -69,7 +69,8 @@ export type RuleVisitorFunction<T> = (a: {
     node: T;
     location: string[];
     report: Report;
-    setting: SwaggerlintRuleSetting;
+    setting: SwaggerlintRuleSetting; // TODO
+    config: SwaggerlintConfig; // TODO move this and above into rule arg
 }) => void;
 
 export type SwaggerVisitorName = keyof SwaggerRuleVisitor;

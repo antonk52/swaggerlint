@@ -15,19 +15,20 @@ function hasNonLatinCharacters(str: string): boolean {
 const rule: SwaggerlintRule = {
     name,
     swaggerVisitor: {
-        DefinitionsObject: ({node, report, location}): void => {
-            Object.keys(node).forEach(name => {
+        SchemaObject: ({report, location}): void => {
+            if (location.length === 2 && location[0] === 'definitions') {
+                const [, name] = location;
                 if (hasNonLatinCharacters(name)) {
                     report(
                         `Definition name "${name}" contains non latin characters.`,
-                        [...location, name],
+                        location,
                     );
                 }
-            });
+            }
         },
     },
     openapiVisitor: {
-        ComponentsObject: ({node, location, report}): void => {
+        ComponentsObject: ({node, location, report, config}): void => {
             ([
                 'schemas',
                 'responses',
@@ -42,6 +43,14 @@ const rule: SwaggerlintRule = {
                 const val = node[compName];
                 if (val === undefined) return;
                 Object.keys(val).forEach(recName => {
+                    // TODO prepare sets for all compNames
+                    if (
+                        (config?.ignore?.components?.[compName] || []).includes(
+                            recName,
+                        )
+                    ) {
+                        return;
+                    }
                     if (hasNonLatinCharacters(recName)) {
                         report(
                             `Definition name "${recName}" contains non latin characters.`,
