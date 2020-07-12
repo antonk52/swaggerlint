@@ -1,15 +1,22 @@
 import * as swUtils from '../utils/swagger';
+import {omit} from '../utils/common';
 
 import {Swagger, SwaggerVisitors, ConfigIgnore} from '../types';
 import {WalkerResult} from './types';
 
 export function walkSwagger(
-    swagger: Swagger.SwaggerObject,
+    rawSwagger: Swagger.SwaggerObject,
     ignore: ConfigIgnore = {},
 ): WalkerResult<SwaggerVisitors> {
     try {
-        const DEFINITIONS_TO_IGNORE = new Set(ignore.definitions ?? []);
-        const PATHS_TO_IGNORE = new Set(ignore.paths ?? []);
+        const swagger: Swagger.SwaggerObject = {
+            ...rawSwagger,
+            paths: omit(rawSwagger.paths || {}, ignore.paths || []),
+            definitions: omit(
+                rawSwagger.definitions || {},
+                ignore.definitions || [],
+            ),
+        };
 
         const {securityDefinitions, security, definitions} = swagger;
 
@@ -214,8 +221,6 @@ export function walkSwagger(
 
         // populate from paths down
         Object.keys(swagger.paths).forEach(pathUrl => {
-            if (PATHS_TO_IGNORE.has(pathUrl)) return;
-
             const path = swagger.paths[pathUrl];
 
             visitors.PathItemObject.push({
@@ -313,8 +318,6 @@ export function walkSwagger(
 
         // SchemaObjects by reference
         Object.keys(definitions || {}).forEach((name: string) => {
-            if (DEFINITIONS_TO_IGNORE.has(name)) return;
-
             const schema = (definitions || {})[name];
             if (schema) {
                 populateSchemaObject(schema, ['definitions', name]);

@@ -1,4 +1,5 @@
 import {SwaggerlintRule} from '../../types';
+import {componentsKeys} from '../../utils/openapi';
 
 const name = 'latin-definitions-only';
 
@@ -29,17 +30,7 @@ const rule: SwaggerlintRule = {
     },
     openapiVisitor: {
         ComponentsObject: ({node, location, report, config}): void => {
-            ([
-                'schemas',
-                'responses',
-                'parameters',
-                'examples',
-                'requestBodies',
-                'headers',
-                'securitySchemes',
-                'links',
-                'callbacks',
-            ] as const).forEach(compName => {
+            componentsKeys.forEach(compName => {
                 const val = node[compName];
                 if (val === undefined) return;
                 Object.keys(val).forEach(recName => {

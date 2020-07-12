@@ -56,3 +56,15 @@ export function isValidOpenAPIObject(
         ['3.0.0', '3.0.1', '3.0.2', '3.0.3'].includes(arg.openapi)
     );
 }
+
+export const componentsKeys = [
+    'schemas',
+    'responses',
+    'parameters',
+    'examples',
+    'requestBodies',
+    'headers',
+    'securitySchemes',
+    'links',
+    'callbacks',
+] as const;

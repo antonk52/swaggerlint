@@ -20,3 +20,16 @@ export function hasKey<K extends string>(
 export function isObject(arg: unknown): arg is object {
     return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
+
+export function omit<T, S extends string>(src: T, fields: S[]): Omit<T, S> {
+    const toOmit = new Set<string>(fields);
+
+    return Object.keys(src).reduce((acc, key) => {
+        if (toOmit.has(key)) return acc;
+
+        // @ts-expect-error
+        acc[key] = src[key];
+
+        return acc;
+    }, {} as Omit<T, S>);
+}

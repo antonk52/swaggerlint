@@ -1,24 +1,23 @@
 import {OpenAPI, OpenAPIVisitors, ConfigIgnore} from '../types';
 import * as oaUtils from '../utils/openapi';
+import {omit} from '../utils/common';
 import {WalkerResult} from './types';
 
 export function walkOpenAPI(
-    schema: OpenAPI.OpenAPIObject,
+    rawSchema: OpenAPI.OpenAPIObject,
     ignoreConfig: ConfigIgnore,
 ): WalkerResult<OpenAPIVisitors> {
-    const IGNORE = {
-        schemas: new Set(ignoreConfig?.components?.schemas || []),
-        responses: new Set(ignoreConfig?.components?.responses || []),
-        parameters: new Set(ignoreConfig?.components?.parameters || []),
-        examples: new Set(ignoreConfig?.components?.examples || []),
-        requestBodies: new Set(ignoreConfig?.components?.requestBodies || []),
-        headers: new Set(ignoreConfig?.components?.headers || []),
-        securitySchemes: new Set(
-            ignoreConfig?.components?.securitySchemes || [],
-        ),
-        links: new Set(ignoreConfig?.components?.links || []),
-        callbacks: new Set(ignoreConfig?.components?.callbacks || []),
-        paths: new Set(ignoreConfig.paths || []),
+    // sanitazation for ignored items
+    const schema: OpenAPI.OpenAPIObject = {
+        ...rawSchema,
+        paths: omit(rawSchema.paths || {}, ignoreConfig.paths || []),
+        components: oaUtils.componentsKeys.reduce((acc, key) => {
+            acc[key] = omit(
+                rawSchema?.components?.[key] || {},
+                ignoreConfig?.components?.[key] || [],
+            );
+            return acc;
+        }, {} as OpenAPI.ComponentsObject),
     };
 
     /* eslint-disable indent */
@@ -596,8 +595,6 @@ export function walkOpenAPI(
          */
         if (pathUrl.startsWith('x-')) return;
 
-        if (IGNORE.paths.has(pathUrl)) return;
-
         const node = schema.paths[pathUrl];
 
         if (oaUtils.isRef(node)) {
@@ -667,8 +664,6 @@ export function walkOpenAPI(
         if (schema.components.schemas) {
             const {schemas} = schema.components;
             Object.keys(schemas).forEach(schemaName => {
-                if (IGNORE.schemas.has(schemaName)) return;
-
                 const SchemaObject = schemas[schemaName];
                 const location = ['components', 'schemas', schemaName];
                 if (oaUtils.isRef(SchemaObject)) {
@@ -685,7 +680,6 @@ export function walkOpenAPI(
         if (schema.components.responses) {
             const {responses} = schema.components;
             Object.keys(responses).forEach(responseName => {
-                if (IGNORE.responses.has(responseName)) return;
                 const ResponseObject = responses[responseName];
                 const location = ['components', 'responses', responseName];
                 if (oaUtils.isRef(ResponseObject)) {
@@ -702,7 +696,6 @@ export function walkOpenAPI(
         if (schema.components.parameters) {
             const {parameters} = schema.components;
             Object.keys(parameters).forEach(paramName => {
-                if (IGNORE.parameters.has(paramName)) return;
                 const ParameterObject = parameters[paramName];
                 const location = ['components', 'parameters', paramName];
                 if (oaUtils.isRef(ParameterObject)) {
@@ -719,7 +712,6 @@ export function walkOpenAPI(
         if (schema.components.examples) {
             const {examples} = schema.components;
             Object.keys(examples).forEach(exampleName => {
-                if (IGNORE.examples.has(exampleName)) return;
                 const ExampleObject = examples[exampleName];
                 const location = ['components', 'examples', exampleName];
                 if (oaUtils.isRef(ExampleObject)) {
@@ -739,7 +731,6 @@ export function walkOpenAPI(
         if (schema.components.requestBodies) {
             const {requestBodies} = schema.components;
             Object.keys(requestBodies).forEach(reqBodyName => {
-                if (IGNORE.requestBodies.has(reqBodyName)) return;
                 const RequestBodyObject = requestBodies[reqBodyName];
                 const location = ['components', 'requestBodies', reqBodyName];
                 if (oaUtils.isRef(RequestBodyObject)) {
@@ -756,7 +747,6 @@ export function walkOpenAPI(
         if (schema.components.headers) {
             const {headers} = schema.components;
             Object.keys(headers).forEach(headerName => {
-                if (IGNORE.headers.has(headerName)) return;
                 const HeaderObject = headers[headerName];
                 const location = ['components', 'headers', headerName];
                 if (oaUtils.isRef(HeaderObject)) {
@@ -773,7 +763,6 @@ export function walkOpenAPI(
         if (schema.components.securitySchemes) {
             const {securitySchemes} = schema.components;
             Object.keys(securitySchemes).forEach(ssName => {
-                if (IGNORE.securitySchemes.has(ssName)) return;
                 const SecuritySchemeObject = securitySchemes[ssName];
                 const location = ['components', 'securitySchemes', ssName];
                 if (oaUtils.isRef(SecuritySchemeObject)) {
@@ -817,7 +806,6 @@ export function walkOpenAPI(
         if (schema.components.links) {
             const {links} = schema.components;
             Object.keys(links).forEach(linkName => {
-                if (IGNORE.links.has(linkName)) return;
                 const LinkObject = links[linkName];
                 const location = ['components', 'links', linkName];
                 if (oaUtils.isRef(LinkObject)) {
@@ -837,7 +825,6 @@ export function walkOpenAPI(
         if (schema.components.callbacks) {
             const {callbacks} = schema.components;
             Object.keys(callbacks).forEach(cbName => {
-                if (IGNORE.callbacks.has(cbName)) return;
                 const CallbackObject = callbacks[cbName];
                 const location = ['components', 'links', cbName];
                 if (oaUtils.isRef(CallbackObject)) {
