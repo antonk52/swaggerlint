@@ -40,9 +40,7 @@ Options:
         process.exit(0);
     }
 
-    cli(options).then(results => {
-        const exitCode = results.every(x => x.code === 0) ? 0 : 1;
-
+    cli(options).then(({results, code}) => {
         if (results.length > 1) {
             results.forEach(result => {
                 logErrors(result.errors, result.schema, {
@@ -50,11 +48,18 @@ Options:
                     count: false,
                 });
             });
-            logErrorCount(
-                results.reduce((acc, el) => acc + el.errors.length, 0),
+
+            const totalErros = results.reduce(
+                (acc, el) => acc + el.errors.length,
+                0,
             );
+            if (totalErros > 0) {
+                logErrorCount(totalErros);
+            } else {
+                console.log(green('No errors found'));
+            }
         } else {
-            const {code, errors, schema} = results[0];
+            const {errors, schema} = results[0];
 
             if (code === 1) {
                 logErrors(errors, schema, {count: true});
@@ -63,7 +68,7 @@ Options:
             }
         }
 
-        process.exit(exitCode);
+        process.exit(code);
     });
 }
 

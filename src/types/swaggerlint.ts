@@ -11,11 +11,14 @@ export type CliOptions = {
 };
 
 type ExitCode = 0 | 1;
-export type CliResult = {
+export type EntryResult = {
     src: string;
-    code: ExitCode;
     errors: LintError[];
     schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void;
+};
+export type CliResult = {
+    code: ExitCode;
+    results: EntryResult[];
 };
 
 type AbstractObject = Record<string, unknown>;

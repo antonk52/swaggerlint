@@ -1,36 +1,48 @@
 import {swaggerlint} from './swaggerlint';
-import {LintError, CliOptions, CliResult, Swagger, OpenAPI} from './types';
+import {
+    LintError,
+    CliOptions,
+    CliResult,
+    EntryResult,
+    Swagger,
+    OpenAPI,
+} from './types';
 import {getConfig} from './utils/config';
 import {getSwaggerByPath, getSwaggerByUrl} from './utils/swaggerfile';
 import {log} from './utils';
 
 const name = 'swaggerlint-core';
 
-function preLintError({src, msg}: {src: string; msg: string}): CliResult {
+function preLintError({src, msg}: {src: string; msg: string}): EntryResult {
     return {
         src,
-        code: 1,
         errors: [{name, msg, location: []}],
         schema: undefined,
     };
 }
 
-export async function cli(opts: CliOptions): Promise<CliResult[]> {
+export async function cli(opts: CliOptions): Promise<CliResult> {
     let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
 
     const {config, error: configError} = getConfig(opts.config);
     if (configError) {
-        return [preLintError({msg: configError, src: ''})];
+        return {
+            code: 1,
+            results: [preLintError({msg: configError, src: ''})],
+        };
     }
 
     if (opts._.length === 0) {
-        return [
-            preLintError({
-                msg:
-                    'Neither url nor path were provided for your swagger scheme',
-                src: '',
-            }),
-        ];
+        return {
+            code: 1,
+            results: [
+                preLintError({
+                    msg:
+                        'Neither url nor path were provided for your swagger scheme',
+                    src: '',
+                }),
+            ],
+        };
     }
 
     /**
@@ -42,12 +54,15 @@ export async function cli(opts: CliOptions): Promise<CliResult[]> {
         Array.isArray(config.extends)
     ) {
         if (!config.extends.every(e => typeof e === 'string')) {
-            return [
-                preLintError({
-                    msg: 'Every value in `extends` has to be a string',
-                    src: '', // TODO get config path
-                }),
-            ];
+            return {
+                code: 1,
+                results: [
+                    preLintError({
+                        msg: 'Every value in `extends` has to be a string',
+                        src: '', // TODO get config path
+                    }),
+                ],
+            };
         }
     }
 
@@ -56,7 +71,7 @@ export async function cli(opts: CliOptions): Promise<CliResult[]> {
         return acc;
     }, [] as string[]);
 
-    const result: Promise<CliResult>[] = schemaPaths.map(async schemaPath => {
+    const result: Promise<EntryResult>[] = schemaPaths.map(async schemaPath => {
         /**
          * handling `swagger-lint https://...`
          */
@@ -82,11 +97,10 @@ export async function cli(opts: CliOptions): Promise<CliResult[]> {
                 schema = Object.freeze(swaggerFromUrl);
                 const errors: LintError[] = swaggerlint(swaggerFromUrl, config);
 
-                const res: CliResult = {
+                const res: EntryResult = {
                     src: url,
                     schema,
                     errors,
-                    code: errors.length ? 1 : 0,
                 };
 
                 return res;
@@ -103,10 +117,9 @@ export async function cli(opts: CliOptions): Promise<CliResult[]> {
 
             const errors: LintError[] = swaggerlint(result.swagger, config);
 
-            const res: CliResult = {
+            const res: EntryResult = {
                 src: schemaPath,
                 errors,
-                code: errors.length ? 1 : 0,
                 schema: Object.freeze(result.swagger),
             };
 
@@ -114,5 +127,10 @@ export async function cli(opts: CliOptions): Promise<CliResult[]> {
         }
     });
 
-    return Promise.all(result);
+    const results = await Promise.all(result);
+
+    return {
+        results,
+        code: results.every(x => x.errors.length === 0) ? 0 : 1,
+    };
 }
