@@ -16,6 +16,7 @@ lib/**/*.ts
 example/
 .gitignore
 .editorconfig
+.eslintignore
 
 src/**/*
 test
