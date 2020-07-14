@@ -70,8 +70,7 @@ describe('utils/config', () => {
         it('returns config by path', () => {
             const config = {rules: {userRule: true}};
 
-            // @ts-ignore
-            cosmiconfigSync.mockImplementationOnce(() => ({
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
                 load: (): {config: SwaggerlintConfig} => ({config}),
             }));
 
@@ -92,8 +91,7 @@ describe('utils/config', () => {
         });
 
         it('returns an error if provided path does not exist', () => {
-            // @ts-ignore
-            cosmiconfigSync.mockImplementationOnce(() => ({
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
                 load: (): {config: null} => ({config: null}),
             }));
 
@@ -108,8 +106,9 @@ describe('utils/config', () => {
                 config,
             }));
 
-            // @ts-ignore
-            cosmiconfigSync.mockImplementationOnce(() => ({search}));
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
+                search,
+            }));
 
             const result = getConfig();
             const expected = {
@@ -133,8 +132,9 @@ describe('utils/config', () => {
             const defaultConfig = require('../../defaultConfig');
             const search = jest.fn(() => ({config: null}));
 
-            // @ts-ignore
-            cosmiconfigSync.mockImplementationOnce(() => ({search}));
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
+                search,
+            }));
 
             const result = getConfig();
 

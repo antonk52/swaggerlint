@@ -9,7 +9,7 @@ function shallowStringify(
 ): string {
     let topLevelObject = true;
     const target = location.reduce(
-        // @ts-expect-error
+        // @ts-expect-error: acc is any and it is okay
         (acc, key) => acc?.[key],
         schema,
     );
