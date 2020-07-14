@@ -29,19 +29,11 @@ const rule: SwaggerlintRule = {
         },
     },
     openapiVisitor: {
-        ComponentsObject: ({node, location, report, config}): void => {
+        ComponentsObject: ({node, location, report}): void => {
             componentsKeys.forEach(compName => {
                 const val = node[compName];
                 if (val === undefined) return;
                 Object.keys(val).forEach(recName => {
-                    // TODO prepare sets for all compNames
-                    if (
-                        (config?.ignore?.components?.[compName] || []).includes(
-                            recName,
-                        )
-                    ) {
-                        return;
-                    }
                     if (hasNonLatinCharacters(recName)) {
                         report(
                             `Definition name "${recName}" contains non latin characters.`,
