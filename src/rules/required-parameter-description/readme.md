@@ -10,3 +10,29 @@ module.exports = {
     },
 };
 ```
+
+Examples of valid parameters in OperationObject
+
+```yaml
+parameters:
+- name: "id"
+  in: "query"
+  description: "unique identifier"
+  required: true
+  type: "string"
+```
+
+Examples of **invalid** parameters in OperationObject
+
+```yaml
+parameters:
+- name: "id"
+  in: "query"
+  required: true
+  type: "string"
+- name: "type"
+  in: "query"
+  description: ""
+  required: true
+  type: "string"
+```
