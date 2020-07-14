@@ -27,7 +27,7 @@ export function omit<T, S extends string>(src: T, fields: S[]): Omit<T, S> {
     return Object.keys(src).reduce((acc, key) => {
         if (toOmit.has(key)) return acc;
 
-        // @ts-expect-error
+        // @ts-expect-error: shallow copying an object
         acc[key] = src[key];
 
         return acc;

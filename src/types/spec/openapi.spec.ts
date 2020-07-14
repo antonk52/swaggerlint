@@ -5,8 +5,6 @@ import {OpenAPI} from '../';
  * @see https://swagger.io/specification/
  */
 
-/* eslint-disable @typescript-eslint/camelcase */
-
 describe('OpenAPI types', () => {
     it('InfoObject', () => {
         const InfoObject: OpenAPI.InfoObject = {

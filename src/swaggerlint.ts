@@ -191,9 +191,8 @@ export function swaggerlint(
                              * ts manages to only infer example object here,
                              * due to the checks above function call is supposed to be safe
                              *
-                             * @see https://bit.ly/2MNEii7
                              */
-                            // @ts-expect-error
+                            // @ts-expect-error: @see https://bit.ly/2MNEii7
                             check({node, location, setting, report, config});
                         }
                     },

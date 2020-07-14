@@ -57,7 +57,7 @@ describe(`rule "${rule.name}"`, () => {
         });
 
         it('should error for a tag missing description', () => {
-            // @ts-expect-error
+            // @ts-expect-error: not necessary to recreate full object
             const oMod: Partial<OpenAPI.OpenAPIObject> = {...mod};
             const schema = getOpenAPIObject(oMod);
             const result = swaggerlint(schema, config);

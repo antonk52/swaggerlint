@@ -522,7 +522,8 @@ export type ParameterObject =
 /**
  * https://swagger.io/specification/#headerObject
  */
-export type HeaderObject = _MakeParam<{}>;
+export type HeaderObject = _CommonParameterObjectFields &
+    (_SimpleParam | _ComplexParam);
 
 /**
  * https://swagger.io/specification/#responseObject
