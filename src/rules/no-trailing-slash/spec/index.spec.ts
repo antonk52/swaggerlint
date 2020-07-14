@@ -1,16 +1,36 @@
 import rule from '../';
-import {Swagger, SwaggerlintConfig} from '../../../types';
+import {SwaggerlintConfig} from '../../../types';
 import {swaggerlint} from '../../../';
-import _merge from 'lodash.merge';
+import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
 
-const swaggerSample: Swagger.SwaggerObject = {
-    swagger: '2.0',
-    info: {
-        title: 'stub',
-        version: '1.0',
+// eslint-disable-next-line
+const pathsWithSlashes: any = {
+    paths: {
+        '/url/': {
+            get: {
+                responses: {
+                    default: {
+                        description: 'default response',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                },
+            },
+        },
+        '/correct-url': {
+            get: {
+                responses: {
+                    default: {
+                        description: 'default response',
+                        schema: {
+                            type: 'string',
+                        },
+                    },
+                },
+            },
+        },
     },
-    paths: {},
-    tags: [],
 };
 
 describe(`rule "${rule.name}"`, () => {
@@ -19,69 +39,81 @@ describe(`rule "${rule.name}"`, () => {
             [rule.name]: true,
         },
     };
+    describe('swagger', () => {
+        it('should NOT error for an empty swagger sample', () => {
+            const result = swaggerlint(getSwaggerObject({}), config);
 
-    it('should NOT error for an empty swagger sample', () => {
-        const result = swaggerlint(swaggerSample, config);
+            expect(result).toEqual([]);
+        });
 
-        expect(result).toEqual([]);
+        it('should error for a url ending with a slash', () => {
+            const modConfig = getSwaggerObject(pathsWithSlashes);
+            const result = swaggerlint(modConfig, config);
+            const expected = [
+                {
+                    msg: 'Url cannot end with a slash "/url/".',
+                    name: 'no-trailing-slash',
+                    location: ['paths', '/url/'],
+                },
+            ];
+
+            expect(result).toEqual(expected);
+        });
+
+        it('should error for a host url ending with a slash', () => {
+            const mod = {
+                host: 'http://some.url/',
+            };
+            const modConfig = getSwaggerObject(mod);
+            const result = swaggerlint(modConfig, config);
+            const expected = [
+                {
+                    msg: 'Host url cannot end with a slash.',
+                    name: 'no-trailing-slash',
+                    location: ['host'],
+                },
+            ];
+
+            expect(result).toEqual(expected);
+        });
     });
 
-    it('should error for a url ending with a slash', () => {
-        const mod = {
-            paths: {
-                '/url/': {
-                    get: {
-                        responses: {
-                            default: {
-                                description: 'default response',
-                                schema: {
-                                    type: 'string',
-                                },
-                            },
-                        },
-                    },
+    describe('OpenAPI', () => {
+        it('should NOT error for an empty swagger sample', () => {
+            const result = swaggerlint(getOpenAPIObject({}), config);
+
+            expect(result).toEqual([]);
+        });
+
+        it('should error for a url ending with a slash', () => {
+            const modConfig = getOpenAPIObject(pathsWithSlashes);
+            const result = swaggerlint(modConfig, config);
+            const expected = [
+                {
+                    msg: 'Url cannot end with a slash "/url/".',
+                    name: 'no-trailing-slash',
+                    location: ['paths', '/url/'],
                 },
-                '/correct-url': {
-                    get: {
-                        responses: {
-                            default: {
-                                description: 'default response',
-                                schema: {
-                                    type: 'string',
-                                },
-                            },
-                        },
-                    },
+            ];
+
+            expect(result).toEqual(expected);
+        });
+
+        it('should error for a host url ending with a slash', () => {
+            const mod = {
+                servers: [{url: 'http://some.url/'}],
+            };
+            const modConfig = getOpenAPIObject(mod);
+            const result = swaggerlint(modConfig, config);
+            const expected = [
+                {
+                    msg: 'Server url cannot end with a slash.',
+                    name: 'no-trailing-slash',
+                    location: ['servers', '0', 'url'],
                 },
-            },
-        };
-        const modConfig = _merge(mod, swaggerSample);
-        const result = swaggerlint(modConfig, config);
-        const expected = [
-            {
-                msg: 'Url cannot end with a slash "/url/".',
-                name: 'no-trailing-slash',
-                location: ['paths', '/url/'],
-            },
-        ];
+            ];
 
-        expect(result).toEqual(expected);
-    });
-
-    it('should error for a host url ending with a slash', () => {
-        const mod = {
-            host: 'http://some.url/',
-        };
-        const modConfig = _merge(mod, swaggerSample);
-        const result = swaggerlint(modConfig, config);
-        const expected = [
-            {
-                msg: 'Host url cannot end with a slash.',
-                name: 'no-trailing-slash',
-                location: ['host'],
-            },
-        ];
-
-        expect(result).toEqual(expected);
+            expect(result).toEqual(expected);
+        });
     });
 });

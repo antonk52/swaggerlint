@@ -1,31 +1,22 @@
-import {isRef} from './utils';
+import * as swUtils from '../utils/swagger';
+import {omit} from '../utils/common';
 
-import {Swagger, SwaggerVisitors, LintError, ConfigIgnore} from './types';
+import {Swagger, SwaggerVisitors, ConfigIgnore} from '../types';
+import {WalkerResult} from './types';
 
-const httpsMethods: ['get', 'put', 'post', 'delete', 'options', 'head'] = [
-    'get',
-    'put',
-    'post',
-    'delete',
-    'options',
-    'head',
-];
-
-type WalkerResult =
-    | {
-          visitors: SwaggerVisitors;
-      }
-    | {
-          errors: LintError[];
-      };
-
-function walker(
-    swagger: Swagger.SwaggerObject,
+export function walkSwagger(
+    rawSwagger: Swagger.SwaggerObject,
     ignore: ConfigIgnore = {},
-): WalkerResult {
+): WalkerResult<SwaggerVisitors> {
     try {
-        const DEFINITIONS_TO_IGNORE = new Set(ignore.definitions ?? []);
-        const PATHS_TO_IGNORE = new Set(ignore.paths ?? []);
+        const swagger: Swagger.SwaggerObject = {
+            ...rawSwagger,
+            paths: omit(rawSwagger.paths || {}, ignore.paths || []),
+            definitions: omit(
+                rawSwagger.definitions || {},
+                ignore.definitions || [],
+            ),
+        };
 
         const {securityDefinitions, security, definitions} = swagger;
 
@@ -99,7 +90,7 @@ function walker(
             schema: Swagger.SchemaObject,
             path: string[],
         ): void {
-            if (isRef(schema)) {
+            if (swUtils.isRef(schema)) {
                 return;
             }
 
@@ -185,7 +176,7 @@ function walker(
             response: Swagger.ResponseObject | Swagger.ReferenceObject,
             path: string[],
         ): void {
-            if (isRef(response)) {
+            if (swUtils.isRef(response)) {
                 return;
             }
 
@@ -230,8 +221,6 @@ function walker(
 
         // populate from paths down
         Object.keys(swagger.paths).forEach(pathUrl => {
-            if (PATHS_TO_IGNORE.has(pathUrl)) return;
-
             const path = swagger.paths[pathUrl];
 
             visitors.PathItemObject.push({
@@ -239,7 +228,7 @@ function walker(
                 location: ['paths', pathUrl],
             });
 
-            httpsMethods.forEach(method => {
+            swUtils.httpMethods.forEach(method => {
                 const operationObject = path[method];
 
                 if (operationObject) {
@@ -262,7 +251,7 @@ function walker(
 
                     if (operationObject.parameters) {
                         operationObject.parameters.forEach((parameter, i) => {
-                            if (isRef(parameter)) {
+                            if (swUtils.isRef(parameter)) {
                                 return;
                             }
                             populateParams(parameter, [
@@ -314,7 +303,7 @@ function walker(
 
             if (path.parameters) {
                 path.parameters.forEach((parameter, i) => {
-                    if (isRef(parameter)) {
+                    if (swUtils.isRef(parameter)) {
                         return;
                     }
                     populateParams(parameter, [
@@ -329,8 +318,6 @@ function walker(
 
         // SchemaObjects by reference
         Object.keys(definitions || {}).forEach((name: string) => {
-            if (DEFINITIONS_TO_IGNORE.has(name)) return;
-
             const schema = (definitions || {})[name];
             if (schema) {
                 populateSchemaObject(schema, ['definitions', name]);
@@ -368,5 +355,3 @@ function walker(
         };
     }
 }
-
-export default walker;

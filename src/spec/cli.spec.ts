@@ -38,12 +38,18 @@ describe('cli function', () => {
 
         expect(result).toEqual({
             code: 1,
-            errors: [
+            results: [
                 {
-                    name,
-                    location: [],
-                    msg:
-                        'Neither url nor path were provided for your swagger scheme',
+                    src: '',
+                    schema: undefined,
+                    errors: [
+                        {
+                            name,
+                            location: [],
+                            msg:
+                                'Neither url nor path were provided for your swagger scheme',
+                        },
+                    ],
                 },
             ],
         });
@@ -65,12 +71,18 @@ describe('cli function', () => {
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
             code: 1,
-            errors: [
+            results: [
                 {
-                    msg:
-                        'Swaggerlint config with a provided path does not exits.',
-                    location: [],
-                    name,
+                    src: '',
+                    schema: undefined,
+                    errors: [
+                        {
+                            msg:
+                                'Swaggerlint config with a provided path does not exits.',
+                            location: [],
+                            name,
+                        },
+                    ],
                 },
             ],
         });
@@ -99,8 +111,13 @@ describe('cli function', () => {
         ]);
         expect(result).toEqual({
             code: 0,
-            errors: [],
-            schema,
+            results: [
+                {
+                    src: 'some-path',
+                    errors: [],
+                    schema,
+                },
+            ],
         });
     });
 
@@ -120,11 +137,17 @@ describe('cli function', () => {
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
             code: 1,
-            errors: [
+            results: [
                 {
-                    msg: error,
-                    location: [],
-                    name,
+                    src: path,
+                    schema: undefined,
+                    errors: [
+                        {
+                            msg: error,
+                            location: [],
+                            name,
+                        },
+                    ],
                 },
             ],
         });
@@ -145,11 +168,18 @@ describe('cli function', () => {
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(result).toEqual({
             code: 1,
-            errors: [
+            results: [
                 {
-                    msg: 'Cannot fetch swagger scheme from the provided url',
-                    location: [],
-                    name,
+                    src: url,
+                    schema: undefined,
+                    errors: [
+                        {
+                            msg:
+                                'Cannot fetch swagger scheme from the provided url',
+                            location: [],
+                            name,
+                        },
+                    ],
                 },
             ],
         });
@@ -173,8 +203,13 @@ describe('cli function', () => {
         ]);
         expect(result).toEqual({
             code: 0,
-            errors: [],
-            schema: {},
+            results: [
+                {
+                    src: url,
+                    errors: [],
+                    schema: {},
+                },
+            ],
         });
     });
 
@@ -197,8 +232,48 @@ describe('cli function', () => {
         ]);
         expect(result).toEqual({
             code: 1,
-            errors,
-            schema: {},
+            results: [
+                {
+                    src: url,
+                    errors,
+                    schema: {},
+                },
+            ],
+        });
+    });
+
+    it('returns errors for both passed schemas', async () => {
+        const {swaggerlint} = require('../index');
+        const {getConfig} = require('../utils/config');
+        const {getSwaggerByUrl} = require('../utils/swaggerfile');
+        const errors = [{name: 'foo', location: [], msg: 'bar'}];
+
+        getConfig.mockReturnValueOnce({config: {rules: 'lookedup-config'}});
+        swaggerlint.mockImplementation(() => errors);
+        getSwaggerByUrl.mockImplementation(() => Promise.resolve({}));
+
+        const url = 'https://lol.org/openapi';
+        const result = await cli({_: [url, url]});
+
+        expect(getSwaggerByUrl.mock.calls).toEqual([[url], [url]]);
+        expect(swaggerlint.mock.calls).toEqual([
+            [{}, {rules: 'lookedup-config'}],
+            [{}, {rules: 'lookedup-config'}],
+        ]);
+        expect(result).toEqual({
+            code: 1,
+            results: [
+                {
+                    src: url,
+                    errors,
+                    schema: {},
+                },
+                {
+                    src: url,
+                    errors,
+                    schema: {},
+                },
+            ],
         });
     });
 });

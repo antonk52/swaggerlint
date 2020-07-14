@@ -1,13 +1,33 @@
 import {SwaggerlintRule} from '../../types';
-import {isRef} from '../../utils';
+import {isRef} from '../../utils/swagger';
 
 const name = 'no-empty-object-type';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SchemaObject: ({node, report}): void => {
             if (isRef(node)) return;
+            if (node.type !== 'object') return;
+
+            if ('properties' in node && node.properties) {
+                return;
+            } else if ('allOf' in node && node.allOf) {
+                return;
+            } else if (
+                'additionalProperties' in node &&
+                node.additionalProperties
+            ) {
+                return;
+            } else {
+                report(
+                    `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,
+                );
+            }
+        },
+    },
+    openapiVisitor: {
+        SchemaObject: ({node, report}): void => {
             if (node.type !== 'object') return;
 
             if ('properties' in node && node.properties) {

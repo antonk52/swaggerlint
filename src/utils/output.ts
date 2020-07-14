@@ -1,5 +1,4 @@
 import {LintError, Swagger, OpenAPI} from '../types';
-import _get from 'lodash.get';
 import {bold, red, dim, grey} from 'kleur';
 
 const PAD = 6;
@@ -9,9 +8,13 @@ function shallowStringify(
     location: string[],
 ): string {
     let topLevelObject = true;
-    const objToStringify = _get(schema, location);
+    const target = location.reduce(
+        // @ts-expect-error
+        (acc, key) => acc?.[key],
+        schema,
+    );
     const stringifiedObj = JSON.stringify(
-        objToStringify,
+        target,
         (_, value) => {
             if (Array.isArray(value)) {
                 return `Array(${value.length})`;
@@ -52,12 +55,23 @@ function toOneLinerFormat(
         .join('\n');
 }
 
+export function logErrorCount(count: number): void {
+    console.log(bold(`You have ${count} error${!!count ? 's' : ''}.`));
+}
+
+type LogErrorsOptions = Partial<{
+    filename: string;
+    count: boolean;
+}>;
+
 export function logErrors(
     errors: LintError[],
-    swagger: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
+    schema: Swagger.SwaggerObject | OpenAPI.OpenAPIObject | void,
+    options: LogErrorsOptions = {},
 ): void {
-    console.log(errors.map(x => toOneLinerFormat(x, swagger)).join('\n'));
-    console.log('\n');
-    const hasErrs = !!errors.length;
-    console.log(bold(`You have ${errors.length} error${hasErrs ? 's' : ''}.`));
+    if (options.filename) console.log(`\n${bold(options.filename)}`);
+
+    console.log(errors.map(x => toOneLinerFormat(x, schema)).join('\n'));
+
+    if (options.count) logErrorCount(errors.length);
 }

@@ -49,20 +49,21 @@ type _CommonSchemaObjectFields = {
      * Default value is `false`.
      */
     writeOnly?: boolean;
-    xml: XMLObject;
+    xml?: XMLObject;
     externalDocs?: ExternalDocumentationObject;
     example?: unknown;
     /**
      * Default value is `false`.
      */
     deprecated?: boolean;
-    required?: boolean;
     default?: unknown;
 };
 
-type _MakeSchemaObject<O extends Record<string, unknown>> =
-    | ReferenceObject
-    | (_CommonSchemaObjectFields & O);
+type _MakeSchemaObject<O extends object> = _CommonSchemaObjectFields &
+    SpecificationExtensions &
+    O;
+
+type _RefOr<O> = ReferenceObject | O;
 
 type _SchemaStringObject = _MakeSchemaObject<{
     type: 'string';
@@ -71,9 +72,9 @@ type _SchemaStringObject = _MakeSchemaObject<{
     minLength?: number;
     pattern?: string;
     enum?: string[];
-    allOf?: _SchemaStringObject[];
-    oneOf?: _SchemaStringObject[];
-    anyOf?: _SchemaStringObject[];
+    allOf?: _RefOr<_SchemaStringObject>[];
+    oneOf?: _RefOr<_SchemaStringObject>[];
+    anyOf?: _RefOr<_SchemaStringObject>[];
 }>;
 
 type _CommonNumericSchemObjectFields = {
@@ -88,9 +89,9 @@ type _SchemaIntegerObject = _MakeSchemaObject<
     {
         type: 'integer';
         format?: 'int32' | 'int64';
-        allOf?: _SchemaIntegerObject[];
-        oneOf?: _SchemaIntegerObject[];
-        anyOf?: _SchemaIntegerObject[];
+        allOf?: _RefOr<_SchemaIntegerObject>[];
+        oneOf?: _RefOr<_SchemaIntegerObject>[];
+        anyOf?: _RefOr<_SchemaIntegerObject>[];
     } & _CommonNumericSchemObjectFields
 >;
 
@@ -98,17 +99,17 @@ type _SchemaNumberObject = _MakeSchemaObject<
     {
         type: 'number';
         format?: 'float' | 'double';
-        allOf?: _SchemaNumberObject[];
-        oneOf?: _SchemaNumberObject[];
-        anyOf?: _SchemaNumberObject[];
+        allOf?: _RefOr<_SchemaNumberObject>[];
+        oneOf?: _RefOr<_SchemaNumberObject>[];
+        anyOf?: _RefOr<_SchemaNumberObject>[];
     } & _CommonNumericSchemObjectFields
 >;
 
 type _SchemaBooleanObject = _MakeSchemaObject<{
     type: 'boolean';
-    allOf?: _SchemaBooleanObject[];
-    oneOf?: _SchemaBooleanObject[];
-    anyOf?: _SchemaBooleanObject[];
+    allOf?: _RefOr<_SchemaBooleanObject>[];
+    oneOf?: _RefOr<_SchemaBooleanObject>[];
+    anyOf?: _RefOr<_SchemaBooleanObject>[];
 }>;
 
 type _SchemaArrayObject = _MakeSchemaObject<{
@@ -116,21 +117,36 @@ type _SchemaArrayObject = _MakeSchemaObject<{
     maxItems?: number;
     minItems?: number;
     uniqueItems?: number;
-    items: SchemaObject;
-    allOf?: _SchemaArrayObject[];
-    oneOf?: _SchemaArrayObject[];
-    anyOf?: _SchemaArrayObject[];
+    items: _RefOr<SchemaObject>;
+    allOf?: _RefOr<_SchemaArrayObject>[];
+    oneOf?: _RefOr<_SchemaArrayObject>[];
+    anyOf?: _RefOr<_SchemaArrayObject>[];
 }>;
 
 type _SchemaObjectObject = _MakeSchemaObject<{
     type: 'object';
-    properties: SchemaObject[];
+    properties?: Record<string, _RefOr<SchemaObject>>;
     required?: string[];
-    additionalProperties?: SchemaObject;
-    allOf?: _SchemaObjectObject[];
-    oneOf?: _SchemaObjectObject[];
-    anyOf?: _SchemaObjectObject[];
+    additionalProperties?: boolean | SchemaObject | _RefOr<SchemaObject>;
+    allOf?: _RefOr<_SchemaObjectObject>[];
+    oneOf?: _RefOr<_SchemaObjectObject>[];
+    anyOf?: _RefOr<_SchemaObjectObject>[];
 }>;
+
+const SchemaObject: _SchemaObjectObject = {
+    type: 'object',
+    properties: {
+        name: {
+            description: 'Updated name of the pet',
+            type: 'string',
+        },
+        status: {
+            description: 'Updated status of the pet',
+            type: 'string',
+        },
+    },
+    required: ['status'],
+};
 
 /**
  * https://swagger.io/specification/#schemaObject
@@ -263,18 +279,7 @@ export type LinkObject = {
     server?: ServerObject;
 } & SpecificationExtensions;
 
-/**
- * https://swagger.io/specification/#oauthFlowObject
- */
-export type OAuthFlowObject = {
-    /**
-     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
-     */
-    authorizationUrl: string;
-    /**
-     * The token URL to be used for this flow. This MUST be in the form of a URL.
-     */
-    tokenUrl: string;
+type _CommonOauthFlowObjectFields = {
     /**
      * The URL to be used for obtaining refresh tokens. This MUST be in the form of a URL.
      */
@@ -284,6 +289,36 @@ export type OAuthFlowObject = {
      */
     scopes: Record<string, string>;
 };
+type _OAuthFlowObjectImplicit = {
+    /**
+     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    authorizationUrl: string;
+} & _CommonOauthFlowObjectFields;
+type _OAuthFlowObjectAuthorizationCode = {
+    /**
+     * The authorization URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    authorizationUrl: string;
+    /**
+     * The token URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    tokenUrl: string;
+} & _CommonOauthFlowObjectFields;
+type _OAuthFlowObjectPasswordAndClientCredentials = {
+    /**
+     * The token URL to be used for this flow. This MUST be in the form of a URL.
+     */
+    tokenUrl: string;
+} & _CommonOauthFlowObjectFields;
+
+/**
+ * https://swagger.io/specification/#oauthFlowObject
+ */
+export type OAuthFlowObject =
+    | _OAuthFlowObjectImplicit
+    | _OAuthFlowObjectAuthorizationCode
+    | _OAuthFlowObjectPasswordAndClientCredentials;
 
 /**
  * https://swagger.io/specification/#oauthFlowsObject
@@ -292,26 +327,27 @@ export type OAuthFlowsObject = {
     /**
      * Configuration for the OAuth Implicit flow
      */
-    implicit?: OAuthFlowObject;
+    implicit?: _OAuthFlowObjectImplicit;
     /**
      * Configuration for the OAuth Resource Owner Password flow
      */
-    password?: OAuthFlowObject;
+    password?: _OAuthFlowObjectPasswordAndClientCredentials;
     /**
      * Configuration for the OAuth Client Credentials flow.
      */
-    clientCredentials?: OAuthFlowObject;
+    clientCredentials?: _OAuthFlowObjectPasswordAndClientCredentials;
     /**
      * Configuration for the OAuth Authorization Code flow.
      */
-    authorizationCode?: OAuthFlowObject;
+    authorizationCode?: _OAuthFlowObjectAuthorizationCode;
 };
 
 /**
  * https://swagger.io/specification/#securitySchemeObject
  */
-export type SecuritySchemeObject = {
-    type: string;
+
+type _SecuritySchemeObjectApiKey = {
+    type: 'apiKey';
     description?: string;
     /**
      * The name of the header, query or cookie parameter to be used.
@@ -321,6 +357,10 @@ export type SecuritySchemeObject = {
      * The location of the API key.
      */
     in: 'query' | 'header' | 'cookie';
+};
+type _SecuritySchemeObjectHttp = {
+    type: 'http';
+    description?: string;
     /**
      * The name of the HTTP Authorization scheme to be used in the Authorization header as defined in RFC7235. The values used SHOULD be registered in the IANA Authentication Scheme registry.
      */
@@ -329,12 +369,28 @@ export type SecuritySchemeObject = {
      * A hint to the client to identify how the bearer token is formatted. Bearer tokens are usually generated by an authorization server, so this information is primarily for documentation purposes.
      */
     bearerFormat?: string;
+};
+type _SecuritySchemeObjectOauth2 = {
+    type: 'oauth2';
+    description?: string;
     /**
      * An object containing configuration information for the flow types supported.
      */
     flows: OAuthFlowsObject;
+};
+type _SecuritySchemeObjectOpenIdConnectUrl = {
+    type: 'openIdConnect';
+    description?: string;
+    /**
+     * OpenId Connect URL to discover OAuth2 configuration values. This MUST be in the form of a URL.
+     */
     openIdConectUrl: string;
 };
+export type SecuritySchemeObject =
+    | _SecuritySchemeObjectApiKey
+    | _SecuritySchemeObjectHttp
+    | _SecuritySchemeObjectOauth2
+    | _SecuritySchemeObjectOpenIdConnectUrl;
 
 /**
  * https://swagger.io/specification/#exampleObject
@@ -375,7 +431,7 @@ export type EncodingObject = {
 export type MediaTypeObject = {
     schema?: SchemaObject | ReferenceObject;
     example?: unknown;
-    exmaples?: Record<string, ExampleObject | ReferenceObject>;
+    examples?: Record<string, ExampleObject | ReferenceObject>;
     /**
      * A map between a property name and its encoding information. The key, being the property name, MUST exist in the schema as a property. The encoding object SHALL only apply to `requestBody` objects when the media type is `multipart` or `application/x-www-form-urlencoded`.
      */
@@ -403,7 +459,7 @@ type _SimpleParam = {
     allowReserved?: boolean;
     schema: SchemaObject | ReferenceObject;
     example?: unknown;
-    exmaples?: Record<string, ExampleObject | ReferenceObject>;
+    examples?: Record<string, ExampleObject | ReferenceObject>;
 };
 
 type _ComplexParam = {
@@ -441,7 +497,7 @@ type _QueryParameterObject = {
 };
 
 type _HeaderParameterObject = {
-    name: 'Accept' | 'Content-Type' | 'Authorization';
+    name: string;
     in: 'header';
 };
 
@@ -466,7 +522,7 @@ export type ParameterObject =
 /**
  * https://swagger.io/specification/#headerObject
  */
-export type HeaderObject = Omit<ParameterObject, 'name' | 'in'>;
+export type HeaderObject = _MakeParam<{}>;
 
 /**
  * https://swagger.io/specification/#responseObject
@@ -501,8 +557,8 @@ export type OperationObject = {
     summary?: string;
     description?: string;
     externalDocs?: ExternalDocumentationObject;
-    operaionId?: string;
-    parameters: (ParameterObject | ReferenceObject)[];
+    operationId?: string;
+    parameters?: (ParameterObject | ReferenceObject)[];
     requestBody?: RequestBodyObject | ReferenceObject;
     /**
      * The list of possible responses as they are returned from executing this operation.
@@ -514,7 +570,7 @@ export type OperationObject = {
      */
     deprecated?: boolean;
     security?: SecurityRequirementObject[];
-    servers: ServerObject[];
+    servers?: ServerObject[];
 };
 
 /**

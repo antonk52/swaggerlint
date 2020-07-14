@@ -1,4 +1,5 @@
 import {SwaggerVisitorName, Swagger} from '../types';
+export * from './common';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -6,20 +7,10 @@ export const log = isDev
     ? (x: string): void => console.log(`--> ${x}`)
     : (): null => null;
 
-export function isRef(
-    arg: Record<string, unknown>,
-): arg is Swagger.ReferenceObject {
-    return typeof arg.$ref === 'string';
-}
-
 export function isSchemaObjectAllOfObject(
     arg: Record<string, unknown>,
 ): arg is Swagger.SchemaObjectAllOfObject {
     return Array.isArray(arg.allOf);
-}
-
-export function isObject(arg: unknown): arg is object {
-    return typeof arg === 'object' && arg !== null && !Array.isArray(arg);
 }
 
 /**
@@ -78,33 +69,4 @@ export function isValidCaseName(
     name: string | void,
 ): name is keyof typeof validCases {
     return name in validCases;
-}
-
-export function hasKey<K extends string>(
-    key: K,
-    obj: object,
-): obj is {[key in K]: unknown} {
-    return key in obj;
-}
-
-export function isInfoObject(arg: unknown): arg is Swagger.InfoObject {
-    return (
-        isObject(arg) &&
-        hasKey('title', arg) &&
-        hasKey('version', arg) &&
-        typeof arg.title === 'string' &&
-        typeof arg.version === 'string'
-    );
-}
-
-export function isSwaggerObject(arg: unknown): arg is Swagger.SwaggerObject {
-    return (
-        isObject(arg) &&
-        hasKey('swagger', arg) &&
-        arg.swagger === '2.0' &&
-        hasKey('info', arg) &&
-        hasKey('paths', arg) &&
-        isObject(arg.paths) &&
-        isInfoObject(arg.info)
-    );
 }

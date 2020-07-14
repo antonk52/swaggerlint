@@ -3,51 +3,96 @@ import {
     SwaggerlintConfig,
     SwaggerlintRule,
     SwaggerlintRuleSetting,
+    SwaggerVisitors,
+    OpenAPIVisitors,
+    NodeWithLocation,
+    Swagger,
+    OpenAPI,
+    RuleVisitorFunction,
+    OpenAPITypes,
 } from './types';
-import {
-    isValidSwaggerVisitorName,
-    isSwaggerObject,
-    isObject,
-    hasKey,
-} from './utils';
+import {isValidSwaggerVisitorName} from './utils';
+
+import {isSwaggerObject} from './utils/swagger';
+
+import * as oaUtils from './utils/openapi';
+
 import defaultConfig from './defaultConfig';
 
 import rules from './rules';
-import walker from './walker';
+import * as walker from './walker';
+
+type Validated =
+    | {
+          _type: 'swagger';
+          schema: Swagger.SwaggerObject;
+      }
+    | {
+          _type: 'openAPI';
+          schema: OpenAPI.OpenAPIObject;
+      }
+    | null;
+
+type Info =
+    | {
+          _type: 'swagger';
+          schema: Swagger.SwaggerObject;
+          visitors: SwaggerVisitors;
+      }
+    | {
+          _type: 'openAPI';
+          schema: OpenAPI.OpenAPIObject;
+          visitors: OpenAPIVisitors;
+      };
+
+function validateInput(schema: unknown): Validated {
+    if (isSwaggerObject(schema)) {
+        return {
+            _type: 'swagger',
+            schema,
+        };
+    }
+
+    if (oaUtils.isValidOpenAPIObject(schema)) {
+        return {
+            _type: 'openAPI',
+            schema,
+        };
+    }
+
+    return null;
+}
 
 export function swaggerlint(
-    swagger: unknown,
+    input: unknown,
     config: SwaggerlintConfig,
 ): LintError[] {
     const errors: LintError[] = [];
+    const validated = validateInput(input);
 
-    if (!isSwaggerObject(swagger)) {
-        let msg = `Swaggerlint only supports Swagger/OpenAPI v2.0;`;
-
-        if (
-            isObject(swagger) &&
-            hasKey('openapi', swagger) &&
-            typeof swagger.openapi === 'string'
-        ) {
-            msg += ` You have supplied OpenAPI ${swagger.openapi}`;
-        }
-
+    if (validated === null) {
         return [
             {
-                msg,
+                msg: 'You have supplier neither OpenAPI nor Swagger schema',
                 name: 'swaggerlint-core',
                 location: [],
             },
         ];
     }
 
-    const walkerResult = walker(swagger, config.ignore);
+    const walkerResult =
+        validated._type === 'swagger'
+            ? walker.walkSwagger(validated.schema, config.ignore)
+            : walker.walkOpenAPI(validated.schema, config.ignore || {});
 
     if ('errors' in walkerResult) {
         return walkerResult.errors;
     }
 
-    const {visitors} = walkerResult;
+    const info = {
+        ...validated,
+        visitors: walkerResult.visitors,
+    } as Info;
 
     type ValidatedRule = {
         rule: SwaggerlintRule;
@@ -115,39 +160,79 @@ export function swaggerlint(
         return errors;
     }
 
-    validatedRules.forEach(({rule, setting}) => {
-        Object.keys(rule.visitor).forEach(visitorName => {
-            if (!isValidSwaggerVisitorName(visitorName)) return;
+    if (info._type === 'swagger') {
+        validatedRules.forEach(({rule, setting}) => {
+            const {swaggerVisitor} = rule;
+            if (!swaggerVisitor) return;
+            Object.keys(swaggerVisitor).forEach(visitorName => {
+                // TODO swagger & openapi visitor names checks
+                if (!isValidSwaggerVisitorName(visitorName)) return;
 
-            const check = rule.visitor[visitorName];
+                const check = swaggerVisitor[visitorName];
 
-            const specificVisitor = visitors[visitorName];
-            specificVisitor.forEach(
-                /**
-                 * TODO: note the type for `node`
-                 * ts infers example object yet it can be any of the objects
-                 */
-                ({node, location}) => {
-                    const report = (msg: string, rLocation?: string[]): void =>
-                        void errors.push({
-                            msg,
-                            name: rule.name,
-                            location: rLocation ?? location,
-                        });
-                    if (typeof check === 'function') {
-                        /**
-                         * ts manages to only infer example object here,
-                         * due to the checks above function call is supposed to be safe
-                         *
-                         * @see https://bit.ly/2MNEii7
-                         */
-                        // @ts-expect-error
-                        check({node, location, setting, report});
-                    }
-                },
-            );
+                const specificVisitor = info.visitors[visitorName];
+                specificVisitor.forEach(
+                    /**
+                     * TODO: note the type for `node`
+                     * ts infers example object yet it can be any of the objects
+                     */
+                    ({node, location}) => {
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
+                                msg,
+                                name: rule.name,
+                                location: rLocation ?? location,
+                            });
+                        if (typeof check === 'function') {
+                            /**
+                             * ts manages to only infer example object here,
+                             * due to the checks above function call is supposed to be safe
+                             *
+                             * @see https://bit.ly/2MNEii7
+                             */
+                            // @ts-expect-error
+                            check({node, location, setting, report, config});
+                        }
+                    },
+                );
+            });
         });
-    });
+    } else {
+        validatedRules.forEach(({rule, setting}) => {
+            const {openapiVisitor} = rule;
+            if (!openapiVisitor) return;
+            Object.keys(openapiVisitor).forEach(visitorName => {
+                if (!oaUtils.isValidVisitorName(visitorName)) return;
+
+                type CurrentObject = OpenAPITypes[typeof visitorName];
+                const check = openapiVisitor[
+                    visitorName
+                ] as RuleVisitorFunction<CurrentObject> | void;
+
+                if (check === undefined) return;
+
+                const specificVisitor = info.visitors[visitorName];
+                specificVisitor.forEach(
+                    ({node, location}: NodeWithLocation<CurrentObject>) => {
+                        const report = (
+                            msg: string,
+                            rLocation?: string[],
+                        ): void =>
+                            void errors.push({
+                                msg,
+                                name: rule.name,
+                                location: rLocation ?? location,
+                            });
+
+                        check({node, location, setting, report, config});
+                    },
+                );
+            });
+        });
+    }
 
     return errors;
 }

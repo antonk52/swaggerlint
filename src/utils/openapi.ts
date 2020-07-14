@@ -1,5 +1,7 @@
 import {OpenAPI, OpenAPIVisitorName} from '../types';
-import {isObject, hasKey} from '.';
+import {isObject, hasKey, newerHttpMethods} from './common';
+
+export const httpMethods = newerHttpMethods;
 
 export function isRef(
     arg: Record<string, unknown>,
@@ -8,38 +10,37 @@ export function isRef(
 }
 
 const openapiVisitorSet = new Set([
-    'DiscriminatorObject',
-    'XMLObject',
-    'SchemaObject',
-    'SpecificationExtensions',
-    'LicenseObject',
-    'ContactObject',
-    'InfoObject',
-    'ServerVariableObject',
-    'ServerObject',
-    'ExternalDocumentationObject',
-    'TagObject',
-    'SecurityRequirementObject',
-    'ReferenceObject',
     'CallbackObject',
-    'RuntimeExpression',
+    'ComponentsObject',
+    'ContactObject',
+    'DiscriminatorObject',
+    'EncodingObject',
+    'ExampleObject',
+    'ExternalDocumentationObject',
+    'HeaderObject',
+    'InfoObject',
+    'LicenseObject',
     'LinkObject',
+    'MediaTypeObject',
     'OAuthFlowObject',
     'OAuthFlowsObject',
-    'SecuritySchemeObject',
-    'ExampleObject',
-    'EncodingObject',
-    'MediaTypeObject',
-    'RequestBodyObject',
-    'ParameterObject',
-    'HeaderObject',
-    'ResponseObject',
-    'ResponsesObject',
+    'OpenAPIObject',
     'OperationObject',
+    'ParameterObject',
     'PathItemObject',
     'PathsObject',
-    'ComponentsObject',
-    'OpenAPIObject',
+    'ReferenceObject',
+    'RequestBodyObject',
+    'ResponseObject',
+    'ResponsesObject',
+    'SchemaObject',
+    'SecurityRequirementObject',
+    'SecuritySchemeObject',
+    'ServerObject',
+    'ServerVariableObject',
+    'SpecificationExtensions',
+    'TagObject',
+    'XMLObject',
 ]);
 export function isValidVisitorName(name: string): name is OpenAPIVisitorName {
     return openapiVisitorSet.has(name);
@@ -55,3 +56,15 @@ export function isValidOpenAPIObject(
         ['3.0.0', '3.0.1', '3.0.2', '3.0.3'].includes(arg.openapi)
     );
 }
+
+export const componentsKeys = [
+    'schemas',
+    'responses',
+    'parameters',
+    'examples',
+    'requestBodies',
+    'headers',
+    'securitySchemes',
+    'links',
+    'callbacks',
+] as const;

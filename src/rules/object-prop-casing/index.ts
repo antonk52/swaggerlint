@@ -1,12 +1,13 @@
 import Case from 'case';
 import {SwaggerlintRule} from '../../types';
-import {isRef, validCases, isValidCaseName, isObject} from '../../utils';
+import {validCases, isValidCaseName, isObject} from '../../utils';
+import {isRef} from '../../utils/swagger';
 
 const name = 'object-prop-casing';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SchemaObject: ({node, report, setting, location}): void => {
             if (typeof setting === 'boolean') return;
 
@@ -43,6 +44,50 @@ const rule: SwaggerlintRule = {
                     });
                 }
                 return;
+            }
+        },
+    },
+    openapiVisitor: {
+        SchemaObject: ({node, report, location, setting}): void => {
+            if (typeof setting === 'boolean') return;
+
+            const [settingCasingName, opts = {}] = setting;
+            const IGNORE_PROPERTIES = new Set<string>(
+                Array.isArray(opts.ignore) ? opts.ignore : [],
+            );
+            if (
+                !(
+                    typeof settingCasingName === 'string' &&
+                    isValidCaseName(settingCasingName)
+                )
+            )
+                return;
+
+            const validPropCases: Set<string> = validCases[settingCasingName];
+            if (
+                'properties' in node &&
+                node.properties &&
+                typeof node.properties === 'object'
+            ) {
+                Object.keys(node.properties).forEach(propName => {
+                    if (IGNORE_PROPERTIES.has(propName)) return;
+                    const propCase = Case.of(propName);
+                    if (!validPropCases.has(propCase)) {
+                        const correctVersion =
+                            settingCasingName in validCases
+                                ? Case[settingCasingName](propName)
+                                : '';
+
+                        report(
+                            `Property "${propName}" has wrong casing.${
+                                correctVersion
+                                    ? ` Should be "${correctVersion}".`
+                                    : ''
+                            }`,
+                            [...location, 'properties', propName],
+                        );
+                    }
+                });
             }
         },
     },

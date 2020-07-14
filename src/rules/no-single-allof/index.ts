@@ -4,9 +4,16 @@ const name = 'no-single-allof';
 
 const rule: SwaggerlintRule = {
     name,
-    visitor: {
+    swaggerVisitor: {
         SchemaObject: ({node, report}): void => {
             if ('allOf' in node && node.allOf.length === 1) {
+                report('Redundant use of "allOf" with a single item in it.');
+            }
+        },
+    },
+    openapiVisitor: {
+        SchemaObject: ({node, report}): void => {
+            if (node.allOf && node.allOf.length === 1) {
                 report('Redundant use of "allOf" with a single item in it.');
             }
         },
