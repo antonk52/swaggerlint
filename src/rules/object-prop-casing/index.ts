@@ -1,7 +1,6 @@
 import Case from 'case';
 import {SwaggerlintRule} from '../../types';
 import {validCases, isValidCaseName, isObject} from '../../utils';
-import {isRef} from '../../utils/swagger';
 
 const name = 'object-prop-casing';
 
@@ -21,7 +20,6 @@ const rule: SwaggerlintRule = {
             ) {
                 const validPropCases: Set<string> =
                     validCases[settingCasingName];
-                if (isRef(node)) return;
                 if ('properties' in node && node.properties) {
                     Object.keys(node.properties).forEach(propName => {
                         if (IGNORE_PROPERTIES.has(propName)) return;
