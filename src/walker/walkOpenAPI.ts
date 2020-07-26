@@ -12,12 +12,14 @@ export function walkOpenAPI(
         ...rawSchema,
         paths: omit(rawSchema.paths || {}, ignoreConfig.paths || []),
         components: oaUtils.componentsKeys.reduce((acc, key) => {
-            acc[key] = omit(
-                rawSchema?.components?.[key] || {},
-                ignoreConfig?.components?.[key] || [],
-            );
+            if (key in acc) {
+                acc[key] = omit(
+                    rawSchema?.components?.[key] || {},
+                    ignoreConfig?.components?.[key] || [],
+                );
+            }
             return acc;
-        }, {} as OpenAPI.ComponentsObject),
+        }, rawSchema.components || {}),
     };
 
     /* eslint-disable indent */

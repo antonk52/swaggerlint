@@ -63,24 +63,11 @@ const rule: SwaggerlintRule = {
                     const shouldBeCase: CaseName = cases[paramLocation]
                         .values()
                         .next().value;
-                    if (
-                        isValidCaseName(shouldBeCase) &&
-                        !(shouldBeCase in Case)
-                    ) {
-                        return;
-                    }
 
-                    const correctVersion =
-                        settingCasingName in validCases
-                            ? Case[shouldBeCase](node.name)
-                            : '';
+                    const correctVersion = Case[shouldBeCase](node.name);
 
                     report(
-                        `Parameter "${node.name}" has wrong casing.${
-                            correctVersion
-                                ? ` Should be "${correctVersion}".`
-                                : ''
-                        }`,
+                        `Parameter "${node.name}" has wrong casing. Should be "${correctVersion}".`,
                         [...location, 'name'],
                     );
                 }
@@ -121,24 +108,11 @@ const rule: SwaggerlintRule = {
                     const shouldBeCase: CaseName = cases[paramLocation]
                         .values()
                         .next().value;
-                    if (
-                        isValidCaseName(shouldBeCase) &&
-                        !(shouldBeCase in Case)
-                    ) {
-                        return;
-                    }
 
-                    const correctVersion =
-                        settingCasingName in validCases
-                            ? Case[shouldBeCase](node.name)
-                            : '';
+                    const correctVersion = Case[shouldBeCase](node.name);
 
                     report(
-                        `Parameter "${node.name}" has wrong casing.${
-                            correctVersion
-                                ? ` Should be "${correctVersion}".`
-                                : ''
-                        }`,
+                        `Parameter "${node.name}" has wrong casing. Should be "${correctVersion}".`,
                         [...location, 'name'],
                     );
                 }

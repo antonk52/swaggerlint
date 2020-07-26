@@ -116,7 +116,7 @@ export type ParameterObject =
           in: 'body';
           description?: string;
           required?: boolean;
-          schema: SchemaObject;
+          schema: SchemaObject | ReferenceObject;
       }
     /**
      * in `path` parameter is always required
@@ -323,14 +323,14 @@ type ObjectAddon = Partial<{
     minProperties: number;
     required: string[];
     additionalProperties?: SchemaObject | ReferenceObject;
-    properties: {[name: string]: SchemaObject};
+    properties: {[name: string]: SchemaObject | ReferenceObject};
 }>;
 type SchemaObjectArray = SchemaObjectCreator<
     'array',
     unknown,
-    SchemaObject[]
+    (SchemaObject | ReferenceObject)[]
 > & {
-    items: SchemaObject;
+    items: SchemaObject | ReferenceObject;
 } & ArrayAddon;
 type SchemaObjectObject = SchemaObjectCreator<
     'object',
@@ -341,13 +341,12 @@ type SchemaObjectObject = SchemaObjectCreator<
 export type SchemaObjectAllOfObject = SchemaObjectCreator<
     'object',
     unknown,
-    SchemaObject[]
+    (SchemaObject | ReferenceObject)[]
 > & {
     allOf: (ReferenceObject | SchemaObjectObject)[];
 };
 
 export type SchemaObject =
-    | ReferenceObject
     | (SchemaObjectCreator<'integer', IntegerFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'number', NumberFormat, number> & NumberAddon)
     | (SchemaObjectCreator<'string', StringFormat, string> & StringAddon)
@@ -368,7 +367,7 @@ export type HeadersObject = {
  */
 export type ResponseObject = {
     description: string;
-    schema?: SchemaObject;
+    schema?: SchemaObject | ReferenceObject;
     headers?: HeadersObject;
     examples?: ExampleObject;
 };

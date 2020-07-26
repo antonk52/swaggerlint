@@ -87,7 +87,7 @@ export function walkSwagger(
         /* eslint-enable indent */
 
         function populateSchemaObject(
-            schema: Swagger.SchemaObject,
+            schema: Swagger.SchemaObject | Swagger.ReferenceObject,
             path: string[],
         ): void {
             if (swUtils.isRef(schema)) {

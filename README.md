@@ -13,6 +13,7 @@ npm install swaggerlint
 ```
 
 Install it globally
+
 ```sh
 npm install --global swaggerlint
 ```
@@ -22,6 +23,7 @@ npm install --global swaggerlint
 ### CLI
 
 You can lint your swagger scheme by path
+
 ```sh
 swaggerlint /path/to/swagger.json
 ```
@@ -43,14 +45,13 @@ swaggerlint --config /path/to/swaggerlint.config.js
 ### Nodejs
 
 ```js
-const {swaggerlint} = require('swaggerlint')
-const config = require('./configs/swaggerlint.config.js')
-const swaggerScheme = require('./swagger.json')
+const {swaggerlint} = require('swaggerlint');
+const config = require('./configs/swaggerlint.config.js');
+const swaggerScheme = require('./swagger.json');
 
+const result = swaggerlint(swaggerScheme, config);
 
-const result = swaggerlint(swaggerScheme, config)
-
-console.log(result) // an array or errors
+console.log(result); // an array or errors
 
 /**
  * [{
@@ -59,7 +60,6 @@ console.log(result) // an array or errors
  *   location: ['path', 'to', 'error'] // what caused an error
  * }]
  */
-
 ```
 
 ### Docker image
@@ -76,39 +76,39 @@ module.exports = {
         'properties-for-object-type': true,
         'latin-definitions-only': true,
     },
-}
+};
 ```
 
 ## Rules
 
 You can set any rule value to `false` to disable it or to `true` to enable and set its setting to default value.
 
-| rule name | description | default |
-|------------------------|------------------|------------------|
-| `object-prop-casing`   | Casing for your object property names. | `camel` |
-| `no-empty-object-type` | Object types have to have their properties specified. |
-| `no-single-allof` | Object types should not have a redundant single `allOf` property. |
-| `latin-definitions-only` | Error when non Latin characters used in definition names. |
-| `path-param-required-field` | Helps to keep consistently set optional `required` property in path parameters. |
-| `expressive-path-summary` | Helps to have an intentional summary. |
-| `only-valid-mime-types` | Checks mime types against known from [`mime-db`](https://npm.im/mime-db). |
-| `parameter-casing` | Casing for your parameters. | `camel` |
-| `required-operation-tags` | All operations must have tags. |
-| `required-tag-description` | All tags must have description. |
-| `required-parameter-description` | All parameters must have description. |
-| `no-trailing-slash` | All URLs must NOT end with a slash. |
+| rule name                                                                                | description                                                                     | default |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------- |
+| [`object-prop-casing`](./src/rules/object-prop-casing/readme.md)                         | Casing for your object property names.                                          | `camel` |
+| [`no-empty-object-type`](./src/rules/no-empty-object-type/readme.md)                     | Object types have to have their properties specified.                           |
+| [`no-single-allof`](./src/rules/no-single-allof/readme.md)                               | Object types should not have a redundant single `allOf` property.               |
+| [`latin-definitions-only`](./src/rules/latin-definitions-only/readme.md)                 | Error when non Latin characters used in definition names.                       |
+| [`path-param-required-field`](./src/rules/path-param-required-field/readme.md)           | Helps to keep consistently set optional `required` property in path parameters. |
+| [`expressive-path-summary`](./src/rules/expressive-path-summary/readme.md)               | Helps to have an intentional summary.                                           |
+| [`only-valid-mime-types`](./src/rules/only-valid-mime-types/readme.md)                   | Checks mime types against known from [`mime-db`](https://npm.im/mime-db).       |
+| [`parameter-casing`](./src/rules/parameter-casing/readme.md)                             | Casing for your parameters.                                                     | `camel` |
+| [`required-operation-tags`](./src/rules/required-operation-tags/readme.md)               | All operations must have tags.                                                  |
+| [`required-tag-description`](./src/rules/required-tag-description/readme.md)             | All tags must have description.                                                 |
+| [`required-parameter-description`](./src/rules/required-parameter-description/readme.md) | All parameters must have description.                                           |
+| [`no-trailing-slash`](./src/rules/no-trailing-slash/readme.md)                           | All URLs must NOT end with a slash.                                             |
 
 Additionally see the docs for additional settings for [`obj-prop-casing`](./src/rules/object-prop-casing/readme.md) and [`parameter-casing`](./src/rules/parameter-casing/readme.md).
 
 ## Documentation
 
-- [How to write a rule](./docs/how-to-write-a-rule.md)
+-   [How to write a rule](./docs/how-to-write-a-rule.md)
 
 ### Acknowledgments
 
 This tool has been inspired by already existing swagger validation checkers:
 
-- [api lint](https://github.com/danielgtaylor/apilint)
-- [speccy](https://github.com/wework/speccy)
-- [zally](https://github.com/zalando/zally)
-- [openapi-validator](https://github.com/IBM/openapi-validator)
+-   [api lint](https://github.com/danielgtaylor/apilint)
+-   [speccy](https://github.com/wework/speccy)
+-   [zally](https://github.com/zalando/zally)
+-   [openapi-validator](https://github.com/IBM/openapi-validator)
