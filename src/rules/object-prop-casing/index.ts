@@ -25,17 +25,12 @@ const rule: SwaggerlintRule = {
                         if (IGNORE_PROPERTIES.has(propName)) return;
                         const propCase = Case.of(propName);
                         if (!validPropCases.has(propCase)) {
-                            const correctVersion =
-                                settingCasingName in validCases
-                                    ? Case[settingCasingName](propName)
-                                    : '';
+                            const correctVersion = Case[settingCasingName](
+                                propName,
+                            );
 
                             report(
-                                `Property "${propName}" has wrong casing.${
-                                    correctVersion
-                                        ? ` Should be "${correctVersion}".`
-                                        : ''
-                                }`,
+                                `Property "${propName}" has wrong casing. Should be "${correctVersion}".`,
                                 [...location, 'properties', propName],
                             );
                         }
@@ -71,17 +66,12 @@ const rule: SwaggerlintRule = {
                     if (IGNORE_PROPERTIES.has(propName)) return;
                     const propCase = Case.of(propName);
                     if (!validPropCases.has(propCase)) {
-                        const correctVersion =
-                            settingCasingName in validCases
-                                ? Case[settingCasingName](propName)
-                                : '';
+                        const correctVersion = Case[settingCasingName](
+                            propName,
+                        );
 
                         report(
-                            `Property "${propName}" has wrong casing.${
-                                correctVersion
-                                    ? ` Should be "${correctVersion}".`
-                                    : ''
-                            }`,
+                            `Property "${propName}" has wrong casing. Should be "${correctVersion}".`,
                             [...location, 'properties', propName],
                         );
                     }
