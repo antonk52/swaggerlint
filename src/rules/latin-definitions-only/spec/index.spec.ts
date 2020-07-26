@@ -129,5 +129,15 @@ describe(`rule "${rule.name}"`, () => {
 
             expect(result).toEqual(expected);
         });
+
+        it('should not error for empty components object', () => {
+            const mod: Partial<OpenAPI.OpenAPIObject> = {
+                components: {},
+            };
+            const modConfig = getOpenAPIObject(mod);
+            const result = swaggerlint(modConfig, config);
+
+            expect(result).toEqual([]);
+        });
     });
 });
