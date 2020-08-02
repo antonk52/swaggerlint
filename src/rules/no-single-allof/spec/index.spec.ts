@@ -50,7 +50,7 @@ describe(`rule "${rule.name}"`, () => {
             };
             const modConfig = getSwaggerObject(mod);
             const result = swaggerlint(modConfig, config);
-            const location = ['definitions', 'Example'];
+            const location = ['definitions', 'Example', 'allOf'];
             const expected = [
                 {
                     msg: 'Redundant use of "allOf" with a single item in it.',
@@ -145,7 +145,7 @@ describe(`rule "${rule.name}"`, () => {
             };
             const modConfig = getOpenAPIObject(mod);
             const result = swaggerlint(modConfig, config);
-            const location = ['components', 'schemas', 'Example'];
+            const location = ['components', 'schemas', 'Example', 'allOf'];
             const expected = [
                 {
                     msg: 'Redundant use of "allOf" with a single item in it.',

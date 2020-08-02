@@ -8,9 +8,16 @@ type Param = {
     location: string[];
 };
 
-function TagObject({node, report}: Param): void {
-    if (!('description' in node) || !node.description) {
+function TagObject({node, report, location}: Param): void {
+    if (!('description' in node)) {
         report(`Tag "${node.name}" is missing description.`);
+        return;
+    }
+    if (!node.description) {
+        report(`Tag "${node.name}" is missing description.`, [
+            ...location,
+            'description',
+        ]);
     }
 }
 
