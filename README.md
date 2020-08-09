@@ -85,19 +85,19 @@ You can set any rule value to `false` to disable it or to `true` to enable and s
 
 | rule name                                                                                | description                                                                     | default |
 | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ------- |
-| [`object-prop-casing`](./src/rules/object-prop-casing/readme.md)                         | Casing for your object property names.                                          | `camel` |
+| [`expressive-path-summary`](./src/rules/expressive-path-summary/readme.md)               | Helps to have an intentional summary.                                           |
+| [`latin-definitions-only`](./src/rules/latin-definitions-only/readme.md)                 | Error when non Latin characters used in definition names.                       |
 | [`no-empty-object-type`](./src/rules/no-empty-object-type/readme.md)                     | Object types have to have their properties specified.                           |
 | [`no-inline-enums`](./src/rules/no-inline-enums/readme.md)                               | Enums must be in DefinitionsObject or ComponentsObject.                         |
 | [`no-single-allof`](./src/rules/no-single-allof/readme.md)                               | Object types should not have a redundant single `allOf` property.               |
-| [`latin-definitions-only`](./src/rules/latin-definitions-only/readme.md)                 | Error when non Latin characters used in definition names.                       |
-| [`path-param-required-field`](./src/rules/path-param-required-field/readme.md)           | Helps to keep consistently set optional `required` property in path parameters. |
-| [`expressive-path-summary`](./src/rules/expressive-path-summary/readme.md)               | Helps to have an intentional summary.                                           |
+| [`no-trailing-slash`](./src/rules/no-trailing-slash/readme.md)                           | All URLs must NOT end with a slash.                                             |
+| [`object-prop-casing`](./src/rules/object-prop-casing/readme.md)                         | Casing for your object property names.                                          | `camel` |
 | [`only-valid-mime-types`](./src/rules/only-valid-mime-types/readme.md)                   | Checks mime types against known from [`mime-db`](https://npm.im/mime-db).       |
 | [`parameter-casing`](./src/rules/parameter-casing/readme.md)                             | Casing for your parameters.                                                     | `camel` |
+| [`path-param-required-field`](./src/rules/path-param-required-field/readme.md)           | Helps to keep consistently set optional `required` property in path parameters. |
 | [`required-operation-tags`](./src/rules/required-operation-tags/readme.md)               | All operations must have tags.                                                  |
-| [`required-tag-description`](./src/rules/required-tag-description/readme.md)             | All tags must have description.                                                 |
 | [`required-parameter-description`](./src/rules/required-parameter-description/readme.md) | All parameters must have description.                                           |
-| [`no-trailing-slash`](./src/rules/no-trailing-slash/readme.md)                           | All URLs must NOT end with a slash.                                             |
+| [`required-tag-description`](./src/rules/required-tag-description/readme.md)             | All tags must have description.                                                 |
 
 Additionally see the docs for additional settings for [`obj-prop-casing`](./src/rules/object-prop-casing/readme.md) and [`parameter-casing`](./src/rules/parameter-casing/readme.md).
 
