@@ -88,6 +88,7 @@ You can set any rule value to `false` to disable it or to `true` to enable and s
 | [`expressive-path-summary`](./src/rules/expressive-path-summary/readme.md)               | Helps to have an intentional summary.                                           |
 | [`latin-definitions-only`](./src/rules/latin-definitions-only/readme.md)                 | Error when non Latin characters used in definition names.                       |
 | [`no-empty-object-type`](./src/rules/no-empty-object-type/readme.md)                     | Object types have to have their properties specified.                           |
+| [`no-external-refs`](./src/rules/no-external-refs/readme.md)                             | Bans ReferenceObjects with external refferences.                                |
 | [`no-inline-enums`](./src/rules/no-inline-enums/readme.md)                               | Enums must be in DefinitionsObject or ComponentsObject.                         |
 | [`no-single-allof`](./src/rules/no-single-allof/readme.md)                               | Object types should not have a redundant single `allOf` property.               |
 | [`no-trailing-slash`](./src/rules/no-trailing-slash/readme.md)                           | All URLs must NOT end with a slash.                                             |

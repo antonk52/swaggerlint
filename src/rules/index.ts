@@ -1,6 +1,7 @@
 import expressivePathSummary from './expressive-path-summary';
 import latinDefinitionsOnly from './latin-definitions-only';
 import noEmptyObjectType from './no-empty-object-type';
+import noExternalRefs from './no-external-refs';
 import noInlineEnums from './no-inline-enums';
 import noSingleOneof from './no-single-allof';
 import noTrailingSlash from './no-trailing-slash';
@@ -18,6 +19,7 @@ const rules: Record<string, SwaggerlintRule> = {
     [expressivePathSummary.name]: expressivePathSummary,
     [latinDefinitionsOnly.name]: latinDefinitionsOnly,
     [noEmptyObjectType.name]: noEmptyObjectType,
+    [noExternalRefs.name]: noExternalRefs,
     [noInlineEnums.name]: noInlineEnums,
     [noSingleOneof.name]: noSingleOneof,
     [noTrailingSlash.name]: noTrailingSlash,
