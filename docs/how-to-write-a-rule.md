@@ -148,3 +148,5 @@ export default myCustomRule
 ## How to add a rule to core `swaggerlint` rules
 
 After you wrote your rule you can propose to add it to default `swaggerlint` rules. To do so you need to add it to [`rules` directory](../src/rules/) and [`src/rules/index.ts` file](../src/rules/index.ts). After this you can create a PR, it is a good idea to explain on why you think adding this rule is a good idea.
+
+Do not forget to add your rule to the project README to make it discoverable.
