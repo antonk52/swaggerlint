@@ -1,6 +1,12 @@
 import Case from 'case';
-import {SwaggerlintRule, CaseName, Swagger, OpenAPI} from '../../types';
-import {validCases, isValidCaseName, isObject, hasKey} from '../../utils';
+import {CaseName, Swagger, OpenAPI} from '../../types';
+import {
+    createRule,
+    hasKey,
+    isObject,
+    isValidCaseName,
+    validCases,
+} from '../../utils';
 
 const name = 'parameter-casing';
 
@@ -25,8 +31,14 @@ const PARAMETER_LOCATIONS: (
     'body',
 ];
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            casing:
+                'Parameter "{{name}}" has wrong casing. Should be "{{correctVersion}}".',
+        },
+    },
     swaggerVisitor: {
         ParameterObject: ({node, report, location, setting}): void => {
             if (typeof setting === 'boolean') return;
@@ -66,10 +78,14 @@ const rule: SwaggerlintRule = {
 
                     const correctVersion = Case[shouldBeCase](node.name);
 
-                    report(
-                        `Parameter "${node.name}" has wrong casing. Should be "${correctVersion}".`,
-                        [...location, 'name'],
-                    );
+                    report({
+                        messageId: 'casing',
+                        data: {
+                            name: node.name,
+                            correctVersion,
+                        },
+                        location: [...location, 'name'],
+                    });
                 }
             }
         },
@@ -111,10 +127,14 @@ const rule: SwaggerlintRule = {
 
                     const correctVersion = Case[shouldBeCase](node.name);
 
-                    report(
-                        `Parameter "${node.name}" has wrong casing. Should be "${correctVersion}".`,
-                        [...location, 'name'],
-                    );
+                    report({
+                        messageId: 'casing',
+                        data: {
+                            name: node.name,
+                            correctVersion,
+                        },
+                        location: [...location, 'name'],
+                    });
                 }
             }
         },
@@ -156,6 +176,6 @@ const rule: SwaggerlintRule = {
         } else return false;
     },
     defaultSetting: ['camel', {header: 'kebab'}],
-};
+});
 
 export default rule;

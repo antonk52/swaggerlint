@@ -80,21 +80,37 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: '"petId" parameter is missing description.',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'petId',
+                    },
                     name: 'required-parameter-description',
                     location: ['paths', '/url', 'get', 'parameters', '0'],
                 },
                 {
                     msg: '"petName" parameter is missing description.',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'petName',
+                    },
                     name: 'required-parameter-description',
                     location: ['paths', '/url', 'parameters', '0'],
                 },
                 {
                     msg: '"petAge" parameter is missing description.',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'petAge',
+                    },
                     name: 'required-parameter-description',
                     location: ['parameters', 'petAge'],
                 },
                 {
                     msg: '"emptyDesc" parameter is missing description.',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'emptyDesc',
+                    },
                     name: 'required-parameter-description',
                     location: ['parameters', 'emptyDesc', 'description'],
                 },
@@ -131,6 +147,10 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: '"petId" parameter is missing description.',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'petId',
+                    },
                     name: rule.name,
                     location: ['components', 'parameters', 'petId'],
                 },

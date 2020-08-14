@@ -164,16 +164,25 @@ describe(`rule "${rule.name}"`, () => {
                 msg:
                     'Every path summary should contain at least 2 words. This has "upload-image"',
                 name: rule.name,
+                messageId: 'nonExpressive',
+                data: {
+                    summary: 'upload-image',
+                },
             };
             const emptySummary = {
                 location: ['paths', '/some/api/path', 'delete', 'summary'],
                 msg:
                     'Every path summary should contain at least 2 words. This has ""',
+                messageId: 'nonExpressive',
+                data: {
+                    summary: '',
+                },
                 name: rule.name,
             };
             const missingSummary = {
                 location: ['paths', '/some/api/path', 'post'],
                 msg: 'Every path has to have a summary.',
+                messageId: 'noSummary',
                 name: rule.name,
             };
             expect(result).toEqual([
@@ -192,17 +201,26 @@ describe(`rule "${rule.name}"`, () => {
                 location: ['paths', '/some/api/path', 'get', 'summary'],
                 msg:
                     'Every path summary should contain at least 2 words. This has "upload-image"',
+                messageId: 'nonExpressive',
+                data: {
+                    summary: 'upload-image',
+                },
                 name: rule.name,
             };
             const emptySummary = {
                 location: ['paths', '/some/api/path', 'delete', 'summary'],
                 msg:
                     'Every path summary should contain at least 2 words. This has ""',
+                messageId: 'nonExpressive',
+                data: {
+                    summary: '',
+                },
                 name: rule.name,
             };
             const missingSummary = {
                 location: ['paths', '/some/api/path', 'post'],
                 msg: 'Every path has to have a summary.',
+                messageId: 'noSummary',
                 name: rule.name,
             };
             expect(result).toEqual([

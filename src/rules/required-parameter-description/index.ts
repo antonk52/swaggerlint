@@ -1,32 +1,46 @@
-import {SwaggerlintRule, Swagger, OpenAPI, Report} from '../../types';
+import {Swagger, OpenAPI, Report} from '../../types';
+import {createRule} from '../../utils';
 
 const name = 'required-parameter-description';
 
 type Param = {
     node: Swagger.ParameterObject | OpenAPI.ParameterObject;
-    report: Report;
+    report: Report<'missingDesc'>;
     location: string[];
 };
 
 function ParameterObject({node, report, location}: Param): void {
     if (!('description' in node)) {
-        report(`"${node.name}" parameter is missing description.`);
+        report({
+            messageId: 'missingDesc',
+            data: {
+                name: node.name,
+            },
+        });
     } else if (typeof node.description === 'string' && !node.description) {
-        report(`"${node.name}" parameter is missing description.`, [
-            ...location,
-            'description',
-        ]);
+        report({
+            messageId: 'missingDesc',
+            data: {
+                name: node.name,
+            },
+            location: [...location, 'description'],
+        });
     }
 }
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            missingDesc: '"{{name}}" parameter is missing description.',
+        },
+    },
     swaggerVisitor: {
         ParameterObject,
     },
     openapiVisitor: {
         ParameterObject,
     },
-};
+});
 
 export default rule;

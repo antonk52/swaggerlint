@@ -1,4 +1,5 @@
 import {
+    Report,
     LintError,
     SwaggerlintConfig,
     SwaggerlintRule,
@@ -11,7 +12,7 @@ import {
     RuleVisitorFunction,
     OpenAPITypes,
 } from './types';
-import {isValidSwaggerVisitorName} from './utils';
+import {isValidSwaggerVisitorName, hasKey} from './utils';
 
 import {isSwaggerObject} from './utils/swagger';
 
@@ -95,7 +96,7 @@ export function swaggerlint(
     } as Info;
 
     type ValidatedRule = {
-        rule: SwaggerlintRule;
+        rule: SwaggerlintRule<string>;
         setting: SwaggerlintRuleSetting;
     };
 
@@ -177,15 +178,16 @@ export function swaggerlint(
                      * ts infers example object yet it can be any of the objects
                      */
                     ({node, location}) => {
-                        const report = (
-                            msg: string,
-                            rLocation?: string[],
-                        ): void =>
-                            void errors.push({
-                                msg,
-                                name: rule.name,
-                                location: rLocation ?? location,
-                            });
+                        const report = makeReportFunc(errors, rule, location);
+                        // const report = (
+                        //     msg: string,
+                        //     rLocation?: string[],
+                        // ): void =>
+                        //     void errors.push({
+                        //         msg,
+                        //         name: rule.name,
+                        //         location: rLocation ?? location,
+                        //     });
                         if (typeof check === 'function') {
                             /**
                              * ts manages to only infer example object here,
@@ -209,22 +211,23 @@ export function swaggerlint(
                 type CurrentObject = OpenAPITypes[typeof visitorName];
                 const check = openapiVisitor[
                     visitorName
-                ] as RuleVisitorFunction<CurrentObject> | void;
+                ] as RuleVisitorFunction<CurrentObject, string> | void;
 
                 if (check === undefined) return;
 
                 const specificVisitor = info.visitors[visitorName];
                 specificVisitor.forEach(
                     ({node, location}: NodeWithLocation<CurrentObject>) => {
-                        const report = (
-                            msg: string,
-                            rLocation?: string[],
-                        ): void =>
-                            void errors.push({
-                                msg,
-                                name: rule.name,
-                                location: rLocation ?? location,
-                            });
+                        const report = makeReportFunc(errors, rule, location);
+                        // const report = (
+                        //     msg: string,
+                        //     rLocation?: string[],
+                        // ): void =>
+                        //     void errors.push({
+                        //         msg,
+                        //         name: rule.name,
+                        //         location: rLocation ?? location,
+                        //     });
 
                         check({node, location, setting, report, config});
                     },
@@ -234,4 +237,55 @@ export function swaggerlint(
     }
 
     return errors;
+}
+
+function makeReportFunc<MessageIds extends string>(
+    errors: LintError[],
+    rule: SwaggerlintRule<MessageIds>,
+    location: string[],
+): Report<MessageIds> {
+    return function (arg): void {
+        if (hasKey('messageId', arg) && arg.messageId) {
+            const msgTemplate = rule.meta?.messages?.[arg.messageId] || '';
+            /* eslint-disable indent */
+            const message: string = arg.data
+                ? Object.keys(arg.data).reduce((acc, key) => {
+                      return acc.replace(
+                          new RegExp(`{{\s*${key}\s*}}`, 'g'),
+                          // @ts-expect-error: this code will not run if data is undefined.
+                          arg.data[key],
+                      );
+                  }, msgTemplate)
+                : msgTemplate;
+            /* eslint-enable indent */
+
+            const err: LintError = {
+                name: rule.name,
+                msg: message,
+                messageId: arg.messageId,
+                location: arg.location || location,
+            };
+            if (arg.data) err.data = arg.data;
+            errors.push(err);
+            return;
+        }
+
+        if (hasKey('message', arg) && arg.message) {
+            const err: LintError = {
+                name: rule.name,
+                msg: arg.message,
+                location: arg.location || location,
+            };
+            errors.push(err);
+            return;
+        }
+
+        throw new Error(
+            `Invalid data passed to report function:\n\n${JSON.stringify(
+                arg,
+                null,
+                4,
+            )}`,
+        );
+    };
 }

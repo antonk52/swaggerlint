@@ -1,19 +1,29 @@
-import {SwaggerlintRule} from '../../types';
+import {createRule} from '../../utils';
 
 const name = 'no-trailing-slash';
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            url: 'Url cannot end with a slash "{{url}}".',
+            host: 'Host cannot end with a slash, your host url is "{{url}}".',
+            server: 'Server url cannot end with a slash "{{url}}".',
+        },
+    },
     swaggerVisitor: {
         PathsObject: ({node, report, location}): void => {
             const urls = Object.keys(node);
 
             urls.forEach(url => {
                 if (url.endsWith('/')) {
-                    report(`Url cannot end with a slash "${url}".`, [
-                        ...location,
-                        url,
-                    ]);
+                    report({
+                        messageId: 'url',
+                        data: {
+                            url,
+                        },
+                        location: [...location, url],
+                    });
                 }
             });
         },
@@ -21,7 +31,7 @@ const rule: SwaggerlintRule = {
             const {host} = node;
 
             if (typeof host === 'string' && host.endsWith('/')) {
-                report('Host url cannot end with a slash.', ['host']);
+                report({messageId: 'host', data: {host}, location: ['host']});
             }
         },
     },
@@ -30,18 +40,24 @@ const rule: SwaggerlintRule = {
             const url = location[location.length - 1];
 
             if (url.endsWith('/')) {
-                report(`Url cannot end with a slash "${url}".`);
+                report({
+                    messageId: 'url',
+                    data: {
+                        url,
+                    },
+                });
             }
         },
         ServerObject: ({node, report, location}): void => {
             if (node.url.endsWith('/')) {
-                report('Server url cannot end with a slash.', [
-                    ...location,
-                    'url',
-                ]);
+                report({
+                    messageId: 'server',
+                    data: {url: node.url},
+                    location: [...location, 'url'],
+                });
             }
         },
     },
-};
+});
 
 export default rule;

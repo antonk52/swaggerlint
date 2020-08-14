@@ -37,6 +37,10 @@ describe(`rule "${rule.name}"`, () => {
                     msg: 'Tag "no-description" is missing description.',
                     name: 'required-tag-description',
                     location: ['tags', '0'],
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'no-description',
+                    },
                 },
             ];
 
@@ -45,7 +49,7 @@ describe(`rule "${rule.name}"`, () => {
     });
 
     describe('openapi', () => {
-        it('should NOT error for an empty swagger sample', () => {
+        it('should NOT error for an empty openapi sample', () => {
             const result = swaggerlint(getOpenAPIObject({}), config);
 
             expect(result).toEqual([]);
@@ -58,6 +62,10 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg: 'Tag "no-description" is missing description.',
                     name: 'required-tag-description',
+                    messageId: 'missingDesc',
+                    data: {
+                        name: 'no-description',
+                    },
                     location: ['tags', '0'],
                 },
             ];

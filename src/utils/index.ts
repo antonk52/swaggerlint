@@ -1,4 +1,4 @@
-import {SwaggerVisitorName, Swagger} from '../types';
+import {SwaggerVisitorName, Swagger, SwaggerlintRule} from '../types';
 export * from './common';
 
 const isDev = process.env.NODE_ENV === 'development';
@@ -69,4 +69,10 @@ export function isValidCaseName(
     name: string | void,
 ): name is keyof typeof validCases {
     return name in validCases;
+}
+
+export function createRule<T extends string>(
+    rule: SwaggerlintRule<T>,
+): typeof rule {
+    return rule;
 }
