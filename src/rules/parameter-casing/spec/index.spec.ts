@@ -60,18 +60,33 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'petStore',
+                        name: 'PET_STORE',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Parameter "PET_STORE" has wrong casing. Should be "petStore".',
                     name: 'parameter-casing',
                     location: ['paths', '/url', 'parameters', '1', 'name'],
                 },
                 {
+                    data: {
+                        correctVersion: 'petAge',
+                        name: 'pet-age',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Parameter "pet-age" has wrong casing. Should be "petAge".',
                     name: 'parameter-casing',
                     location: ['paths', '/url', 'parameters', '2', 'name'],
                 },
                 {
+                    data: {
+                        correctVersion: 'petColor',
+                        name: 'pet_color',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Parameter "pet_color" has wrong casing. Should be "petColor".',
                     name: 'parameter-casing',
@@ -129,6 +144,11 @@ describe(`rule "${rule.name}"`, () => {
             });
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'petColor',
+                        name: 'pet_color',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Parameter "pet_color" has wrong casing. Should be "petColor".',
                     name: 'parameter-casing',
@@ -281,16 +301,31 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg:
                         'Parameter "PET_STORE" has wrong casing. Should be "petStore".',
+                    data: {
+                        correctVersion: 'petStore',
+                        name: 'PET_STORE',
+                    },
+                    messageId: 'casing',
                     name: 'parameter-casing',
                     location: ['components', 'parameters', 'bar', 'name'],
                 },
                 {
                     msg:
                         'Parameter "pet-age" has wrong casing. Should be "petAge".',
+                    data: {
+                        correctVersion: 'petAge',
+                        name: 'pet-age',
+                    },
+                    messageId: 'casing',
                     name: 'parameter-casing',
                     location: ['components', 'parameters', 'baz', 'name'],
                 },
                 {
+                    data: {
+                        correctVersion: 'petColor',
+                        name: 'pet_color',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Parameter "pet_color" has wrong casing. Should be "petColor".',
                     name: 'parameter-casing',
@@ -346,6 +381,11 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg:
                         'Parameter "pet_color" has wrong casing. Should be "petColor".',
+                    data: {
+                        correctVersion: 'petColor',
+                        name: 'pet_color',
+                    },
+                    messageId: 'casing',
                     name: 'parameter-casing',
                     location: ['components', 'parameters', 'zoo', 'name'],
                 },

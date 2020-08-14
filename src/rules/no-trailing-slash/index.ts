@@ -31,7 +31,11 @@ const rule = createRule({
             const {host} = node;
 
             if (typeof host === 'string' && host.endsWith('/')) {
-                report({messageId: 'host', data: {host}, location: ['host']});
+                report({
+                    messageId: 'host',
+                    data: {url: host},
+                    location: ['host'],
+                });
             }
         },
     },

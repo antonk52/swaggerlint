@@ -51,6 +51,10 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        url: '/url/',
+                    },
+                    messageId: 'url',
                     msg: 'Url cannot end with a slash "/url/".',
                     name: 'no-trailing-slash',
                     location: ['paths', '/url/'],
@@ -68,7 +72,12 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
-                    msg: 'Host url cannot end with a slash.',
+                    data: {
+                        url: 'http://some.url/',
+                    },
+                    msg:
+                        'Host cannot end with a slash, your host url is "http://some.url/".',
+                    messageId: 'host',
                     name: 'no-trailing-slash',
                     location: ['host'],
                 },
@@ -90,6 +99,10 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        url: '/url/',
+                    },
+                    messageId: 'url',
                     msg: 'Url cannot end with a slash "/url/".',
                     name: 'no-trailing-slash',
                     location: ['paths', '/url/'],
@@ -99,7 +112,7 @@ describe(`rule "${rule.name}"`, () => {
             expect(result).toEqual(expected);
         });
 
-        it('should error for a host url ending with a slash', () => {
+        it('should error for a server url ending with a slash', () => {
             const mod = {
                 servers: [{url: 'http://some.url/'}],
             };
@@ -107,7 +120,12 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
-                    msg: 'Server url cannot end with a slash.',
+                    data: {
+                        url: 'http://some.url/',
+                    },
+                    msg:
+                        'Server url cannot end with a slash "http://some.url/".',
+                    messageId: 'server',
                     name: 'no-trailing-slash',
                     location: ['servers', '0', 'url'],
                 },

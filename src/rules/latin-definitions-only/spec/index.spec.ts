@@ -33,6 +33,10 @@ describe(`rule "${rule.name}"`, () => {
             const location = ['definitions', 'invalid-obj'];
             const expected = [
                 {
+                    data: {
+                        name: 'invalid-obj',
+                    },
+                    messageId: 'msg',
                     msg:
                         'Definition name "invalid-obj" contains non latin characters.',
                     name: rule.name,
@@ -91,6 +95,10 @@ describe(`rule "${rule.name}"`, () => {
             const location = ['components', 'schemas', 'invalid-obj'];
             const expected = [
                 {
+                    data: {
+                        name: 'invalid-obj',
+                    },
+                    messageId: 'msg',
                     msg:
                         'Definition name "invalid-obj" contains non latin characters.',
                     name: rule.name,

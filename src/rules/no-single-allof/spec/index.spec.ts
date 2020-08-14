@@ -53,6 +53,7 @@ describe(`rule "${rule.name}"`, () => {
             const location = ['definitions', 'Example', 'allOf'];
             const expected = [
                 {
+                    messageId: 'msg',
                     msg: 'Redundant use of "allOf" with a single item in it.',
                     name: rule.name,
                     location,
@@ -149,6 +150,7 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: 'Redundant use of "allOf" with a single item in it.',
+                    messageId: 'msg',
                     name: rule.name,
                     location,
                 },

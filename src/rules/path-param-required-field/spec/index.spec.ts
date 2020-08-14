@@ -45,6 +45,10 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        name: 'sample',
+                    },
+                    messageId: 'requiredField',
                     msg: 'Parameter "sample" is missing "required" property',
                     name: rule.name,
                     location: ['paths', '/url', 'get', 'parameters', '0'],
@@ -80,6 +84,10 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        name: 'sample',
+                    },
+                    messageId: 'requiredField',
                     msg: 'Parameter "sample" is missing "required" property',
                     name: rule.name,
                     location: ['components', 'parameters', 'sample'],

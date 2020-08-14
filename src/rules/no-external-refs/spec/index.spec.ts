@@ -47,6 +47,7 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: 'External references are banned.',
+                    messageId: 'msg',
                     name: rule.name,
                     location,
                 },

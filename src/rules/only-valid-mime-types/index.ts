@@ -47,7 +47,7 @@ const rule = createRule({
     name,
     meta: {
         messages: {
-            invalid: '"{{mimeType}}" is not a vlid mime type.',
+            invalid: '"{{mimeType}}" is not a valid mime type.',
         },
     },
     swaggerVisitor: {

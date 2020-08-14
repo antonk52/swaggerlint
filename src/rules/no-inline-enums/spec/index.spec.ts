@@ -56,6 +56,7 @@ describe(`rule "${rule.name}"`, () => {
                     msg:
                         'Inline enums are not allowed. Move this SchemaObject to DefinitionsObject',
                     name: rule.name,
+                    messageId: 'swagger',
                     location,
                 },
             ];
@@ -117,6 +118,7 @@ describe(`rule "${rule.name}"`, () => {
                     msg:
                         'Inline enums are not allowed. Move this SchemaObject to ComponentsObject',
                     name: rule.name,
+                    messageId: 'openapi',
                     location,
                 },
             ];

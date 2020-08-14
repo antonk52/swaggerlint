@@ -52,24 +52,44 @@ describe(`rule "${rule.name}"`, () => {
             const location = ['definitions', 'lolkekDTO', 'properties'];
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some-casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some-casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'some-casing'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some_casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some_casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'some_casing'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'SOME_CASING',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "SOME_CASING" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'SOME_CASING'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'SomeCasing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "SomeCasing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
@@ -124,6 +144,11 @@ describe(`rule "${rule.name}"`, () => {
             ];
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some-casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some-casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
@@ -189,24 +214,44 @@ describe(`rule "${rule.name}"`, () => {
             ];
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some-casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some-casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'some-casing'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some_casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some_casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'some_casing'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'SOME_CASING',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "SOME_CASING" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
                     location: [...location, 'SOME_CASING'],
                 },
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'SomeCasing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "SomeCasing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',
@@ -250,6 +295,11 @@ describe(`rule "${rule.name}"`, () => {
             ];
             const expected = [
                 {
+                    data: {
+                        correctVersion: 'someCasing',
+                        propName: 'some-casing',
+                    },
+                    messageId: 'casing',
                     msg:
                         'Property "some-casing" has wrong casing. Should be "someCasing".',
                     name: 'object-prop-casing',

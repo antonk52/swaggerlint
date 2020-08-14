@@ -41,7 +41,12 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg: 'Operation "get" in "/url" is missing tags.',
                     name: 'required-operation-tags',
+                    data: {
+                        method: 'get',
+                        url: '/url',
+                    },
                     location: ['paths', '/url', 'get'],
+                    messageId: 'missingTags',
                 },
             ];
 
@@ -65,7 +70,12 @@ describe(`rule "${rule.name}"`, () => {
                 {
                     msg: 'Operation "get" in "/url" is missing tags.',
                     name: 'required-operation-tags',
+                    data: {
+                        method: 'get',
+                        url: '/url',
+                    },
                     location: ['paths', '/url', 'get'],
+                    messageId: 'missingTags',
                 },
             ];
 

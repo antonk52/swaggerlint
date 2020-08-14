@@ -53,6 +53,7 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,
+                    messageId: 'swagger',
                     name: rule.name,
                     location,
                 },
@@ -135,6 +136,7 @@ describe(`rule "${rule.name}"`, () => {
             const expected = [
                 {
                     msg: `has "object" type but is missing "properties" | "additionalProperties" | "allOf" | "anyOf" | "oneOf"`,
+                    messageId: 'openapi',
                     name: rule.name,
                     location,
                 },

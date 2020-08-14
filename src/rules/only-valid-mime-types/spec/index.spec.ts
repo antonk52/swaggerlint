@@ -61,21 +61,37 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        mimeType: 'lol/kek',
+                    },
+                    messageId: 'invalid',
                     msg: '"lol/kek" is not a valid mime type.',
                     name: rule.name,
                     location: ['consumes', '0'],
                 },
                 {
+                    data: {
+                        mimeType: 'application/typescript',
+                    },
                     msg: '"application/typescript" is not a valid mime type.',
+                    messageId: 'invalid',
                     name: rule.name,
                     location: ['produces', '0'],
                 },
                 {
+                    data: {
+                        mimeType: 'not/valid',
+                    },
+                    messageId: 'invalid',
                     msg: '"not/valid" is not a valid mime type.',
                     name: rule.name,
                     location: ['paths', '/url', 'get', 'consumes', '0'],
                 },
                 {
+                    data: {
+                        mimeType: '*/*',
+                    },
+                    messageId: 'invalid',
                     msg: '"*/*" is not a valid mime type.',
                     name: rule.name,
                     location: ['paths', '/url', 'get', 'produces', '0'],
@@ -113,6 +129,10 @@ describe(`rule "${rule.name}"`, () => {
             const result = swaggerlint(modConfig, config);
             const expected = [
                 {
+                    data: {
+                        mimeType: 'application/foo',
+                    },
+                    messageId: 'invalid',
                     msg: '"application/foo" is not a valid mime type.',
                     name: rule.name,
                     location: [
