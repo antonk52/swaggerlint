@@ -179,15 +179,6 @@ export function swaggerlint(
                      */
                     ({node, location}) => {
                         const report = makeReportFunc(errors, rule, location);
-                        // const report = (
-                        //     msg: string,
-                        //     rLocation?: string[],
-                        // ): void =>
-                        //     void errors.push({
-                        //         msg,
-                        //         name: rule.name,
-                        //         location: rLocation ?? location,
-                        //     });
                         if (typeof check === 'function') {
                             /**
                              * ts manages to only infer example object here,
@@ -219,15 +210,6 @@ export function swaggerlint(
                 specificVisitor.forEach(
                     ({node, location}: NodeWithLocation<CurrentObject>) => {
                         const report = makeReportFunc(errors, rule, location);
-                        // const report = (
-                        //     msg: string,
-                        //     rLocation?: string[],
-                        // ): void =>
-                        //     void errors.push({
-                        //         msg,
-                        //         name: rule.name,
-                        //         location: rLocation ?? location,
-                        //     });
 
                         check({node, location, setting, report, config});
                     },
