@@ -2,10 +2,13 @@ import {Swagger, OpenAPI, Report} from '../../types';
 import {createRule} from '../../utils';
 
 const name = 'required-parameter-description';
+const messages = {
+    missingDesc: '"{{name}}" parameter is missing description.',
+};
 
 type Param = {
     node: Swagger.ParameterObject | OpenAPI.ParameterObject;
-    report: Report<'missingDesc'>;
+    report: Report<keyof typeof messages>;
     location: string[];
 };
 
@@ -31,9 +34,7 @@ function ParameterObject({node, report, location}: Param): void {
 const rule = createRule({
     name,
     meta: {
-        messages: {
-            missingDesc: '"{{name}}" parameter is missing description.',
-        },
+        messages,
     },
     swaggerVisitor: {
         ParameterObject,

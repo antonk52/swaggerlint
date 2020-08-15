@@ -2,10 +2,13 @@ import {Swagger, OpenAPI, Report} from '../../types';
 import {createRule} from '../../utils';
 
 const name = 'path-param-required-field';
+const messages = {
+    requiredField: 'Parameter "{{name}}" is missing "required" property',
+};
 
 type Param = {
     node: Swagger.ParameterObject | OpenAPI.ParameterObject;
-    report: Report<'requiredField'>;
+    report: Report<keyof typeof messages>;
     location: string[];
 };
 
@@ -23,10 +26,7 @@ function ParameterObject({node, report}: Param): void {
 const rule = createRule({
     name,
     meta: {
-        messages: {
-            requiredField:
-                'Parameter "{{name}}" is missing "required" property',
-        },
+        messages,
     },
     swaggerVisitor: {
         ParameterObject,

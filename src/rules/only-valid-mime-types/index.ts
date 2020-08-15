@@ -3,6 +3,9 @@ import {createRule} from '../../utils';
 import mimeDB from 'mime-db';
 
 const name = 'only-valid-mime-types';
+const messages = {
+    invalid: '"{{mimeType}}" is not a valid mime type.',
+};
 
 function isValidMimeType(maybeMime: string): boolean {
     return maybeMime in mimeDB;
@@ -10,7 +13,7 @@ function isValidMimeType(maybeMime: string): boolean {
 
 type Param = {
     node: Swagger.SwaggerObject | Swagger.OperationObject;
-    report: Report<'invalid'>;
+    report: Report<keyof typeof messages>;
     location: string[];
 };
 function onlyValidMimeTypeCheck({node, report, location}: Param): void {
@@ -45,11 +48,7 @@ function onlyValidMimeTypeCheck({node, report, location}: Param): void {
 
 const rule = createRule({
     name,
-    meta: {
-        messages: {
-            invalid: '"{{mimeType}}" is not a valid mime type.',
-        },
-    },
+    meta: {messages},
     swaggerVisitor: {
         SwaggerObject: onlyValidMimeTypeCheck,
         OperationObject: onlyValidMimeTypeCheck,

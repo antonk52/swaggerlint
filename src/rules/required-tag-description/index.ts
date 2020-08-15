@@ -2,10 +2,13 @@ import {Swagger, OpenAPI, Report} from '../../types';
 import {createRule} from '../../utils';
 
 const name = 'required-tag-description';
+const messages = {
+    missingDesc: 'Tag "{{name}}" is missing description.',
+};
 
 type Param = {
     node: Swagger.TagObject | OpenAPI.TagObject;
-    report: Report<'missingDesc'>;
+    report: Report<keyof typeof messages>;
     location: string[];
 };
 
@@ -33,9 +36,7 @@ function TagObject({node, report, location}: Param): void {
 const rule = createRule({
     name,
     meta: {
-        messages: {
-            missingDesc: 'Tag "{{name}}" is missing description.',
-        },
+        messages,
     },
     swaggerVisitor: {
         TagObject,

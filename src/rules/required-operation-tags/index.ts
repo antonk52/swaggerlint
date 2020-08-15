@@ -2,10 +2,13 @@ import {Swagger, OpenAPI, Report} from '../../types';
 import {createRule} from '../../utils';
 
 const name = 'required-operation-tags';
+const messages = {
+    missingTags: 'Operation "{{method}}" in "{{url}}" is missing tags.',
+};
 
 type Param = {
     node: Swagger.OperationObject | OpenAPI.OperationObject;
-    report: Report<'missingTags'>;
+    report: Report<keyof typeof messages>;
     location: string[];
 };
 
@@ -26,9 +29,7 @@ function OperationObject({node, report, location}: Param): void {
 const rule = createRule({
     name,
     meta: {
-        messages: {
-            missingTags: 'Operation "{{method}}" in "{{url}}" is missing tags.',
-        },
+        messages,
     },
     swaggerVisitor: {
         OperationObject,
