@@ -81,7 +81,7 @@ type ReportArgComplex<M extends string> = {
     /**
      * Object with data to populate the message template.
      */
-    data?: Record<string, unknown>;
+    data?: Record<string, string | number>;
     location?: string[];
 };
 export type Report<M extends string> = (
@@ -316,6 +316,6 @@ type SwaggerlintRuleWithSetting<T extends string> = SwaggerlintRulePrimitive<
     defaultSetting: SwaggerlintRuleSetting;
 };
 
-export type SwaggerlintRule<T extends string | never> =
+export type SwaggerlintRule<T extends string> =
     | SwaggerlintRulePrimitive<T>
     | SwaggerlintRuleWithSetting<T>;
