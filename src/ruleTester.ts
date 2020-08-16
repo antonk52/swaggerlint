@@ -28,49 +28,6 @@ type Item<T> = {
     invalid: InvalidSample<T>;
 };
 
-type Param = {
-    rule: SwaggerlintRule<string>;
-    swagger?: Item<Swagger.SwaggerObject>;
-    openapi?: Item<OpenAPI.OpenAPIObject>;
-};
-
-export function ruleTester({rule, swagger}: Param): void {
-    const defaultConfig = {
-        rules: {[rule.name]: true},
-    };
-    describe(`rule: "${rule.name}"`, () => {
-        if (swagger) {
-            describe('swagger', () => {
-                (swagger.valid || []).forEach(validSample => {
-                    it(validSample.it, () => {
-                        expect(
-                            swaggerlint(
-                                getSwaggerObject(validSample.schema),
-                                validSample.config || defaultConfig,
-                            ),
-                        ).toEqual([]);
-                    });
-                });
-
-                swagger.invalid.forEach(invalidSample => {
-                    it(invalidSample.it, () => {
-                        const result = swaggerlint(
-                            getSwaggerObject(invalidSample.schema),
-                            invalidSample.config || defaultConfig,
-                        );
-
-                        expect(result).toMatchObject(invalidSample.errors);
-                    });
-                });
-            });
-        }
-
-        // if (Boolean(openapi)) {
-        //     describe('openapi', () => {});
-        // }
-    });
-}
-
 export class RuleTester {
     rule: SwaggerlintRule<string>;
     defaultConfig: SwaggerlintConfig;
