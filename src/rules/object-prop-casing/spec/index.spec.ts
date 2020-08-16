@@ -54,7 +54,6 @@ ruleTester.run({
                             type: 'object',
                             properties: {
                                 'some-casing': {type: 'string'},
-                                // eslint-disable-next-line
                                 some_casing: {type: 'string'},
                                 SOME_CASING: {type: 'string'},
                                 SomeCasing: {type: 'string'},
@@ -163,7 +162,6 @@ ruleTester.run({
                         messageId: 'casing',
                         msg:
                             'Property "some-casing" has wrong casing. Should be "someCasing".',
-                        name: 'object-prop-casing',
                         location: [
                             'definitions',
                             'lolkekDTO',
@@ -178,7 +176,7 @@ ruleTester.run({
     openapi: {
         valid: [
             {
-                it: 'should NOT error for an empty swagger sample',
+                it: 'should NOT error for an empty openapi sample',
                 schema: {},
             },
             {
@@ -226,7 +224,6 @@ ruleTester.run({
                             propName: 'some-casing',
                         },
                         messageId: 'casing',
-                        name: 'object-prop-casing',
                         location: [
                             'components',
                             'schemas',
@@ -241,7 +238,6 @@ ruleTester.run({
                             propName: 'some_casing',
                         },
                         messageId: 'casing',
-                        name: 'object-prop-casing',
                         location: [
                             'components',
                             'schemas',
@@ -256,7 +252,6 @@ ruleTester.run({
                             propName: 'SOME_CASING',
                         },
                         messageId: 'casing',
-                        name: 'object-prop-casing',
                         location: [
                             'components',
                             'schemas',
@@ -271,7 +266,6 @@ ruleTester.run({
                             propName: 'SomeCasing',
                         },
                         messageId: 'casing',
-                        name: 'object-prop-casing',
                         location: [
                             'components',
                             'schemas',
@@ -315,7 +309,6 @@ ruleTester.run({
                         messageId: 'casing',
                         msg:
                             'Property "some-casing" has wrong casing. Should be "someCasing".',
-                        name: 'object-prop-casing',
                         location: [
                             'components',
                             'schemas',

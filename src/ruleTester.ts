@@ -1,6 +1,7 @@
 import * as assert from 'assert';
 import {swaggerlint} from './swaggerlint';
 import {getSwaggerObject, getOpenAPIObject} from './utils/tests';
+import {hasKey} from './utils';
 import {
     Swagger,
     OpenAPI,
@@ -139,6 +140,82 @@ export class RuleTester {
                                     } but got ${actual.length}`,
                                 );
                             }
+
+                            actual.forEach((actualError, index) => {
+                                const expectedError = expected[index];
+
+                                checkForMsgOrMessageId(
+                                    actualError,
+                                    index,
+                                    'Lint error',
+                                );
+                                checkForMsgOrMessageId(
+                                    expectedError,
+                                    index,
+                                    'Provided error',
+                                );
+
+                                if (expectedError.name) {
+                                    assert.strictEqual(
+                                        expectedError.name,
+                                        actualError.name,
+                                        `Expected error name "${expectedError.name}" but got "${actualError.name}" at index ${index}.`,
+                                    );
+                                }
+
+                                if (expectedError.msg) {
+                                    assert.strictEqual(
+                                        expectedError.msg,
+                                        actualError.msg,
+                                        `Expected error message "${expectedError.msg}" but got "${actualError.msg}" at index ${index}.`,
+                                    );
+                                }
+
+                                if (
+                                    hasKey('messageId', expectedError) &&
+                                    expectedError.messageId
+                                ) {
+                                    const expectedMessageId =
+                                        expectedError.messageId;
+                                    const actualMessageId =
+                                        hasKey('messageId', actualError) &&
+                                        actualError.messageId;
+                                    assert.strictEqual(
+                                        expectedMessageId,
+                                        actualMessageId,
+                                        `Expected error messageId "${expectedMessageId}" but got "${actualMessageId}" at index ${index}.`,
+                                    );
+                                }
+
+                                if (
+                                    hasKey('data', expectedError) &&
+                                    expectedError.data
+                                ) {
+                                    assert.deepStrictEqual(
+                                        expectedError.data,
+                                        // @ts-expect-error: expected since one was provided
+                                        actualError.data,
+                                        'Expected data for message template does not match actual data at index ${index}.',
+                                    );
+                                }
+
+                                if (!hasKey('location', expectedError)) {
+                                    assert.fail(
+                                        `Expected error at index ${index} does not have location specified`,
+                                    );
+                                }
+
+                                if (
+                                    hasKey('location', expectedError) &&
+                                    expectedError.location
+                                ) {
+                                    assert.deepStrictEqual(
+                                        expectedError.location,
+                                        actualError.location,
+                                        'Expected location does not match with actual error location at index ${index}.',
+                                    );
+                                }
+                            });
                             expect(actual).toMatchObject(expected);
                         });
                     });
@@ -155,5 +232,20 @@ export class RuleTester {
                     'Neither swagger nor openapi was passed to RuleTester',
                 );
         });
+    }
+}
+
+function checkForMsgOrMessageId(
+    err: Partial<LintError>,
+    index: number,
+    errLabel: string,
+): void {
+    const hasMsg = typeof err.msg === 'string';
+    const hasMessageId =
+        hasKey('messageId', err) && typeof err.messageId === 'string';
+    if (!hasMsg && !hasMessageId) {
+        assert.fail(
+            `${errLabel} with index ${index} expected to have "msg" or "messageId" but has neither`,
+        );
     }
 }
