@@ -74,5 +74,6 @@ export function isValidCaseName(
 export function createRule<T extends string>(
     rule: SwaggerlintRule<T>,
 ): typeof rule {
+    // TODO: add rule validations
     return rule;
 }

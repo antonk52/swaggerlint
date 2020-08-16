@@ -229,6 +229,7 @@ function makeReportFunc<MessageIds extends string>(
     return function (arg): void {
         if (hasKey('messageId', arg) && arg.messageId) {
             const msgTemplate = rule.meta?.messages?.[arg.messageId] || '';
+            // TODO: return an error for the rule if `messageId` is unknown
             /* eslint-disable indent */
             const message: string = arg.data
                 ? Object.keys(arg.data).reduce((acc, key) => {
