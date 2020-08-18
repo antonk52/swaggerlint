@@ -1,75 +1,89 @@
 import rule from '../';
-import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
-import {swaggerlint} from '../../../';
-import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
+import {RuleTester} from '../../../';
 
-const config: SwaggerlintConfig = {
-    rules: {
-        [rule.name]: true,
-    },
-};
+const ruleTester = new RuleTester(rule);
 
-const mod: Partial<Swagger.SwaggerObject> = {
-    paths: {
-        '/url': {
-            get: {
-                responses: {
-                    default: {
-                        description: 'default response',
-                        schema: {
-                            type: 'string',
+ruleTester.run({
+    swagger: {
+        valid: [
+            {
+                it: 'should NOT error for an empty swagger sample',
+                schema: {},
+            },
+        ],
+        invalid: [
+            {
+                it: 'should error for a tag missing description',
+                schema: {
+                    paths: {
+                        '/url': {
+                            get: {
+                                responses: {
+                                    default: {
+                                        description: 'default response',
+                                        schema: {
+                                            type: 'string',
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                 },
+                errors: [
+                    {
+                        msg: 'Operation "get" in "/url" is missing tags.',
+                        name: 'required-operation-tags',
+                        data: {
+                            method: 'get',
+                            url: '/url',
+                        },
+                        location: ['paths', '/url', 'get'],
+                        messageId: 'missingTags',
+                    },
+                ],
             },
-        },
+        ],
     },
-};
-
-describe(`rule "${rule.name}"`, () => {
-    describe('swagger', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(getSwaggerObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for a tag missing description', () => {
-            const schema = getSwaggerObject(mod);
-            const result = swaggerlint(schema, config);
-            const expected = [
-                {
-                    msg: 'Operation "get" in "/url" is missing tags.',
-                    name: 'required-operation-tags',
-                    location: ['paths', '/url', 'get'],
+    openapi: {
+        valid: [
+            {
+                it: 'should NOT error for an empty swagger sample',
+                schema: {},
+            },
+        ],
+        invalid: [
+            {
+                it: 'should error for a tag missing description',
+                schema: {
+                    paths: {
+                        '/url': {
+                            get: {
+                                responses: {
+                                    default: {
+                                        description: 'default response',
+                                        schema: {
+                                            type: 'string',
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
                 },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-    });
-
-    describe('openapi', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(getOpenAPIObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for a tag missing description', () => {
-            // @ts-expect-error: not necessary to recreate full object
-            const oMod: Partial<OpenAPI.OpenAPIObject> = {...mod};
-            const schema = getOpenAPIObject(oMod);
-            const result = swaggerlint(schema, config);
-            const expected = [
-                {
-                    msg: 'Operation "get" in "/url" is missing tags.',
-                    name: 'required-operation-tags',
-                    location: ['paths', '/url', 'get'],
-                },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-    });
+                errors: [
+                    {
+                        msg: 'Operation "get" in "/url" is missing tags.',
+                        name: 'required-operation-tags',
+                        data: {
+                            method: 'get',
+                            url: '/url',
+                        },
+                        location: ['paths', '/url', 'get'],
+                        messageId: 'missingTags',
+                    },
+                ],
+            },
+        ],
+    },
 });

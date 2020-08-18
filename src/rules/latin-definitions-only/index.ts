@@ -1,5 +1,5 @@
-import {SwaggerlintRule} from '../../types';
 import {componentsKeys} from '../../utils/openapi';
+import {createRule} from '../../utils';
 
 const name = 'latin-definitions-only';
 
@@ -13,17 +13,25 @@ function hasNonLatinCharacters(str: string): boolean {
     );
 }
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            msg: `Definition name "{{name}}" contains non latin characters.`,
+        },
+    },
     swaggerVisitor: {
         DefinitionsObject: ({node, report, location}): void => {
             const definitionNames = Object.keys(node);
             definitionNames.forEach(name => {
                 if (hasNonLatinCharacters(name)) {
-                    report(
-                        `Definition name "${name}" contains non latin characters.`,
-                        [...location, name],
-                    );
+                    report({
+                        messageId: 'msg',
+                        data: {
+                            name,
+                        },
+                        location: [...location, name],
+                    });
                 }
             });
         },
@@ -35,15 +43,18 @@ const rule: SwaggerlintRule = {
                 if (val === undefined) return;
                 Object.keys(val).forEach(recName => {
                     if (hasNonLatinCharacters(recName)) {
-                        report(
-                            `Definition name "${recName}" contains non latin characters.`,
-                            [...location, compName, recName],
-                        );
+                        report({
+                            messageId: 'msg',
+                            data: {
+                                name: recName,
+                            },
+                            location: [...location, compName, recName],
+                        });
                     }
                 });
             });
         },
     },
-};
+});
 
 export default rule;

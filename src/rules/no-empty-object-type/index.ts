@@ -1,9 +1,15 @@
-import {SwaggerlintRule} from '../../types';
+import {createRule} from '../../utils';
 
 const name = 'no-empty-object-type';
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            swagger: `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,
+            openapi: `has "object" type but is missing "properties" | "additionalProperties" | "allOf" | "anyOf" | "oneOf"`,
+        },
+    },
     swaggerVisitor: {
         SchemaObject: ({node, report}): void => {
             if (node.type !== 'object') return;
@@ -15,9 +21,9 @@ const rule: SwaggerlintRule = {
 
             if (hasProperties || hasAllOf || hasAdditionalProperties) return;
 
-            report(
-                `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,
-            );
+            report({
+                messageId: 'swagger',
+            });
         },
     },
     openapiVisitor: {
@@ -40,11 +46,11 @@ const rule: SwaggerlintRule = {
             )
                 return;
 
-            report(
-                `has "object" type but is missing "properties" | "additionalProperties" | "allOf" | "anyOf" | "oneOf"`,
-            );
+            report({
+                messageId: 'openapi',
+            });
         },
     },
-};
+});
 
 export default rule;

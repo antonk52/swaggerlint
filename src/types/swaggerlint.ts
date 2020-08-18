@@ -58,60 +58,87 @@ export type SwaggerlintConfig = {
     ignore?: ConfigIgnore;
 };
 
-export type LintError = {
+type LintErrorPlain = {
     name: string;
     msg: string;
     location: string[];
 };
+type LintErrorWithMsgId = {
+    name: string;
+    msg: string;
+    location: string[];
+    messageId: string;
+    data?: Record<string, unknown>;
+};
+export type LintError = LintErrorPlain | LintErrorWithMsgId;
 
-export type Report = (msg: string, location?: string[]) => void;
-export type RuleVisitorFunction<T> = (a: {
+type ReportArgSimple = {
+    message: string;
+    location?: string[];
+};
+type ReportArgComplex<M extends string> = {
+    messageId: M;
+    /**
+     * Object with data to populate the message template.
+     */
+    data?: Record<string, string | number>;
+    location?: string[];
+};
+export type Report<M extends string> = (
+    arg: ReportArgSimple | ReportArgComplex<M>,
+) => void;
+export type RuleVisitorFunction<T, MessageIds extends string> = (a: {
     node: T;
     location: string[];
-    report: Report;
+    report: Report<MessageIds>;
     setting: SwaggerlintRuleSetting; // TODO
     config: SwaggerlintConfig; // TODO move this and above into rule arg
 }) => void;
 
-export type SwaggerVisitorName = keyof SwaggerRuleVisitor;
+export type SwaggerVisitorName = keyof SwaggerRuleVisitor<''>;
 
-export type SwaggerRuleVisitor = Partial<{
-    SwaggerObject: RuleVisitorFunction<Swagger.SwaggerObject>;
-    InfoObject: RuleVisitorFunction<Swagger.InfoObject>;
-    PathsObject: RuleVisitorFunction<Swagger.PathsObject>;
+export type SwaggerRuleVisitor<M extends string> = Partial<{
+    SwaggerObject: RuleVisitorFunction<Swagger.SwaggerObject, M>;
+    InfoObject: RuleVisitorFunction<Swagger.InfoObject, M>;
+    PathsObject: RuleVisitorFunction<Swagger.PathsObject, M>;
 
-    DefinitionsObject: RuleVisitorFunction<Swagger.DefinitionsObject>;
+    DefinitionsObject: RuleVisitorFunction<Swagger.DefinitionsObject, M>;
     ParametersDefinitionsObject: RuleVisitorFunction<
-        Swagger.ParametersDefinitionsObject
+        Swagger.ParametersDefinitionsObject,
+        M
     >;
     ResponsesDefinitionsObject: RuleVisitorFunction<
-        Swagger.ResponsesDefinitionsObject
+        Swagger.ResponsesDefinitionsObject,
+        M
     >;
     SecurityDefinitionsObject: RuleVisitorFunction<
-        Swagger.SecurityDefinitionsObject
+        Swagger.SecurityDefinitionsObject,
+        M
     >;
-    SecuritySchemeObject: RuleVisitorFunction<Swagger.SecuritySchemeObject>;
-    ScopesObject: RuleVisitorFunction<Swagger.ScopesObject>;
+    SecuritySchemeObject: RuleVisitorFunction<Swagger.SecuritySchemeObject, M>;
+    ScopesObject: RuleVisitorFunction<Swagger.ScopesObject, M>;
     SecurityRequirementObject: RuleVisitorFunction<
-        Swagger.SecurityRequirementObject
+        Swagger.SecurityRequirementObject,
+        M
     >;
-    TagObject: RuleVisitorFunction<Swagger.TagObject>;
+    TagObject: RuleVisitorFunction<Swagger.TagObject, M>;
     ExternalDocumentationObject: RuleVisitorFunction<
-        Swagger.ExternalDocumentationObject
+        Swagger.ExternalDocumentationObject,
+        M
     >;
-    ContactObject: RuleVisitorFunction<Swagger.ContactObject>;
-    LicenseObject: RuleVisitorFunction<Swagger.LicenseObject>;
-    PathItemObject: RuleVisitorFunction<Swagger.PathItemObject>;
-    OperationObject: RuleVisitorFunction<Swagger.OperationObject>;
-    ParameterObject: RuleVisitorFunction<Swagger.ParameterObject>;
-    ResponsesObject: RuleVisitorFunction<Swagger.ResponsesObject>;
-    ResponseObject: RuleVisitorFunction<Swagger.ResponseObject>;
-    SchemaObject: RuleVisitorFunction<Swagger.SchemaObject>;
-    XMLObject: RuleVisitorFunction<Swagger.XMLObject>;
-    HeadersObject: RuleVisitorFunction<Swagger.HeadersObject>;
-    HeaderObject: RuleVisitorFunction<Swagger.HeaderObject>;
-    ItemsObject: RuleVisitorFunction<Swagger.ItemsObject>;
-    ExampleObject: RuleVisitorFunction<Swagger.ExampleObject>;
+    ContactObject: RuleVisitorFunction<Swagger.ContactObject, M>;
+    LicenseObject: RuleVisitorFunction<Swagger.LicenseObject, M>;
+    PathItemObject: RuleVisitorFunction<Swagger.PathItemObject, M>;
+    OperationObject: RuleVisitorFunction<Swagger.OperationObject, M>;
+    ParameterObject: RuleVisitorFunction<Swagger.ParameterObject, M>;
+    ResponsesObject: RuleVisitorFunction<Swagger.ResponsesObject, M>;
+    ResponseObject: RuleVisitorFunction<Swagger.ResponseObject, M>;
+    SchemaObject: RuleVisitorFunction<Swagger.SchemaObject, M>;
+    XMLObject: RuleVisitorFunction<Swagger.XMLObject, M>;
+    HeadersObject: RuleVisitorFunction<Swagger.HeadersObject, M>;
+    HeaderObject: RuleVisitorFunction<Swagger.HeaderObject, M>;
+    ItemsObject: RuleVisitorFunction<Swagger.ItemsObject, M>;
+    ExampleObject: RuleVisitorFunction<Swagger.ExampleObject, M>;
 }>;
 
 type OneOrNone<T> = [T] | [];
@@ -226,52 +253,59 @@ export type OpenAPITypes = {
     XMLObject: OpenAPI.XMLObject;
 };
 
-export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor;
+export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;
 
-type OpenAPIRuleVisitor = Partial<{
-    CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject>;
-    ComponentsObject: RuleVisitorFunction<OpenAPI.ComponentsObject>;
-    ContactObject: RuleVisitorFunction<OpenAPI.ContactObject>;
-    DiscriminatorObject: RuleVisitorFunction<OpenAPI.DiscriminatorObject>;
-    EncodingObject: RuleVisitorFunction<OpenAPI.EncodingObject>;
-    ExampleObject: RuleVisitorFunction<OpenAPI.ExampleObject>;
+type OpenAPIRuleVisitor<M extends string> = Partial<{
+    CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject, M>;
+    ComponentsObject: RuleVisitorFunction<OpenAPI.ComponentsObject, M>;
+    ContactObject: RuleVisitorFunction<OpenAPI.ContactObject, M>;
+    DiscriminatorObject: RuleVisitorFunction<OpenAPI.DiscriminatorObject, M>;
+    EncodingObject: RuleVisitorFunction<OpenAPI.EncodingObject, M>;
+    ExampleObject: RuleVisitorFunction<OpenAPI.ExampleObject, M>;
     ExternalDocumentationObject: RuleVisitorFunction<
-        OpenAPI.ExternalDocumentationObject
+        OpenAPI.ExternalDocumentationObject,
+        M
     >;
-    HeaderObject: RuleVisitorFunction<OpenAPI.HeaderObject>;
-    InfoObject: RuleVisitorFunction<OpenAPI.InfoObject>;
-    LicenseObject: RuleVisitorFunction<OpenAPI.LicenseObject>;
-    LinkObject: RuleVisitorFunction<OpenAPI.LinkObject>;
-    MediaTypeObject: RuleVisitorFunction<OpenAPI.MediaTypeObject>;
-    OAuthFlowObject: RuleVisitorFunction<OpenAPI.OAuthFlowObject>;
-    OAuthFlowsObject: RuleVisitorFunction<OpenAPI.OAuthFlowsObject>;
-    OpenAPIObject: RuleVisitorFunction<OpenAPI.OpenAPIObject>;
-    OperationObject: RuleVisitorFunction<OpenAPI.OperationObject>;
-    ParameterObject: RuleVisitorFunction<OpenAPI.ParameterObject>;
-    PathItemObject: RuleVisitorFunction<OpenAPI.PathItemObject>;
-    PathsObject: RuleVisitorFunction<OpenAPI.PathsObject>;
-    ReferenceObject: RuleVisitorFunction<OpenAPI.ReferenceObject>;
-    RequestBodyObject: RuleVisitorFunction<OpenAPI.RequestBodyObject>;
-    ResponseObject: RuleVisitorFunction<OpenAPI.ResponseObject>;
-    ResponsesObject: RuleVisitorFunction<OpenAPI.ResponsesObject>;
-    SchemaObject: RuleVisitorFunction<OpenAPI.SchemaObject>;
+    HeaderObject: RuleVisitorFunction<OpenAPI.HeaderObject, M>;
+    InfoObject: RuleVisitorFunction<OpenAPI.InfoObject, M>;
+    LicenseObject: RuleVisitorFunction<OpenAPI.LicenseObject, M>;
+    LinkObject: RuleVisitorFunction<OpenAPI.LinkObject, M>;
+    MediaTypeObject: RuleVisitorFunction<OpenAPI.MediaTypeObject, M>;
+    OAuthFlowObject: RuleVisitorFunction<OpenAPI.OAuthFlowObject, M>;
+    OAuthFlowsObject: RuleVisitorFunction<OpenAPI.OAuthFlowsObject, M>;
+    OpenAPIObject: RuleVisitorFunction<OpenAPI.OpenAPIObject, M>;
+    OperationObject: RuleVisitorFunction<OpenAPI.OperationObject, M>;
+    ParameterObject: RuleVisitorFunction<OpenAPI.ParameterObject, M>;
+    PathItemObject: RuleVisitorFunction<OpenAPI.PathItemObject, M>;
+    PathsObject: RuleVisitorFunction<OpenAPI.PathsObject, M>;
+    ReferenceObject: RuleVisitorFunction<OpenAPI.ReferenceObject, M>;
+    RequestBodyObject: RuleVisitorFunction<OpenAPI.RequestBodyObject, M>;
+    ResponseObject: RuleVisitorFunction<OpenAPI.ResponseObject, M>;
+    ResponsesObject: RuleVisitorFunction<OpenAPI.ResponsesObject, M>;
+    SchemaObject: RuleVisitorFunction<OpenAPI.SchemaObject, M>;
     SecurityRequirementObject: RuleVisitorFunction<
-        OpenAPI.SecurityRequirementObject
+        OpenAPI.SecurityRequirementObject,
+        M
     >;
-    SecuritySchemeObject: RuleVisitorFunction<OpenAPI.SecuritySchemeObject>;
-    ServerObject: RuleVisitorFunction<OpenAPI.ServerObject>;
-    ServerVariableObject: RuleVisitorFunction<OpenAPI.ServerVariableObject>;
-    TagObject: RuleVisitorFunction<OpenAPI.TagObject>;
-    XMLObject: RuleVisitorFunction<OpenAPI.XMLObject>;
+    SecuritySchemeObject: RuleVisitorFunction<OpenAPI.SecuritySchemeObject, M>;
+    ServerObject: RuleVisitorFunction<OpenAPI.ServerObject, M>;
+    ServerVariableObject: RuleVisitorFunction<OpenAPI.ServerVariableObject, M>;
+    TagObject: RuleVisitorFunction<OpenAPI.TagObject, M>;
+    XMLObject: RuleVisitorFunction<OpenAPI.XMLObject, M>;
 }>;
 
-type SwaggerlintRulePrimitive = {
+type SwaggerlintRulePrimitive<T extends string> = {
     name: string;
-    openapiVisitor?: OpenAPIRuleVisitor;
-    swaggerVisitor?: SwaggerRuleVisitor;
+    meta?: {
+        messages: Record<T, string>;
+    };
+    openapiVisitor?: OpenAPIRuleVisitor<T>;
+    swaggerVisitor?: SwaggerRuleVisitor<T>;
 };
 
-type SwaggerlintRuleWithSetting = SwaggerlintRulePrimitive & {
+type SwaggerlintRuleWithSetting<T extends string> = SwaggerlintRulePrimitive<
+    T
+> & {
     /**
      * Verification of valid setting for the rule,
      * no need to verify boolean settings.
@@ -282,6 +316,6 @@ type SwaggerlintRuleWithSetting = SwaggerlintRulePrimitive & {
     defaultSetting: SwaggerlintRuleSetting;
 };
 
-export type SwaggerlintRule =
-    | SwaggerlintRulePrimitive
-    | SwaggerlintRuleWithSetting;
+export type SwaggerlintRule<T extends string> =
+    | SwaggerlintRulePrimitive<T>
+    | SwaggerlintRuleWithSetting<T>;

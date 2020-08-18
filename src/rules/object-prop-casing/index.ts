@@ -1,11 +1,17 @@
 import Case from 'case';
-import {SwaggerlintRule} from '../../types';
+import {createRule} from '../../utils';
 import {validCases, isValidCaseName, isObject} from '../../utils';
 
 const name = 'object-prop-casing';
 
-const rule: SwaggerlintRule = {
+const rule = createRule({
     name,
+    meta: {
+        messages: {
+            casing:
+                'Property "{{propName}}" has wrong casing. Should be "{{correctVersion}}".',
+        },
+    },
     swaggerVisitor: {
         SchemaObject: ({node, report, setting, location}): void => {
             if (typeof setting === 'boolean') return;
@@ -29,10 +35,14 @@ const rule: SwaggerlintRule = {
                                 propName,
                             );
 
-                            report(
-                                `Property "${propName}" has wrong casing. Should be "${correctVersion}".`,
-                                [...location, 'properties', propName],
-                            );
+                            report({
+                                messageId: 'casing',
+                                data: {
+                                    propName,
+                                    correctVersion,
+                                },
+                                location: [...location, 'properties', propName],
+                            });
                         }
                     });
                 }
@@ -70,10 +80,14 @@ const rule: SwaggerlintRule = {
                             propName,
                         );
 
-                        report(
-                            `Property "${propName}" has wrong casing. Should be "${correctVersion}".`,
-                            [...location, 'properties', propName],
-                        );
+                        report({
+                            messageId: 'casing',
+                            data: {
+                                propName,
+                                correctVersion,
+                            },
+                            location: [...location, 'properties', propName],
+                        });
                     }
                 });
             }
@@ -102,6 +116,6 @@ const rule: SwaggerlintRule = {
         } else return false;
     },
     defaultSetting: ['camel'],
-};
+});
 
 export default rule;

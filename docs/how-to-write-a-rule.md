@@ -15,19 +15,30 @@ Any `swaggerlint` rule is an object and it has to have 2 required properties:
 - your rule's `name`
 - the `visitor`.
 
+To create a rule you have to run it through `createRule` function which can verify the rule and improve the DX for typescript and VS-Code users.
+
 ```js
-module.exports = {
+const {createRule} = require('swaggerlint')
+module.exports = createRule({
     name: 'my-custom-rule',
     visitor: { /* visitors */}
-}
+})
 ```
 
 ## Visitor
 Visitor pattern allows us to match on some part of the swagger scheme. This makes it easy to write rules that target different portions of the swagger scheme, ie you do not need to traverse the scheme to get all the objects to run your rule against. In the example below we match on [`ResponseObject`](https://swagger.io/specification/v2/#responseObject).
 
 ```js
-module.exports = {
+const {createRule} = require('swaggerlint')
+module.exports = createRule({
     name: 'my-custom-rule',
+    // optional
+    meta: {
+        messages: {
+            plainMessage: 'text to be displayed as an error message',
+            templatedMessage: 'error message for {{name}}',
+        }
+    },
     visitor: {
         ResponseObject(param) {
             const {
@@ -39,14 +50,30 @@ module.exports = {
 
             if (/* check for error */) {
                 // to report an error call `report` function, ie
-                report('message from your rule')
+                report({message: 'message from your rule'})
 
                 // alternatively you can specify a more precise location
-                report('message', [...location, 'path', 'error', 'cause'])
+                report({
+                    message: 'message',
+                    location: [...location, 'path', 'error', 'cause']
+                })
+
+                // you can also provide a messageId
+                report({
+                    messageId: 'plainMessage',
+                })
+
+                // if messageId has placeholders you can provide the data as an object
+                report({
+                    messageId: 'templatedMessage',
+                    data: {
+                        name: 'someString'
+                    }
+                })
             }
         }
     }
-}
+})
 ```
 
 Swaggerlint allows you to match on any of the following objects:
@@ -89,19 +116,21 @@ If your rule can be configured it has to also contain **both** `defaultSetting` 
 This will be used when the rule's value in swaggerlint config is set to `true`. Example:
 
 ```js
-module.exports = {
+const {createRule} = require('swaggerlint')
+module.exports = createRule({
     name: 'my-custom-rule',
     visitor: {/* ... */},
     isValidSetting: (setting) => Boolean(/* check if valid */),
     defaultSetting: ['sensible-default']
-}
+})
 ```
 ### Validate setting
 
 If a user has your rule set to anything other than `true` or `false` in `swaggerlint.config.js` we need to validate that your rule can be run with the supplied setting. `isValidSetting` is a function that takes the setting for your rule and returns `true` for a valid setting, `false` otherwise. If the setting validation fails, the rule won't run but the output will contain an error about invalid setting for your rule. Optionally you can provide additional information about why setting check failed by returning on object `{msg: 'reason why check failed'}`.
 
 ```js
-module.exports = {
+const {createRule} = require('swaggerlint')
+module.exports = createRule({
     name: 'my-custom-rule',
     visitor: {/* ... */},
     defaultSetting: [/* sensible default */],
@@ -120,7 +149,7 @@ module.exports = {
         }
         return false
     }
-}
+})
 ```
 
 ## Typescript
@@ -128,19 +157,29 @@ module.exports = {
 If you use `typescript` you can leverage the types.
 
 ```ts
-import {SwaggerlintRule} from 'swaggerlint'
+import {createRule} from 'swaggerlint'
 
-const myCustomRule: SwaggerlintRule = {
+const myCustomRule = createRule({
     name: 'my-custom-rule',
+    meta: {
+        messages: {
+            foo: 'some string',
+        }
+    },
     visitor: {
         /**
          * param already has correct types about `node`, `report`, `location` and `setting`
          */
         ResponseObject(param) {
             /* your rule logic */
+
+            report({
+                messageId: 'foo'
+                //         ^ correct type
+            })
         }
     }
-}
+})
 
 export default myCustomRule
 ```
