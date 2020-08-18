@@ -1,76 +1,76 @@
 import rule from '../';
-import {SwaggerlintConfig} from '../../../types';
-import {swaggerlint} from '../../../';
-import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
+import {RuleTester} from '../../../';
 
-describe(`rule "${rule.name}"`, () => {
-    const config: SwaggerlintConfig = {
-        rules: {
-            [rule.name]: true,
-        },
-    };
+const ruleTester = new RuleTester(rule);
 
-    const mod = {
-        tags: [
+ruleTester.run({
+    swagger: {
+        valid: [
             {
-                name: 'no-description',
-            },
-            {
-                name: 'with-description',
-                description: 'some description about the tag',
+                it: 'should NOT error for an empty swagger sample',
+                schema: {},
             },
         ],
-    };
-
-    describe('swagger', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(getSwaggerObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for a tag missing description', () => {
-            const modConfig = getSwaggerObject(mod);
-            const result = swaggerlint(modConfig, config);
-            const expected = [
-                {
-                    msg: 'Tag "no-description" is missing description.',
-                    name: 'required-tag-description',
-                    location: ['tags', '0'],
-                    messageId: 'missingDesc',
-                    data: {
-                        name: 'no-description',
-                    },
+        invalid: [
+            {
+                it: 'should error for a tag missing description',
+                schema: {
+                    tags: [
+                        {
+                            name: 'no-description',
+                        },
+                        {
+                            name: 'with-description',
+                            description: 'some description about the tag',
+                        },
+                    ],
                 },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-    });
-
-    describe('openapi', () => {
-        it('should NOT error for an empty openapi sample', () => {
-            const result = swaggerlint(getOpenAPIObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for a tag missing description', () => {
-            const modConfig = getOpenAPIObject(mod);
-            const result = swaggerlint(modConfig, config);
-            const expected = [
-                {
-                    msg: 'Tag "no-description" is missing description.',
-                    name: 'required-tag-description',
-                    messageId: 'missingDesc',
-                    data: {
-                        name: 'no-description',
+                errors: [
+                    {
+                        msg: 'Tag "no-description" is missing description.',
+                        location: ['tags', '0'],
+                        messageId: 'missingDesc',
+                        data: {
+                            name: 'no-description',
+                        },
                     },
-                    location: ['tags', '0'],
+                ],
+            },
+        ],
+    },
+    openapi: {
+        valid: [
+            {
+                it: 'should NOT error for an empty openapi sample',
+                schema: {},
+            },
+        ],
+        invalid: [
+            {
+                it: 'should error for a tag missing description',
+                schema: {
+                    tags: [
+                        {
+                            name: 'no-description',
+                        },
+                        {
+                            name: 'with-description',
+                            description: 'some description about the tag',
+                        },
+                    ],
                 },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-    });
+                errors: [
+                    {
+                        msg: 'Tag "no-description" is missing description.',
+                        name: 'required-tag-description',
+                        messageId: 'missingDesc',
+                        data: {
+                            name: 'no-description',
+                        },
+                        location: ['tags', '0'],
+                    },
+                ],
+            },
+        ],
+    },
 });

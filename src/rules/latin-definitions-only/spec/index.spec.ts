@@ -1,86 +1,25 @@
 import rule from '../';
-import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
-import {swaggerlint} from '../../../';
-import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
+import {RuleTester} from '../../../';
 
-describe(`rule "${rule.name}"`, () => {
-    const config: SwaggerlintConfig = {
-        rules: {
-            [rule.name]: true,
-        },
-    };
+const ruleTester = new RuleTester(rule);
 
-    describe('swagger', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(getSwaggerObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for all non latin named definitions', () => {
-            const mod: Partial<Swagger.SwaggerObject> = {
-                definitions: {
-                    valid: {
-                        type: 'object',
-                    },
-                    'invalid-obj': {
-                        type: 'object',
+ruleTester.run({
+    swagger: {
+        valid: [
+            {
+                it: 'should NOT error for an empty swagger sample',
+                schema: {
+                    definitions: {
+                        foo: {},
+                        Foo: {},
+                        FOO: {},
                     },
                 },
-            };
-            const modConfig = getSwaggerObject(mod);
-            const result = swaggerlint(modConfig, config);
-            const location = ['definitions', 'invalid-obj'];
-            const expected = [
-                {
-                    data: {
-                        name: 'invalid-obj',
-                    },
-                    messageId: 'msg',
-                    msg:
-                        'Definition name "invalid-obj" contains non latin characters.',
-                    name: rule.name,
-                    location,
-                },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-
-        it('should not error for ignored definitions', () => {
-            const mod: Partial<Swagger.SwaggerObject> = {
-                definitions: {
-                    'invalid-obj': {
-                        type: 'object',
-                    },
-                },
-            };
-            const modConfig = getSwaggerObject(mod);
-            const result = swaggerlint(modConfig, {
-                rules: {
-                    [rule.name]: true,
-                },
-                ignore: {
-                    definitions: ['invalid-obj'],
-                },
-            });
-            const expected = [] as [];
-
-            expect(result).toEqual(expected);
-        });
-    });
-
-    describe('openAPI', () => {
-        it('should NOT error for an empty swagger sample', () => {
-            const result = swaggerlint(getOpenAPIObject({}), config);
-
-            expect(result).toEqual([]);
-        });
-
-        it('should error for all non latin named definitions', () => {
-            const mod: Partial<OpenAPI.OpenAPIObject> = {
-                components: {
-                    schemas: {
+            },
+            {
+                it: 'should not error for ignored definitions',
+                schema: {
+                    definitions: {
                         valid: {
                             type: 'object',
                         },
@@ -89,30 +28,21 @@ describe(`rule "${rule.name}"`, () => {
                         },
                     },
                 },
-            };
-            const modConfig = getOpenAPIObject(mod);
-            const result = swaggerlint(modConfig, config);
-            const location = ['components', 'schemas', 'invalid-obj'];
-            const expected = [
-                {
-                    data: {
-                        name: 'invalid-obj',
+                config: {
+                    rules: {
+                        [rule.name]: true,
                     },
-                    messageId: 'msg',
-                    msg:
-                        'Definition name "invalid-obj" contains non latin characters.',
-                    name: rule.name,
-                    location,
+                    ignore: {
+                        definitions: ['invalid-obj'],
+                    },
                 },
-            ];
-
-            expect(result).toEqual(expected);
-        });
-
-        it('should not error for ignored definitions', () => {
-            const mod: Partial<OpenAPI.OpenAPIObject> = {
-                components: {
-                    schemas: {
+            },
+        ],
+        invalid: [
+            {
+                it: 'should error for all non latin named definitions',
+                schema: {
+                    definitions: {
                         valid: {
                             type: 'object',
                         },
@@ -121,31 +51,81 @@ describe(`rule "${rule.name}"`, () => {
                         },
                     },
                 },
-            };
-            const modConfig = getOpenAPIObject(mod);
-            const result = swaggerlint(modConfig, {
-                rules: {
-                    [rule.name]: true,
-                },
-                ignore: {
+                errors: [
+                    {
+                        data: {
+                            name: 'invalid-obj',
+                        },
+                        messageId: 'msg',
+                        msg:
+                            'Definition name "invalid-obj" contains non latin characters.',
+                        name: rule.name,
+                        location: ['definitions', 'invalid-obj'],
+                    },
+                ],
+            },
+        ],
+    },
+    openapi: {
+        valid: [
+            {
+                it: 'should NOT error for an empty swagger sample',
+                schema: {},
+            },
+            {
+                it: 'should not error for ignored definitions',
+                schema: {
                     components: {
-                        schemas: ['invalid-obj'],
+                        schemas: {
+                            valid: {
+                                type: 'object',
+                            },
+                            'invalid-obj': {
+                                type: 'object',
+                            },
+                        },
                     },
                 },
-            });
-            const expected = [] as [];
-
-            expect(result).toEqual(expected);
-        });
-
-        it('should not error for empty components object', () => {
-            const mod: Partial<OpenAPI.OpenAPIObject> = {
-                components: {},
-            };
-            const modConfig = getOpenAPIObject(mod);
-            const result = swaggerlint(modConfig, config);
-
-            expect(result).toEqual([]);
-        });
-    });
+                config: {
+                    rules: {
+                        [rule.name]: true,
+                    },
+                    ignore: {
+                        components: {
+                            schemas: ['invalid-obj'],
+                        },
+                    },
+                },
+            },
+        ],
+        invalid: [
+            {
+                it: 'should error for all non latin named definitions',
+                schema: {
+                    components: {
+                        schemas: {
+                            valid: {
+                                type: 'object',
+                            },
+                            'invalid-obj': {
+                                type: 'object',
+                            },
+                        },
+                    },
+                },
+                errors: [
+                    {
+                        data: {
+                            name: 'invalid-obj',
+                        },
+                        messageId: 'msg',
+                        msg:
+                            'Definition name "invalid-obj" contains non latin characters.',
+                        name: rule.name,
+                        location: ['components', 'schemas', 'invalid-obj'],
+                    },
+                ],
+            },
+        ],
+    },
 });
