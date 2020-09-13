@@ -68,7 +68,7 @@ export const validCases: ValidCasesObj = {
 export function isValidCaseName(
     name: string | void,
 ): name is keyof typeof validCases {
-    return name in validCases;
+    return typeof name === 'string' && name in validCases;
 }
 
 export function createRule<T extends string>(

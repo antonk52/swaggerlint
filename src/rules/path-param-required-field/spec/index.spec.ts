@@ -1,7 +1,5 @@
 import rule from '../';
-import {Swagger, SwaggerlintConfig, OpenAPI} from '../../../types';
-import {swaggerlint, RuleTester} from '../../../';
-import {getSwaggerObject, getOpenAPIObject} from '../../../utils/tests';
+import {RuleTester} from '../../../';
 
 const ruleTester = new RuleTester(rule);
 
