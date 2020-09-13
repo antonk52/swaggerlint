@@ -1,3 +1,5 @@
+import type {JSONSchema7} from 'json-schema';
+
 import * as Swagger from './swagger';
 import * as OpenAPI from './openapi';
 
@@ -296,9 +298,10 @@ type OpenAPIRuleVisitor<M extends string> = Partial<{
 
 type SwaggerlintRulePrimitive<T extends string> = {
     name: string;
-    meta?: {
+    meta?: Partial<{
         messages: Record<T, string>;
-    };
+        schema: JSONSchema7;
+    }>;
     openapiVisitor?: OpenAPIRuleVisitor<T>;
     swaggerVisitor?: SwaggerRuleVisitor<T>;
 };
@@ -307,12 +310,8 @@ type SwaggerlintRuleWithSetting<T extends string> = SwaggerlintRulePrimitive<
     T
 > & {
     /**
-     * Verification of valid setting for the rule,
-     * no need to verify boolean settings.
+     * To be used when the user has `true` in the config
      */
-    isValidSetting: (
-        setting: SwaggerlintRuleSetting,
-    ) => boolean | {msg: string};
     defaultSetting: SwaggerlintRuleSetting;
 };
 
