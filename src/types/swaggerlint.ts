@@ -65,7 +65,7 @@ type LintErrorPlain = {
     msg: string;
     location: string[];
 };
-type LintErrorWithMsgId = {
+type LintErrorWithMsgId = LintErrorPlain & {
     name: string;
     msg: string;
     location: string[];

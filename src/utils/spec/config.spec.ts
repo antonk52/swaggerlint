@@ -84,7 +84,7 @@ describe('utils/config', () => {
                     ignore: {},
                     extends: [],
                 },
-                error: null,
+                type: 'success',
             };
 
             expect(result).toEqual(expected);
@@ -97,13 +97,17 @@ describe('utils/config', () => {
 
             const result = getConfig('./some-path');
 
-            expect(typeof result.error).toBe('string');
+            expect(result.type).toBe('fail');
         });
 
         it('returns config by searching for it', () => {
             const config = {rules: {userRule: true}};
-            const search = jest.fn((): {config: SwaggerlintConfig} => ({
+            const search = jest.fn((): {
+                config: SwaggerlintConfig;
+                filepath: string;
+            } => ({
                 config,
+                filepath: 'foo/bar',
             }));
 
             (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
@@ -112,6 +116,8 @@ describe('utils/config', () => {
 
             const result = getConfig();
             const expected = {
+                type: 'success',
+                filepath: 'foo/bar',
                 config: {
                     rules: {
                         ...config.rules,
@@ -120,7 +126,6 @@ describe('utils/config', () => {
                     ignore: {},
                     extends: [],
                 },
-                error: null,
             };
 
             expect(result).toEqual(expected);
@@ -129,7 +134,6 @@ describe('utils/config', () => {
         });
 
         it('returns defaultConfig if could not find a config', () => {
-            const defaultConfig = require('../../defaultConfig');
             const search = jest.fn(() => ({config: null}));
 
             (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
@@ -139,8 +143,7 @@ describe('utils/config', () => {
             const result = getConfig();
 
             expect(search.mock.calls).toHaveLength(1);
-            expect(result.config).toBe(defaultConfig);
-            expect(result.error).toBe(null);
+            expect(result.type).toBe('success');
         });
     });
 });

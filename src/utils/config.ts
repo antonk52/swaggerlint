@@ -76,29 +76,37 @@ export function resolveConfigExtends(
     return result;
 }
 
-type GetConfigResult = {
+type GetConfigSuccess = {
+    type: 'success';
     config: SwaggerlintConfig;
-    error: null | string;
+    filepath: string;
+};
+type GetConfigFail = {
+    type: 'fail';
+    error: string;
 };
 
+type GetConfigResult = GetConfigSuccess | GetConfigFail;
+
+const defaultConfigPath = path.join(__dirname, '..', 'defaultConfig.js');
 export function getConfig(configPath: string | void): GetConfigResult {
     const cosmiconfig = cosmiconfigSync(pkg.name);
     if (configPath) {
         const cosmiResult = cosmiconfig.load(path.resolve(configPath));
-        const loadedConfig = cosmiResult?.config;
 
-        if (loadedConfig) {
-            const config = loadedConfig.extends
-                ? resolveConfigExtends(loadedConfig)
-                : mergeConfigs(defaultConfig, loadedConfig);
+        if (cosmiResult?.config) {
+            const config = cosmiResult.config.extends
+                ? resolveConfigExtends(cosmiResult.config)
+                : mergeConfigs(defaultConfig, cosmiResult.config);
 
             return {
+                type: 'success',
                 config,
-                error: null,
+                filepath: cosmiResult.filepath,
             };
         } else {
             return {
-                config: defaultConfig,
+                type: 'fail',
                 error:
                     'Swaggerlint config with a provided path does not exits.',
             };
@@ -107,29 +115,32 @@ export function getConfig(configPath: string | void): GetConfigResult {
         const cosmiResult = cosmiconfig.search();
         const lookedupConfig = cosmiResult?.config;
 
-        if (lookedupConfig) {
-            if (lookedupConfig.extends) {
+        if (cosmiResult?.config) {
+            if (cosmiResult.config.extends) {
                 try {
                     return {
+                        type: 'success',
                         config: resolveConfigExtends(lookedupConfig),
-                        error: null,
+                        filepath: cosmiResult.filepath,
                     };
                 } catch (e) {
                     return {
-                        config: defaultConfig,
+                        type: 'fail',
                         error: e,
                     };
                 }
             } else {
                 return {
+                    type: 'success',
                     config: mergeConfigs(defaultConfig, lookedupConfig),
-                    error: null,
+                    filepath: cosmiResult.filepath,
                 };
             }
         } else {
             return {
+                type: 'success',
                 config: defaultConfig,
-                error: null,
+                filepath: defaultConfigPath,
             };
         }
     }

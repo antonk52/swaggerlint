@@ -1,3 +1,5 @@
+import type {JSONSchema7} from 'json-schema';
+import {validate} from './utils/validate-json';
 import {swaggerlint} from './swaggerlint';
 import {
     LintError,
@@ -6,6 +8,7 @@ import {
     EntryResult,
     Swagger,
     OpenAPI,
+    SwaggerlintConfig,
 } from './types';
 import {getConfig} from './utils/config';
 import {getSwaggerByPath, getSwaggerByUrl} from './utils/swaggerfile';
@@ -24,11 +27,28 @@ function preLintError({src, msg}: {src: string; msg: string}): EntryResult {
 export async function cli(opts: CliOptions): Promise<CliResult> {
     let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
 
-    const {config, error: configError} = getConfig(opts.config);
-    if (configError) {
+    const configResult = getConfig(opts.config);
+    if (configResult.type === 'fail') {
         return {
             code: 1,
-            results: [preLintError({msg: configError, src: ''})],
+            results: [preLintError({msg: configResult.error, src: ''})],
+        };
+    }
+
+    const {config, filepath: configFilepath} = configResult;
+
+    const configErrors = validateConfig(configResult.config);
+
+    if (configErrors.length) {
+        return {
+            results: [
+                {
+                    src: configFilepath,
+                    errors: configErrors,
+                    schema: undefined,
+                },
+            ],
+            code: 1,
         };
     }
 
@@ -59,7 +79,7 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
                 results: [
                     preLintError({
                         msg: 'Every value in `extends` has to be a string',
-                        src: '', // TODO get config path
+                        src: configFilepath,
                     }),
                 ],
             };
@@ -134,3 +154,62 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         code: results.every(x => x.errors.length === 0) ? 0 : 1,
     };
 }
+
+const arrayOfStrings: JSONSchema7 = {type: 'array', items: {type: 'string'}};
+const configSchema: JSONSchema7 = {
+    type: 'object',
+    properties: {
+        rules: {
+            type: 'object',
+        },
+        extends: arrayOfStrings,
+        ignore: {
+            type: 'object',
+            properties: {
+                definitions: arrayOfStrings,
+                components: {
+                    type: 'object',
+                    properties: {
+                        schemas: arrayOfStrings,
+                        responses: arrayOfStrings,
+                        parameters: arrayOfStrings,
+                        examples: arrayOfStrings,
+                        requestBodies: arrayOfStrings,
+                        headers: arrayOfStrings,
+                        securitySchemes: arrayOfStrings,
+                        links: arrayOfStrings,
+                        callbacks: arrayOfStrings,
+                    },
+                    additionalProperties: false,
+                },
+            },
+            additionalProperties: false,
+        },
+    },
+    additionalProperties: false,
+};
+
+export const validateConfig = (config: SwaggerlintConfig) => {
+    const errors = validate(configSchema, config);
+
+    if (errors.length === 0) return [];
+
+    return errors.map(se => {
+        const result: LintError = {
+            name: 'swaggerlint-core',
+            msg: 'Invalid config',
+            location: [],
+        };
+        switch (se.keyword) {
+            case 'additionalProperties':
+                const key =
+                    'additionalProperty' in se.params &&
+                    se.params.additionalProperty;
+                result.msg = `Unexpected property ${JSON.stringify(
+                    key || '',
+                )} in swaggerlint.config.js`;
+        }
+
+        return result;
+    });
+};
