@@ -26,7 +26,6 @@ const name = 'swaggerlint-core';
 
 describe('cli function', () => {
     it('exits when neither url nor swaggerPath are passed', async () => {
-        const {swaggerlint} = require('../index');
         const {getConfig} = require('../utils/config');
 
         getConfig.mockReturnValueOnce({
@@ -36,9 +35,6 @@ describe('cli function', () => {
         });
 
         const result = await cli({_: []});
-
-        expect(swaggerlint.mock.calls.length === 0).toBe(true);
-        expect(getConfig.mock.calls).toEqual([[undefined]]);
 
         expect(result).toEqual({
             code: 1,
@@ -64,12 +60,12 @@ describe('cli function', () => {
         const {getConfig} = require('../utils/config');
 
         getConfig.mockReturnValueOnce({
-            type: 'success',
-            config: 'lookedup-config',
+            type: 'error',
+            error: 'Invalid extends field in the config',
             filepath: '~/foo/bar/baz.js',
         });
 
-        const result = await cli({_: []});
+        const result = await cli({_: ['some/path']});
 
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
         expect(getConfig.mock.calls).toEqual([[undefined]]);
@@ -84,7 +80,7 @@ describe('cli function', () => {
                         {
                             name,
                             location: [],
-                            msg: 'Invalid config',
+                            msg: 'Invalid extends field in the config',
                         },
                     ],
                 },
@@ -102,7 +98,7 @@ describe('cli function', () => {
         });
 
         const config = 'lol/kek/foo/bar';
-        const result = await cli({_: [], config});
+        const result = await cli({_: ['some/path'], config});
 
         expect(getConfig.mock.calls).toEqual([[config]]);
         expect(swaggerlint.mock.calls.length === 0).toBe(true);
