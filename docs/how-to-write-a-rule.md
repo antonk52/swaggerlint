@@ -109,7 +109,7 @@ Swaggerlint allows you to match on any of the following objects:
 
 ## Configurable rules
 
-If your rule can be configured it has to also contain **both** `defaultSetting` and `isValidSetting` properties.
+If your rule can be configured it has to contain **both** `defaultSetting` and `meta.schema` properties.
 
 ### Default setting
 
@@ -119,36 +119,30 @@ This will be used when the rule's value in swaggerlint config is set to `true`. 
 const {createRule} = require('swaggerlint')
 module.exports = createRule({
     name: 'my-custom-rule',
+    meta: {/* ... */},
     visitor: {/* ... */},
-    isValidSetting: (setting) => Boolean(/* check if valid */),
     defaultSetting: ['sensible-default']
 })
 ```
-### Validate setting
+### Setting schema
 
-If a user has your rule set to anything other than `true` or `false` in `swaggerlint.config.js` we need to validate that your rule can be run with the supplied setting. `isValidSetting` is a function that takes the setting for your rule and returns `true` for a valid setting, `false` otherwise. If the setting validation fails, the rule won't run but the output will contain an error about invalid setting for your rule. Optionally you can provide additional information about why setting check failed by returning on object `{msg: 'reason why check failed'}`.
+If a user has your rule set to anything other than `true` or `false` in `swaggerlint.config.js` we need to validate that your rule can be run with the supplied setting. `meta.schema` is a [JSON schema](http://json-schema.org/), it describes all possible values that the setting for your rule can be set to. If the setting validation fails, the rule won't run and the output will contain an error about invalid rule setting.
 
 ```js
 const {createRule} = require('swaggerlint')
 module.exports = createRule({
     name: 'my-custom-rule',
+    meta: {
+        schema: {
+            type: 'array',
+                items: {
+                    type: 'string',
+                },
+            },
+        },
+    },
     visitor: {/* ... */},
-    defaultSetting: [/* sensible default */],
-    isValidSetting: (setting) => {
-        if (/* check if setting is invalid */) {
-            // the only possible error
-            return false
-
-            // optionally check for specifics with sensible feedback
-            if (/* check if one thing is invalid */) {
-                return {msg: 'One thing is invalid'}
-            }
-            if (/* check if another thing is invalid */) {
-                return {msg: 'Another thing is invalid'}
-            }
-        }
-        return false
-    }
+    defaultSetting: [/* sensible default */]
 })
 ```
 
