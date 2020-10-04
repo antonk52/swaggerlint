@@ -1,5 +1,7 @@
+import type {JSONSchema7} from 'json-schema';
 import {SwaggerVisitorName, Swagger, SwaggerlintRule} from '../types';
 export * from './common';
+import {validate} from './validate-json';
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -71,9 +73,40 @@ export function isValidCaseName(
     return typeof name === 'string' && name in validCases;
 }
 
+const ruleJsonSchema: JSONSchema7 = {
+    type: 'object',
+    required: ['name'],
+    properties: {
+        name: {
+            type: 'string',
+        },
+        meta: {
+            type: 'object',
+            properties: {
+                messages: {
+                    type: 'object',
+                },
+                schema: {
+                    type: 'object',
+                },
+            },
+        },
+        openapiVisitor: {
+            type: 'object',
+        },
+        swaggerVisitor: {
+            type: 'object',
+        },
+    },
+    additionalProperties: true,
+};
+
 export function createRule<T extends string>(
     rule: SwaggerlintRule<T>,
 ): typeof rule {
-    // TODO: add rule validations
+    const errors = validate(ruleJsonSchema, rule);
+
+    if (errors[0]) throw errors[0];
+
     return rule;
 }

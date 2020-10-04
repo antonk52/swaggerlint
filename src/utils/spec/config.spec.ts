@@ -13,6 +13,16 @@ jest.mock('../../defaultConfig', () => ({rules: {defaultRule: true}}));
 jest.mock('fs', () => ({extends: ['os'], rules: {fs: true}}));
 jest.mock('os', () => ({extends: ['process'], rules: {os: true}}));
 jest.mock('process', () => ({extends: ['fs'], rules: {process: true}}));
+jest.mock('path', () => ({
+    resolve: (filepath: string) => filepath,
+    join: (...args: string[]) => args.join('/'),
+}));
+
+jest.mock('case', () => ({
+    rules: {
+        case: true,
+    },
+}));
 
 jest.mock('http', () => ({rules: {http: true}}));
 jest.mock('https', () => ({rules: {http: false, https: true}}));
@@ -84,7 +94,7 @@ describe('utils/config', () => {
                     ignore: {},
                     extends: [],
                 },
-                error: null,
+                type: 'success',
             };
 
             expect(result).toEqual(expected);
@@ -92,18 +102,58 @@ describe('utils/config', () => {
 
         it('returns an error if provided path does not exist', () => {
             (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
-                load: (): {config: null} => ({config: null}),
+                load: (): unknown => null,
             }));
 
             const result = getConfig('./some-path');
 
-            expect(typeof result.error).toBe('string');
+            expect(result.type).toBe('fail');
+        });
+
+        it('returns an error if loaded config did not pass validation', () => {
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
+                load: (
+                    filepath: string,
+                ): {config: object; filepath: string} => ({
+                    config: {extends: [null, 'foo']},
+                    filepath,
+                }),
+            }));
+
+            const result = getConfig('./some-path');
+
+            expect(result).toEqual({
+                type: 'error',
+                filepath: './some-path',
+                error: 'Expected string at ".extends[0]", got `null`',
+            });
+        });
+
+        it('returns an error if found config did not pass validation', () => {
+            (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
+                search: (): {config: object; filepath: string} => ({
+                    config: {extends: [null, 'foo']},
+                    filepath: './some-path',
+                }),
+            }));
+
+            const result = getConfig();
+
+            expect(result).toEqual({
+                type: 'error',
+                filepath: './some-path',
+                error: 'Expected string at ".extends[0]", got `null`',
+            });
         });
 
         it('returns config by searching for it', () => {
             const config = {rules: {userRule: true}};
-            const search = jest.fn((): {config: SwaggerlintConfig} => ({
+            const search = jest.fn((): {
+                config: SwaggerlintConfig;
+                filepath: string;
+            } => ({
                 config,
+                filepath: 'foo/bar',
             }));
 
             (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
@@ -112,6 +162,8 @@ describe('utils/config', () => {
 
             const result = getConfig();
             const expected = {
+                type: 'success',
+                filepath: 'foo/bar',
                 config: {
                     rules: {
                         ...config.rules,
@@ -120,7 +172,6 @@ describe('utils/config', () => {
                     ignore: {},
                     extends: [],
                 },
-                error: null,
             };
 
             expect(result).toEqual(expected);
@@ -128,9 +179,34 @@ describe('utils/config', () => {
             expect(search.mock.calls).toHaveLength(1);
         });
 
+        it('finds and resolves config with extends field', () => {
+            (cosmiconfigSync as jest.Mock).mockReturnValueOnce({
+                search: jest.fn(() => ({
+                    config: {rules: {a: true}, extends: ['case']},
+                    filepath: 'some/valid/path/a.config.js',
+                })),
+            });
+            const result = getConfig();
+
+            const expected = {
+                type: 'success',
+                config: {
+                    extends: [],
+                    ignore: {},
+                    rules: {
+                        a: true,
+                        case: true,
+                        defaultRule: true,
+                    },
+                },
+                filepath: 'some/valid/path/a.config.js',
+            };
+
+            expect(result).toEqual(expected);
+        });
+
         it('returns defaultConfig if could not find a config', () => {
-            const defaultConfig = require('../../defaultConfig');
-            const search = jest.fn(() => ({config: null}));
+            const search = jest.fn(() => null);
 
             (cosmiconfigSync as jest.Mock).mockImplementationOnce(() => ({
                 search,
@@ -139,8 +215,7 @@ describe('utils/config', () => {
             const result = getConfig();
 
             expect(search.mock.calls).toHaveLength(1);
-            expect(result.config).toBe(defaultConfig);
-            expect(result.error).toBe(null);
+            expect(result.type).toBe('success');
         });
     });
 });

@@ -1,12 +1,7 @@
+import type {JSONSchema7} from 'json-schema';
 import Case from 'case';
 import {CaseName, Swagger, OpenAPI} from '../../types';
-import {
-    createRule,
-    hasKey,
-    isObject,
-    isValidCaseName,
-    validCases,
-} from '../../utils';
+import {createRule, isValidCaseName, validCases} from '../../utils';
 
 const name = 'parameter-casing';
 
@@ -31,12 +26,46 @@ const PARAMETER_LOCATIONS: (
     'body',
 ];
 
+const validCasesArr = Object.keys(validCases);
+
+const paramsSchema = PARAMETER_LOCATIONS.reduce((acc, el) => {
+    acc[el] = {
+        type: 'string',
+        enum: validCasesArr,
+    };
+    return acc;
+}, {} as Record<string, JSONSchema7>);
+
 const rule = createRule({
     name,
     meta: {
         messages: {
             casing:
                 'Parameter "{{name}}" has wrong casing. Should be "{{correctVersion}}".',
+        },
+        schema: {
+            type: 'array',
+            items: [
+                {
+                    type: 'string',
+                    enum: Object.keys(validCases),
+                },
+                {
+                    type: 'object',
+                    properties: {
+                        ...paramsSchema,
+                        ignore: {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                            },
+                        },
+                    },
+                    additionalProperties: false,
+                },
+            ],
+            minItems: 1,
+            maxItems: 2,
         },
     },
     swaggerVisitor: {
@@ -138,42 +167,6 @@ const rule = createRule({
                 }
             }
         },
-    },
-    isValidSetting: option => {
-        if (typeof option !== 'object') return false;
-
-        const [first, second] = option;
-        const isValidFirstItem = first in validCases;
-        if (!isValidFirstItem) {
-            return {msg: `"${first}" is not a valid rule setting`};
-        }
-        if (option.length === 1) return true;
-
-        if (isObject(second)) {
-            if (hasKey('ignore', second)) {
-                const {ignore} = second;
-                if (!Array.isArray(ignore))
-                    return {
-                        msg: 'Setting contains "ignore" which is not an array.',
-                    };
-
-                const isEachIgnoreItemString = ignore.every(
-                    (x: unknown) => typeof x === 'string',
-                );
-                if (!isEachIgnoreItemString) {
-                    return {msg: 'Each item in "ignore" has to be a string.'};
-                }
-            }
-
-            if (PARAMETER_LOCATIONS.some(name => !isValidCaseName(name))) {
-                return {
-                    msg:
-                        'Settings for parameter location has to be a valid case name.',
-                };
-            }
-
-            return true;
-        } else return false;
     },
     defaultSetting: ['camel', {header: 'kebab'}],
 });

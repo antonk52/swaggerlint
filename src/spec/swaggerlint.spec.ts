@@ -14,8 +14,32 @@ jest.mock('../defaultConfig', () => ({
 }));
 jest.mock('../rules', () => ({
     'known-rule': {
+        name: 'known-rule',
+        meta: {
+            schema: {
+                type: 'array',
+                items: [
+                    {
+                        type: 'string',
+                        enum: ['known', 'words'],
+                    },
+                    {
+                        type: 'object',
+                        required: ['ignore'],
+                        properties: {
+                            ignore: {
+                                type: 'array',
+                                items: {
+                                    type: 'string',
+                                },
+                            },
+                        },
+                    },
+                ],
+            },
+        },
         swaggerVisitor: {},
-        isValidSetting: jest.fn(() => true),
+        defaultSetting: ['known', {}],
     },
     'always-valid-rule': {
         swaggerVisitor: {},
@@ -52,7 +76,7 @@ describe('swaggerlint', () => {
         const config = {
             rules: {
                 'unknown-rule': true,
-                'known-rule': true,
+                'always-valid-rule': true,
             },
         };
 
@@ -99,9 +123,6 @@ describe('swaggerlint', () => {
             },
         });
 
-        const rules = require('../rules');
-        rules['known-rule'].isValidSetting.mockReturnValueOnce(false);
-
         const config: SwaggerlintConfig = {
             rules: {
                 'known-rule': ['invalid-setting'],
@@ -111,7 +132,8 @@ describe('swaggerlint', () => {
         const result = swaggerlint(swagger, config);
         expect(result).toEqual([
             {
-                msg: 'Invalid rule setting',
+                msg:
+                    'Invalid rule setting. Got "invalid-setting", expected: "known", "words"',
                 location: [],
                 name: 'known-rule',
             },

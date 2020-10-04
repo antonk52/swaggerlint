@@ -13,6 +13,7 @@ import {
     OpenAPITypes,
 } from './types';
 import {isValidSwaggerVisitorName, hasKey} from './utils';
+import {validate} from './utils/validate-json';
 
 import {isSwaggerObject} from './utils/swagger';
 
@@ -117,7 +118,8 @@ export function swaggerlint(
 
             if (setting === false) {
                 return acc;
-            } else if (setting === true) {
+            }
+            if (setting === true) {
                 const defaultConfigSetting = defaultConfig.rules[ruleName];
                 if (typeof defaultConfigSetting !== 'undefined') {
                     setting = defaultConfigSetting;
@@ -126,16 +128,43 @@ export function swaggerlint(
                 }
             }
 
-            if (
-                'isValidSetting' in rule &&
-                typeof rule.isValidSetting === 'function'
-            ) {
-                if (!rule.isValidSetting(setting)) {
-                    errors.push({
-                        msg: 'Invalid rule setting',
-                        name: ruleName,
-                        location: [],
+            if (rule.meta && 'schema' in rule.meta && rule.meta?.schema) {
+                const ruleSettingErrors = validate(rule.meta.schema, setting);
+
+                if (ruleSettingErrors.length) {
+                    ruleSettingErrors.forEach(se => {
+                        const err: LintError = {
+                            name: rule.name,
+                            msg: 'Invalid rule setting.',
+                            location: [],
+                        };
+
+                        switch (se.keyword) {
+                            case 'enum':
+                                if (typeof se.schema[0] === 'string') {
+                                    const gotValue = JSON.stringify(se.data);
+                                    const expectedValues = se.schema
+                                        .map((x: string) => `"${x}"`)
+                                        .join(', ');
+                                    err.msg = `Invalid rule setting. Got ${gotValue}, expected: ${expectedValues}`;
+                                }
+                                break;
+                            case 'additionalProperties':
+                                if (hasKey('additionalProperty', se.params)) {
+                                    err.msg = `Unexpected property "${se.params.additionalProperty}" in rule settings`;
+                                }
+                                break;
+                            case 'maxItems':
+                                err.msg = `Rule setting ${se.message}`;
+                                break;
+                            case 'minItems':
+                                err.msg = `Rule setting ${se.message}`;
+                                break;
+                        }
+
+                        errors.push(err);
                     });
+
                     return acc;
                 }
             }

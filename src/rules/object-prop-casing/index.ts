@@ -1,6 +1,6 @@
 import Case from 'case';
 import {createRule} from '../../utils';
-import {validCases, isValidCaseName, isObject} from '../../utils';
+import {validCases, isValidCaseName} from '../../utils';
 
 const name = 'object-prop-casing';
 
@@ -10,6 +10,29 @@ const rule = createRule({
         messages: {
             casing:
                 'Property "{{propName}}" has wrong casing. Should be "{{correctVersion}}".',
+        },
+        schema: {
+            type: 'array',
+            items: [
+                {
+                    type: 'string',
+                    enum: Object.keys(validCases),
+                },
+                {
+                    type: 'object',
+                    required: ['ignore'],
+                    properties: {
+                        ignore: {
+                            type: 'array',
+                            items: {
+                                type: 'string',
+                            },
+                        },
+                    },
+                },
+            ],
+            minItems: 1,
+            maxItems: 2,
         },
     },
     swaggerVisitor: {
@@ -92,28 +115,6 @@ const rule = createRule({
                 });
             }
         },
-    },
-    isValidSetting: option => {
-        if (typeof option !== 'object') return false;
-
-        const [first, second] = option;
-        const isValidFirstItem = first in validCases;
-        if (!isValidFirstItem) return false;
-        if (option.length === 1) return true;
-
-        if (isObject(second)) {
-            const {ignore} = second;
-            if (!Array.isArray(ignore)) return false;
-
-            const isEachIgnoreItemString = ignore.every(
-                (x: unknown) => typeof x === 'string',
-            );
-            if (!isEachIgnoreItemString) {
-                return {msg: 'Each item in "ignore" has to be a string.'};
-            }
-
-            return true;
-        } else return false;
     },
     defaultSetting: ['camel'],
 });

@@ -22,16 +22,6 @@ function preLintError({src, msg}: {src: string; msg: string}): EntryResult {
 }
 
 export async function cli(opts: CliOptions): Promise<CliResult> {
-    let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
-
-    const {config, error: configError} = getConfig(opts.config);
-    if (configError) {
-        return {
-            code: 1,
-            results: [preLintError({msg: configError, src: ''})],
-        };
-    }
-
     if (opts._.length === 0) {
         return {
             code: 1,
@@ -45,33 +35,31 @@ export async function cli(opts: CliOptions): Promise<CliResult> {
         };
     }
 
-    /**
-     * validate config.extends
-     */
-    if (
-        'extends' in config &&
-        config.extends &&
-        Array.isArray(config.extends)
-    ) {
-        if (!config.extends.every(e => typeof e === 'string')) {
-            return {
-                code: 1,
-                results: [
-                    preLintError({
-                        msg: 'Every value in `extends` has to be a string',
-                        src: '', // TODO get config path
-                    }),
-                ],
-            };
-        }
+    let schema: void | Swagger.SwaggerObject | OpenAPI.OpenAPIObject;
+
+    const configResult = getConfig(opts.config);
+    if (configResult.type === 'fail') {
+        return {
+            code: 1,
+            results: [preLintError({msg: configResult.error, src: ''})],
+        };
     }
 
-    const schemaPaths = opts._.reduce((acc, schemaPath) => {
-        acc.push(schemaPath);
-        return acc;
-    }, [] as string[]);
+    if (configResult.type === 'error') {
+        return {
+            code: 1,
+            results: [
+                preLintError({
+                    msg: configResult.error,
+                    src: configResult.filepath,
+                }),
+            ],
+        };
+    }
 
-    const result: Promise<EntryResult>[] = schemaPaths.map(async schemaPath => {
+    const {config} = configResult;
+
+    const result: Promise<EntryResult>[] = opts._.map(async schemaPath => {
         /**
          * handling `swagger-lint https://...`
          */
