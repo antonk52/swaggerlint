@@ -86,6 +86,9 @@ const ruleJsonSchema: JSONSchema7 = {
                 messages: {
                     type: 'object',
                 },
+                schema: {
+                    type: 'object',
+                },
             },
         },
         openapiVisitor: {

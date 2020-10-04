@@ -128,7 +128,7 @@ export function swaggerlint(
                 }
             }
 
-            if (rule.meta?.schema) {
+            if (rule.meta && 'schema' in rule.meta && rule.meta?.schema) {
                 const ruleSettingErrors = validate(rule.meta.schema, setting);
 
                 if (ruleSettingErrors.length) {

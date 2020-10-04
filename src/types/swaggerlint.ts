@@ -298,17 +298,20 @@ type OpenAPIRuleVisitor<M extends string> = Partial<{
 
 type SwaggerlintRulePrimitive<T extends string> = {
     name: string;
-    meta?: Partial<{
-        messages: Record<T, string>;
-        schema: JSONSchema7;
-    }>;
+    meta?: {
+        messages?: Record<T, string>;
+    };
     openapiVisitor?: OpenAPIRuleVisitor<T>;
     swaggerVisitor?: SwaggerRuleVisitor<T>;
 };
 
-type SwaggerlintRuleWithSetting<T extends string> = SwaggerlintRulePrimitive<
-    T
+type SwaggerlintRuleWithSetting<T extends string> = Omit<
+    SwaggerlintRulePrimitive<T>,
+    'meta'
 > & {
+    meta: SwaggerlintRulePrimitive<T>['meta'] & {
+        schema: JSONSchema7;
+    };
     /**
      * To be used when the user has `true` in the config
      */

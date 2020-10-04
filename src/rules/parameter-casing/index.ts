@@ -1,4 +1,4 @@
-import type {JSONSchema4} from 'json-schema';
+import type {JSONSchema7} from 'json-schema';
 import Case from 'case';
 import {CaseName, Swagger, OpenAPI} from '../../types';
 import {createRule, isValidCaseName, validCases} from '../../utils';
@@ -34,7 +34,7 @@ const paramsSchema = PARAMETER_LOCATIONS.reduce((acc, el) => {
         enum: validCasesArr,
     };
     return acc;
-}, {} as Record<string, JSONSchema4>);
+}, {} as Record<string, JSONSchema7>);
 
 const rule = createRule({
     name,

@@ -113,8 +113,6 @@ const configSchema: JSONSchema7 = {
 const validateConfig = (config: SwaggerlintConfig) => {
     const errors = validate(configSchema, config);
 
-    if (errors.length === 0) return [];
-
     return errors.map(se => {
         const result: LintError = {
             name: 'swaggerlint-core',
