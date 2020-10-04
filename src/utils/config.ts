@@ -31,7 +31,6 @@ function omitExtends({
     return rest;
 }
 
-type ConfigWithExtends = SwaggerlintConfig & {extends: string[]};
 type ConfigNoExtends = Omit<SwaggerlintConfig, 'extends'>;
 
 export function resolveConfigExtends(
@@ -194,7 +193,6 @@ export function getConfig(configPath: string | void): GetConfigResult {
         }
     } else {
         const cosmiResult = cosmiconfig.search();
-
         if (cosmiResult !== null) {
             const validationErrros = validateConfig(cosmiResult.config);
             if (validationErrros.length) {

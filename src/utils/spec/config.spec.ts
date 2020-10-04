@@ -18,6 +18,12 @@ jest.mock('path', () => ({
     join: (...args: string[]) => args.join('/'),
 }));
 
+jest.mock('case', () => ({
+    rules: {
+        case: true,
+    },
+}));
+
 jest.mock('http', () => ({rules: {http: true}}));
 jest.mock('https', () => ({rules: {http: false, https: true}}));
 
@@ -173,7 +179,31 @@ describe('utils/config', () => {
             expect(search.mock.calls).toHaveLength(1);
         });
 
-        it.todo('finds and resolves config with extends field');
+        it('finds and resolves config with extends field', () => {
+            (cosmiconfigSync as jest.Mock).mockReturnValueOnce({
+                search: jest.fn(() => ({
+                    config: {rules: {a: true}, extends: ['case']},
+                    filepath: 'some/valid/path/a.config.js',
+                })),
+            });
+            const result = getConfig();
+
+            const expected = {
+                type: 'success',
+                config: {
+                    extends: [],
+                    ignore: {},
+                    rules: {
+                        a: true,
+                        case: true,
+                        defaultRule: true,
+                    },
+                },
+                filepath: 'some/valid/path/a.config.js',
+            };
+
+            expect(result).toEqual(expected);
+        });
 
         it('returns defaultConfig if could not find a config', () => {
             const search = jest.fn(() => null);
