@@ -188,15 +188,17 @@ export type SwaggerVisitors = {
     ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
 };
 
-// prettier-ignore
+/* GENERATED_START(id:openapi;hash:524a9cad6706f174e378bd127f940b4a) This is generated content, do not modify by hand, to regenerate run "npm run update-types" */
 export type OpenAPIVisitors = {
     CallbackObject: NodeWithLocation<OpenAPI.CallbackObject>[];
-    ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
+    ComponentsObject: [NodeWithLocation<OpenAPI.ComponentsObject>] | [];
     ContactObject: NodeWithLocation<OpenAPI.ContactObject>[];
     DiscriminatorObject: NodeWithLocation<OpenAPI.DiscriminatorObject>[];
     EncodingObject: NodeWithLocation<OpenAPI.EncodingObject>[];
     ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
-    ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
+    ExternalDocumentationObject: NodeWithLocation<
+        OpenAPI.ExternalDocumentationObject
+    >[];
     HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
     InfoObject: [NodeWithLocation<OpenAPI.InfoObject>];
     LicenseObject: NodeWithLocation<OpenAPI.LicenseObject>[];
@@ -214,13 +216,17 @@ export type OpenAPIVisitors = {
     ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
     ResponsesObject: NodeWithLocation<OpenAPI.ResponsesObject>[];
     SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
-    SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
+    SecurityRequirementObject: NodeWithLocation<
+        OpenAPI.SecurityRequirementObject
+    >[];
     SecuritySchemeObject: NodeWithLocation<OpenAPI.SecuritySchemeObject>[];
     ServerObject: NodeWithLocation<OpenAPI.ServerObject>[];
     ServerVariableObject: NodeWithLocation<OpenAPI.ServerVariableObject>[];
     TagObject: NodeWithLocation<OpenAPI.TagObject>[];
     XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
 };
+
+export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;
 
 export type OpenAPITypes = {
     CallbackObject: OpenAPI.CallbackObject;
@@ -254,8 +260,6 @@ export type OpenAPITypes = {
     TagObject: OpenAPI.TagObject;
     XMLObject: OpenAPI.XMLObject;
 };
-
-export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;
 
 type OpenAPIRuleVisitor<M extends string> = Partial<{
     CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject, M>;
@@ -295,6 +299,7 @@ type OpenAPIRuleVisitor<M extends string> = Partial<{
     TagObject: RuleVisitorFunction<OpenAPI.TagObject, M>;
     XMLObject: RuleVisitorFunction<OpenAPI.XMLObject, M>;
 }>;
+/* GENERATED_END(id:openapi) */
 
 type SwaggerlintRulePrimitive<T extends string> = {
     name: string;

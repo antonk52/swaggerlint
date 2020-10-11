@@ -164,7 +164,7 @@ export type SchemaObject =
  *
  * The extensions properties are implemented as patterned fields that are always prefixed by `"x-"`.
  */
-export type SpecificationExtensions = {
+type SpecificationExtensions = {
     /**
      * Allows extensions to the OpenAPI Schema. The field name MUST begin with `x-`, for example, `x-internal-id`. The value can be null, a primitive, an array or an object. Can have any valid JSON format value.
      */
@@ -265,7 +265,7 @@ export type CallbackObject = Record<string, PathItemObject | ReferenceObject> &
 /**
  * https://swagger.io/specification/#runtimeExpression
  */
-export type RuntimeExpression = string;
+type RuntimeExpression = string;
 
 /**
  * https://swagger.io/specification/#linkObject

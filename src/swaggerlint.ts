@@ -21,7 +21,7 @@ import * as oaUtils from './utils/openapi';
 
 import defaultConfig from './defaultConfig';
 
-import rules from './rules';
+import {rules} from './rules';
 import * as walker from './walker';
 
 type Validated =
