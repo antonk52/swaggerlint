@@ -6,6 +6,10 @@ const name = 'object-prop-casing';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'Casing for your object property names',
+    },
     meta: {
         messages: {
             casing:

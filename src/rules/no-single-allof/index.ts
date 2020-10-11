@@ -4,6 +4,11 @@ const name = 'no-single-allof';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description:
+            'Object types should not have a redundant single `allOf` property',
+    },
     meta: {
         messages: {
             msg: 'Redundant use of "allOf" with a single item in it.',

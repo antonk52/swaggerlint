@@ -25,6 +25,11 @@ function ParameterObject({node, report}: Param): void {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: false,
+        description:
+            'Helps to keep consistently set optional `required` property in path parameters',
+    },
     meta: {
         messages,
     },

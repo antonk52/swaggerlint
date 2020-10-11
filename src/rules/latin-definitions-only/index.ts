@@ -15,6 +15,10 @@ function hasNonLatinCharacters(str: string): boolean {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'Bans non Latin characters usage in definition names',
+    },
     meta: {
         messages: {
             msg: `Definition name "{{name}}" contains non latin characters.`,

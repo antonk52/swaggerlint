@@ -97,106 +97,138 @@ export type RuleVisitorFunction<T, MessageIds extends string> = (a: {
     config: SwaggerlintConfig; // TODO move this and above into rule arg
 }) => void;
 
+/* GENERATED_START(id:swagger;hash:eca216bbb071f64dd55da5cdbbca17ac) This is generated content, do not modify by hand, to regenerate run "npm run update-types" */
+export type SwaggerVisitors = {
+    ContactObject: [NodeWithLocation<Swagger.ContactObject>] | [];
+    DefinitionsObject: [NodeWithLocation<Swagger.DefinitionsObject>] | [];
+    ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
+    ExternalDocumentationObject: NodeWithLocation<
+        Swagger.ExternalDocumentationObject
+    >[];
+    HeaderObject: NodeWithLocation<Swagger.HeaderObject>[];
+    HeadersObject: NodeWithLocation<Swagger.HeadersObject>[];
+    InfoObject: [NodeWithLocation<Swagger.InfoObject>];
+    ItemsObject: NodeWithLocation<Swagger.ItemsObject>[];
+    LicenseObject: [NodeWithLocation<Swagger.LicenseObject>] | [];
+    OperationObject: NodeWithLocation<Swagger.OperationObject>[];
+    ParameterObject: NodeWithLocation<Swagger.ParameterObject>[];
+    ParametersDefinitionsObject:
+        | [NodeWithLocation<Swagger.ParametersDefinitionsObject>]
+        | [];
+    PathItemObject: NodeWithLocation<Swagger.PathItemObject>[];
+    PathsObject: [NodeWithLocation<Swagger.PathsObject>];
+    ReferenceObject: NodeWithLocation<Swagger.ReferenceObject>[];
+    ResponseObject: NodeWithLocation<Swagger.ResponseObject>[];
+    ResponsesDefinitionsObject:
+        | [NodeWithLocation<Swagger.ResponsesDefinitionsObject>]
+        | [];
+    ResponsesObject: NodeWithLocation<Swagger.ResponsesObject>[];
+    SchemaObject: NodeWithLocation<Swagger.SchemaObject>[];
+    ScopesObject: NodeWithLocation<Swagger.ScopesObject>[];
+    SecurityDefinitionsObject:
+        | [NodeWithLocation<Swagger.SecurityDefinitionsObject>]
+        | [];
+    SecurityRequirementObject: NodeWithLocation<
+        Swagger.SecurityRequirementObject
+    >[];
+    SecuritySchemeObject: NodeWithLocation<Swagger.SecuritySchemeObject>[];
+    SwaggerObject: [NodeWithLocation<Swagger.SwaggerObject>];
+    TagObject: NodeWithLocation<Swagger.TagObject>[];
+    XMLObject: NodeWithLocation<Swagger.XMLObject>[];
+};
+
 export type SwaggerVisitorName = keyof SwaggerRuleVisitor<''>;
 
-export type SwaggerRuleVisitor<M extends string> = Partial<{
-    SwaggerObject: RuleVisitorFunction<Swagger.SwaggerObject, M>;
-    InfoObject: RuleVisitorFunction<Swagger.InfoObject, M>;
-    PathsObject: RuleVisitorFunction<Swagger.PathsObject, M>;
+export type SwaggerTypes = {
+    ContactObject: Swagger.ContactObject;
+    DefinitionsObject: Swagger.DefinitionsObject;
+    ExampleObject: Swagger.ExampleObject;
+    ExternalDocumentationObject: Swagger.ExternalDocumentationObject;
+    HeaderObject: Swagger.HeaderObject;
+    HeadersObject: Swagger.HeadersObject;
+    InfoObject: Swagger.InfoObject;
+    ItemsObject: Swagger.ItemsObject;
+    LicenseObject: Swagger.LicenseObject;
+    OperationObject: Swagger.OperationObject;
+    ParameterObject: Swagger.ParameterObject;
+    ParametersDefinitionsObject: Swagger.ParametersDefinitionsObject;
+    PathItemObject: Swagger.PathItemObject;
+    PathsObject: Swagger.PathsObject;
+    ReferenceObject: Swagger.ReferenceObject;
+    ResponseObject: Swagger.ResponseObject;
+    ResponsesDefinitionsObject: Swagger.ResponsesDefinitionsObject;
+    ResponsesObject: Swagger.ResponsesObject;
+    SchemaObject: Swagger.SchemaObject;
+    ScopesObject: Swagger.ScopesObject;
+    SecurityDefinitionsObject: Swagger.SecurityDefinitionsObject;
+    SecurityRequirementObject: Swagger.SecurityRequirementObject;
+    SecuritySchemeObject: Swagger.SecuritySchemeObject;
+    SwaggerObject: Swagger.SwaggerObject;
+    TagObject: Swagger.TagObject;
+    XMLObject: Swagger.XMLObject;
+};
 
+export type SwaggerRuleVisitor<M extends string> = Partial<{
+    ContactObject: RuleVisitorFunction<Swagger.ContactObject, M>;
     DefinitionsObject: RuleVisitorFunction<Swagger.DefinitionsObject, M>;
-    ParametersDefinitionsObject: RuleVisitorFunction<
-        Swagger.ParametersDefinitionsObject,
-        M
-    >;
-    ResponsesDefinitionsObject: RuleVisitorFunction<
-        Swagger.ResponsesDefinitionsObject,
-        M
-    >;
-    SecurityDefinitionsObject: RuleVisitorFunction<
-        Swagger.SecurityDefinitionsObject,
-        M
-    >;
-    SecuritySchemeObject: RuleVisitorFunction<Swagger.SecuritySchemeObject, M>;
-    ScopesObject: RuleVisitorFunction<Swagger.ScopesObject, M>;
-    SecurityRequirementObject: RuleVisitorFunction<
-        Swagger.SecurityRequirementObject,
-        M
-    >;
-    TagObject: RuleVisitorFunction<Swagger.TagObject, M>;
+    ExampleObject: RuleVisitorFunction<Swagger.ExampleObject, M>;
     ExternalDocumentationObject: RuleVisitorFunction<
         Swagger.ExternalDocumentationObject,
         M
     >;
-    ContactObject: RuleVisitorFunction<Swagger.ContactObject, M>;
+    HeaderObject: RuleVisitorFunction<Swagger.HeaderObject, M>;
+    HeadersObject: RuleVisitorFunction<Swagger.HeadersObject, M>;
+    InfoObject: RuleVisitorFunction<Swagger.InfoObject, M>;
+    ItemsObject: RuleVisitorFunction<Swagger.ItemsObject, M>;
     LicenseObject: RuleVisitorFunction<Swagger.LicenseObject, M>;
-    PathItemObject: RuleVisitorFunction<Swagger.PathItemObject, M>;
     OperationObject: RuleVisitorFunction<Swagger.OperationObject, M>;
     ParameterObject: RuleVisitorFunction<Swagger.ParameterObject, M>;
-    ResponsesObject: RuleVisitorFunction<Swagger.ResponsesObject, M>;
+    ParametersDefinitionsObject: RuleVisitorFunction<
+        Swagger.ParametersDefinitionsObject,
+        M
+    >;
+    PathItemObject: RuleVisitorFunction<Swagger.PathItemObject, M>;
+    PathsObject: RuleVisitorFunction<Swagger.PathsObject, M>;
+    ReferenceObject: RuleVisitorFunction<Swagger.ReferenceObject, M>;
     ResponseObject: RuleVisitorFunction<Swagger.ResponseObject, M>;
+    ResponsesDefinitionsObject: RuleVisitorFunction<
+        Swagger.ResponsesDefinitionsObject,
+        M
+    >;
+    ResponsesObject: RuleVisitorFunction<Swagger.ResponsesObject, M>;
     SchemaObject: RuleVisitorFunction<Swagger.SchemaObject, M>;
+    ScopesObject: RuleVisitorFunction<Swagger.ScopesObject, M>;
+    SecurityDefinitionsObject: RuleVisitorFunction<
+        Swagger.SecurityDefinitionsObject,
+        M
+    >;
+    SecurityRequirementObject: RuleVisitorFunction<
+        Swagger.SecurityRequirementObject,
+        M
+    >;
+    SecuritySchemeObject: RuleVisitorFunction<Swagger.SecuritySchemeObject, M>;
+    SwaggerObject: RuleVisitorFunction<Swagger.SwaggerObject, M>;
+    TagObject: RuleVisitorFunction<Swagger.TagObject, M>;
     XMLObject: RuleVisitorFunction<Swagger.XMLObject, M>;
-    HeadersObject: RuleVisitorFunction<Swagger.HeadersObject, M>;
-    HeaderObject: RuleVisitorFunction<Swagger.HeaderObject, M>;
-    ItemsObject: RuleVisitorFunction<Swagger.ItemsObject, M>;
-    ExampleObject: RuleVisitorFunction<Swagger.ExampleObject, M>;
 }>;
+/* GENERATED_END(id:swagger) */
 
-type OneOrNone<T> = [T] | [];
 export type NodeWithLocation<T> = {
     node: T;
     location: string[];
 };
 
-export type SwaggerVisitors = {
-    SwaggerObject: [NodeWithLocation<Swagger.SwaggerObject>];
-    InfoObject: [NodeWithLocation<Swagger.InfoObject>];
-    PathsObject: [NodeWithLocation<Swagger.PathsObject>];
-
-    DefinitionsObject: OneOrNone<NodeWithLocation<Swagger.DefinitionsObject>>;
-    ParametersDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.ParametersDefinitionsObject>
-    >;
-    ResponsesDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.ResponsesDefinitionsObject>
-    >;
-    SecurityDefinitionsObject: OneOrNone<
-        NodeWithLocation<Swagger.SecurityDefinitionsObject>
-    >;
-    SecuritySchemeObject: NodeWithLocation<Swagger.SecuritySchemeObject>[];
-    ScopesObject: NodeWithLocation<Swagger.ScopesObject>[];
-    SecurityRequirementObject: NodeWithLocation<
-        Swagger.SecurityRequirementObject
-    >[];
-    TagObject: NodeWithLocation<Swagger.TagObject>[];
-    ExternalDocumentationObject: NodeWithLocation<
-        Swagger.ExternalDocumentationObject
-    >[];
-    ContactObject: OneOrNone<NodeWithLocation<Swagger.ContactObject>>;
-    LicenseObject: OneOrNone<NodeWithLocation<Swagger.LicenseObject>>;
-    PathItemObject: NodeWithLocation<Swagger.PathItemObject>[];
-    OperationObject: NodeWithLocation<Swagger.OperationObject>[];
-    ParameterObject: NodeWithLocation<Swagger.ParameterObject>[];
-    ResponsesObject: NodeWithLocation<Swagger.ResponsesObject>[];
-    ResponseObject: NodeWithLocation<Swagger.ResponseObject>[];
-    SchemaObject: NodeWithLocation<Swagger.SchemaObject>[];
-    XMLObject: NodeWithLocation<Swagger.XMLObject>[];
-    HeadersObject: NodeWithLocation<Swagger.HeadersObject>[];
-    HeaderObject: NodeWithLocation<Swagger.HeaderObject>[];
-    ItemsObject: NodeWithLocation<Swagger.ItemsObject>[];
-    ExampleObject: NodeWithLocation<Swagger.ExampleObject>[];
-};
-
-// prettier-ignore
+/* GENERATED_START(id:openapi;hash:aaab3363c0c22db2ce6c470b651603f4) This is generated content, do not modify by hand, to regenerate run "npm run update-types" */
 export type OpenAPIVisitors = {
     CallbackObject: NodeWithLocation<OpenAPI.CallbackObject>[];
-    ComponentsObject: OneOrNone<NodeWithLocation<OpenAPI.ComponentsObject>>;
+    ComponentsObject: [NodeWithLocation<OpenAPI.ComponentsObject>] | [];
     ContactObject: NodeWithLocation<OpenAPI.ContactObject>[];
     DiscriminatorObject: NodeWithLocation<OpenAPI.DiscriminatorObject>[];
     EncodingObject: NodeWithLocation<OpenAPI.EncodingObject>[];
     ExampleObject: NodeWithLocation<OpenAPI.ExampleObject>[];
-    ExternalDocumentationObject: NodeWithLocation<OpenAPI.ExternalDocumentationObject>[];
+    ExternalDocumentationObject: NodeWithLocation<
+        OpenAPI.ExternalDocumentationObject
+    >[];
     HeaderObject: NodeWithLocation<OpenAPI.HeaderObject>[];
     InfoObject: [NodeWithLocation<OpenAPI.InfoObject>];
     LicenseObject: NodeWithLocation<OpenAPI.LicenseObject>[];
@@ -214,13 +246,17 @@ export type OpenAPIVisitors = {
     ResponseObject: NodeWithLocation<OpenAPI.ResponseObject>[];
     ResponsesObject: NodeWithLocation<OpenAPI.ResponsesObject>[];
     SchemaObject: NodeWithLocation<OpenAPI.SchemaObject>[];
-    SecurityRequirementObject: NodeWithLocation<OpenAPI.SecurityRequirementObject>[];
+    SecurityRequirementObject: NodeWithLocation<
+        OpenAPI.SecurityRequirementObject
+    >[];
     SecuritySchemeObject: NodeWithLocation<OpenAPI.SecuritySchemeObject>[];
     ServerObject: NodeWithLocation<OpenAPI.ServerObject>[];
     ServerVariableObject: NodeWithLocation<OpenAPI.ServerVariableObject>[];
     TagObject: NodeWithLocation<OpenAPI.TagObject>[];
     XMLObject: NodeWithLocation<OpenAPI.XMLObject>[];
 };
+
+export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;
 
 export type OpenAPITypes = {
     CallbackObject: OpenAPI.CallbackObject;
@@ -255,9 +291,7 @@ export type OpenAPITypes = {
     XMLObject: OpenAPI.XMLObject;
 };
 
-export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;
-
-type OpenAPIRuleVisitor<M extends string> = Partial<{
+export type OpenAPIRuleVisitor<M extends string> = Partial<{
     CallbackObject: RuleVisitorFunction<OpenAPI.CallbackObject, M>;
     ComponentsObject: RuleVisitorFunction<OpenAPI.ComponentsObject, M>;
     ContactObject: RuleVisitorFunction<OpenAPI.ContactObject, M>;
@@ -295,9 +329,14 @@ type OpenAPIRuleVisitor<M extends string> = Partial<{
     TagObject: RuleVisitorFunction<OpenAPI.TagObject, M>;
     XMLObject: RuleVisitorFunction<OpenAPI.XMLObject, M>;
 }>;
+/* GENERATED_END(id:openapi) */
 
 type SwaggerlintRulePrimitive<T extends string> = {
     name: string;
+    docs: {
+        description: string;
+        recommended: boolean;
+    };
     meta?: {
         messages?: Record<T, string>;
     };

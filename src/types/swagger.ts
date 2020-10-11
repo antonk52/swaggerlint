@@ -272,10 +272,6 @@ export type PathsObject = {
     [m: string]: PathItemObject;
 };
 
-/**
- * https://swagger.io/specification/v2/#schemaObject
- */
-export type DataType = 'integer' | 'number' | 'string' | 'boolean';
 type IntegerFormat = 'int32' | 'int64';
 type NumberFormat = 'float' | 'double';
 type StringFormat =
@@ -338,7 +334,7 @@ type SchemaObjectObject = SchemaObjectCreator<
     Record<string, unknown>
 > &
     ObjectAddon;
-export type SchemaObjectAllOfObject = SchemaObjectCreator<
+type SchemaObjectAllOfObject = SchemaObjectCreator<
     'object',
     unknown,
     (SchemaObject | ReferenceObject)[]

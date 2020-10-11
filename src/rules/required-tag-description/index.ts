@@ -35,6 +35,10 @@ function TagObject({node, report, location}: Param): void {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'All tags must have description',
+    },
     meta: {
         messages,
     },

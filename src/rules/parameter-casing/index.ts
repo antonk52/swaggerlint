@@ -38,6 +38,10 @@ const paramsSchema = PARAMETER_LOCATIONS.reduce((acc, el) => {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'Casing for your parameters',
+    },
     meta: {
         messages: {
             casing:

@@ -48,6 +48,11 @@ function onlyValidMimeTypeCheck({node, report, location}: Param): void {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description:
+            'Checks mime types against known from [`mime-db`](https://npm.im/mime-db)',
+    },
     meta: {messages},
     swaggerVisitor: {
         SwaggerObject: onlyValidMimeTypeCheck,

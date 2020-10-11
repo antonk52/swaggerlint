@@ -27,6 +27,10 @@ const operationObjectValidator: RuleVisitorFunction<
 };
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'Enforces an intentional path summary',
+    },
     meta: {
         messages,
     },

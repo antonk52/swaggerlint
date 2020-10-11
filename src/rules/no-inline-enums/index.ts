@@ -4,6 +4,11 @@ const name = 'no-inline-enums';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description:
+            'Enums must be in `DefinitionsObject` or `ComponentsObject`',
+    },
     meta: {
         messages: {
             swagger:

@@ -13,36 +13,38 @@ jest.mock('../defaultConfig', () => ({
     },
 }));
 jest.mock('../rules', () => ({
-    'known-rule': {
-        name: 'known-rule',
-        meta: {
-            schema: {
-                type: 'array',
-                items: [
-                    {
-                        type: 'string',
-                        enum: ['known', 'words'],
-                    },
-                    {
-                        type: 'object',
-                        required: ['ignore'],
-                        properties: {
-                            ignore: {
-                                type: 'array',
-                                items: {
-                                    type: 'string',
+    rules: {
+        'known-rule': {
+            name: 'known-rule',
+            meta: {
+                schema: {
+                    type: 'array',
+                    items: [
+                        {
+                            type: 'string',
+                            enum: ['known', 'words'],
+                        },
+                        {
+                            type: 'object',
+                            required: ['ignore'],
+                            properties: {
+                                ignore: {
+                                    type: 'array',
+                                    items: {
+                                        type: 'string',
+                                    },
                                 },
                             },
                         },
-                    },
-                ],
+                    ],
+                },
             },
+            swaggerVisitor: {},
+            defaultSetting: ['known', {}],
         },
-        swaggerVisitor: {},
-        defaultSetting: ['known', {}],
-    },
-    'always-valid-rule': {
-        swaggerVisitor: {},
+        'always-valid-rule': {
+            swaggerVisitor: {},
+        },
     },
 }));
 
