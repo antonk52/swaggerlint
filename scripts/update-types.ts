@@ -112,7 +112,6 @@ async function makeTypesFor(target: 'swagger' | 'openapi') {
         id: target,
         filepath: paths.swaggerlint,
         updateScript: 'npm run update-types',
-        comments: {}, // TODO: remove from mmac
         lines,
         transform: x => format(x, {parser: 'typescript', ...prettierConfig}),
     });

@@ -31,7 +31,6 @@ async function updateRules() {
             ...objectProperties,
             '}',
         ],
-        comments: {},
         transform: content =>
             prettier.format(content, {parser: 'babel', ...prettierConfig}),
     });

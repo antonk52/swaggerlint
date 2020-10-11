@@ -41,7 +41,6 @@ async function updateReadme() {
             ...rows,
         ],
         id: 'rulestable',
-        comments: {},
         transform: content =>
             prettier.format(content, {parser: 'markdown', ...prettierConfig}),
     });
