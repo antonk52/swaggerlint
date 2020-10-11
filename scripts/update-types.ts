@@ -37,7 +37,6 @@ const swaggerTypeToVisitorPredicate: [string[], (arg: string) => string][] = [
         alwaysOneVisitor('Swagger'),
     ],
     [
-        // prettier
         [
             'DefinitionsObject',
             'ParametersDefinitionsObject',
@@ -54,9 +53,20 @@ function isString(arg: unknown): arg is string {
     return typeof arg === 'string';
 }
 
-async function updateTypes() {
-    const openapiTypesContent = await fs.readFile(paths.openapi);
-    const openapiTypeNames = openapiTypesContent
+async function makeTypesFor(target: 'swagger' | 'openapi') {
+    const {nameSpace, predicates} = {
+        swagger: {
+            nameSpace: 'Swagger',
+            predicates: swaggerTypeToVisitorPredicate,
+        },
+        openapi: {
+            nameSpace: 'OpenAPI',
+            predicates: openapiTypeToVisitorPredicate,
+        },
+    }[target];
+
+    const typesContent = await fs.readFile(paths[target]);
+    const typeNames = typesContent
         .toString()
         .split('\n')
         .filter(line => line.startsWith('export type '))
@@ -64,108 +74,58 @@ async function updateTypes() {
         .filter(isString)
         .sort();
 
-    const openapiVisitorsLines = [
-        'export type OpenAPIVisitors = {',
-        ...openapiTypeNames.map(name => {
-            const foundPredicate = openapiTypeToVisitorPredicate.find(x =>
-                x[0].includes(name),
-            );
+    const visitorsLines = [
+        `export type ${nameSpace}Visitors = {`,
+        ...typeNames.map(name => {
+            const foundPredicate = predicates.find(x => x[0].includes(name));
 
-            return foundPredicate?.[1](name) ?? manyVisitors('OpenAPI')(name);
+            return foundPredicate?.[1](name) ?? manyVisitors(nameSpace)(name);
         }),
         '};',
         '',
-        "export type OpenAPIVisitorName = keyof OpenAPIRuleVisitor<''>;",
+        `export type ${nameSpace}VisitorName = keyof ${nameSpace}RuleVisitor<''>;`,
     ];
 
-    const openapiTypesLines = [
-        'export type OpenAPITypes = {',
-        ...openapiTypeNames.map(name => `${name}: OpenAPI.${name};`),
+    const typesLines = [
+        `export type ${nameSpace}Types = {`,
+        ...typeNames.map(name => `${name}: ${nameSpace}.${name};`),
         '};',
     ];
 
-    const openapiRuleVisitorLines = [
-        'export type OpenAPIRuleVisitor<M extends string> = Partial<{',
-        ...openapiTypeNames.map(
-            name => `${name}: RuleVisitorFunction<OpenAPI.${name}, M>;`,
+    const ruleVisitorLines = [
+        `export type ${nameSpace}RuleVisitor<M extends string> = Partial<{`,
+        ...typeNames.map(
+            name => `${name}: RuleVisitorFunction<${nameSpace}.${name}, M>;`,
         ),
         '}>;',
     ];
 
     const lines = [
-        ...openapiVisitorsLines,
+        ...visitorsLines,
         '',
-        ...openapiTypesLines,
+        ...typesLines,
         '',
-        ...openapiRuleVisitorLines,
+        ...ruleVisitorLines,
     ];
 
     await mmac({
-        id: 'openapi',
+        id: target,
         filepath: paths.swaggerlint,
         updateScript: 'npm run update-types',
         comments: {}, // TODO: remove from mmac
         lines,
         transform: x => format(x, {parser: 'typescript', ...prettierConfig}),
     });
+}
 
-    // =============== SWAGGER =================
-
-    const swaggerTypesContent = await fs.readFile(paths.swagger);
-    const swaggerTypeNames = swaggerTypesContent
-        .toString()
-        .split('\n')
-        .filter(line => line.startsWith('export type '))
-        .map(line => line.match(/export type (\w+).*/)?.[1])
-        .filter(isString)
-        .sort();
-
-    const swaggerVisitorsLines = [
-        'export type SwaggerVisitors = {',
-        ...swaggerTypeNames.map(name => {
-            const foundPredicate = swaggerTypeToVisitorPredicate.find(x =>
-                x[0].includes(name),
-            );
-
-            return foundPredicate?.[1](name) ?? manyVisitors('Swagger')(name);
-        }),
-        '};',
-        '',
-        "export type SwaggerVisitorName = keyof SwaggerRuleVisitor<''>;",
-    ];
-
-    const swaggerTypesLines = [
-        'export type SwaggerTypes = {',
-        ...swaggerTypeNames.map(name => `${name}: Swagger.${name};`),
-        '};',
-    ];
-
-    const swaggerRuleVisitorLines = [
-        'export type SwaggerRuleVisitor<M extends string> = Partial<{',
-        ...swaggerTypeNames.map(
-            name => `${name}: RuleVisitorFunction<Swagger.${name}, M>;`,
-        ),
-        '}>;',
-    ];
-
-    const swaggerlines = [
-        ...swaggerVisitorsLines,
-        '',
-        ...swaggerTypesLines,
-        '',
-        ...swaggerRuleVisitorLines,
-    ];
-
-    await mmac({
-        id: 'swagger',
-        filepath: paths.swaggerlint,
-        updateScript: 'npm run update-types',
-        comments: {}, // TODO: remove from mmac
-        lines: swaggerlines,
-        transform: x => format(x, {parser: 'typescript', ...prettierConfig}),
-    });
+async function updateTypes() {
+    await makeTypesFor('swagger');
+    await makeTypesFor('openapi');
 
     console.log('✅types are updated');
 }
 
-updateTypes().catch(console.error);
+updateTypes().catch(e => {
+    console.error(e);
+    process.exit(1);
+});
