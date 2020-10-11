@@ -4,6 +4,10 @@ const name = 'no-trailing-slash';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'URLs must NOT end with a slash',
+    },
     meta: {
         messages: {
             url: 'Url cannot end with a slash "{{url}}".',

@@ -33,6 +33,10 @@ function ParameterObject({node, report, location}: Param): void {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'All parameters must have description',
+    },
     meta: {
         messages,
     },

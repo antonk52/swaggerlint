@@ -303,6 +303,10 @@ type OpenAPIRuleVisitor<M extends string> = Partial<{
 
 type SwaggerlintRulePrimitive<T extends string> = {
     name: string;
+    docs: {
+        description: string;
+        recommended: boolean;
+    };
     meta?: {
         messages?: Record<T, string>;
     };

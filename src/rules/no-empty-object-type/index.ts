@@ -4,6 +4,11 @@ const name = 'no-empty-object-type';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description:
+            'Object types have to have their properties specified explicitly',
+    },
     meta: {
         messages: {
             swagger: `has "object" type but is missing "properties" | "additionalProperties" | "allOf"`,

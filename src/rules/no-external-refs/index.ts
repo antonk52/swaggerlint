@@ -4,6 +4,10 @@ const name = 'no-external-refs';
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: false,
+        description: 'Forbids the usage of external ReferenceObjects',
+    },
     meta: {
         messages: {
             msg: 'External references are banned.',

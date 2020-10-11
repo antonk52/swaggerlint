@@ -28,6 +28,10 @@ function OperationObject({node, report, location}: Param): void {
 
 const rule = createRule({
     name,
+    docs: {
+        recommended: true,
+        description: 'All operations must have tags',
+    },
     meta: {
         messages,
     },
