@@ -31,6 +31,25 @@ const openapiTypeToVisitorPredicate: [string[], (arg: string) => string][] = [
     ],
 ];
 
+const swaggerTypeToVisitorPredicate: [string[], (arg: string) => string][] = [
+    [
+        ['InfoObject', 'SwaggerObject', 'PathsObject'],
+        alwaysOneVisitor('Swagger'),
+    ],
+    [
+        // prettier
+        [
+            'DefinitionsObject',
+            'ParametersDefinitionsObject',
+            'ResponsesDefinitionsObject',
+            'SecurityDefinitionsObject',
+            'ContactObject',
+            'LicenseObject',
+        ],
+        oneOrNoVisitors('Swagger'),
+    ],
+];
+
 function isString(arg: unknown): arg is string {
     return typeof arg === 'string';
 }
@@ -66,7 +85,7 @@ async function updateTypes() {
     ];
 
     const openapiRuleVisitorLines = [
-        'type OpenAPIRuleVisitor<M extends string> = Partial<{',
+        'export type OpenAPIRuleVisitor<M extends string> = Partial<{',
         ...openapiTypeNames.map(
             name => `${name}: RuleVisitorFunction<OpenAPI.${name}, M>;`,
         ),
@@ -90,7 +109,63 @@ async function updateTypes() {
         transform: x => format(x, {parser: 'typescript', ...prettierConfig}),
     });
 
+    // =============== SWAGGER =================
+
+    const swaggerTypesContent = await fs.readFile(paths.swagger);
+    const swaggerTypeNames = swaggerTypesContent
+        .toString()
+        .split('\n')
+        .filter(line => line.startsWith('export type '))
+        .map(line => line.match(/export type (\w+).*/)?.[1])
+        .filter(isString)
+        .sort();
+
+    const swaggerVisitorsLines = [
+        'export type SwaggerVisitors = {',
+        ...swaggerTypeNames.map(name => {
+            const foundPredicate = swaggerTypeToVisitorPredicate.find(x =>
+                x[0].includes(name),
+            );
+
+            return foundPredicate?.[1](name) ?? manyVisitors('Swagger')(name);
+        }),
+        '};',
+        '',
+        "export type SwaggerVisitorName = keyof SwaggerRuleVisitor<''>;",
+    ];
+
+    const swaggerTypesLines = [
+        'export type SwaggerTypes = {',
+        ...swaggerTypeNames.map(name => `${name}: Swagger.${name};`),
+        '};',
+    ];
+
+    const swaggerRuleVisitorLines = [
+        'export type SwaggerRuleVisitor<M extends string> = Partial<{',
+        ...swaggerTypeNames.map(
+            name => `${name}: RuleVisitorFunction<Swagger.${name}, M>;`,
+        ),
+        '}>;',
+    ];
+
+    const swaggerlines = [
+        ...swaggerVisitorsLines,
+        '',
+        ...swaggerTypesLines,
+        '',
+        ...swaggerRuleVisitorLines,
+    ];
+
+    await mmac({
+        id: 'swagger',
+        filepath: paths.swaggerlint,
+        updateScript: 'npm run update-types',
+        comments: {}, // TODO: remove from mmac
+        lines: swaggerlines,
+        transform: x => format(x, {parser: 'typescript', ...prettierConfig}),
+    });
+
     console.log('✅types are updated');
 }
 
-updateTypes();
+updateTypes().catch(console.error);

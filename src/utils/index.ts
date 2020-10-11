@@ -1,5 +1,5 @@
 import type {JSONSchema7} from 'json-schema';
-import {SwaggerVisitorName, Swagger, SwaggerlintRule} from '../types';
+import {SwaggerVisitorName, SwaggerlintRule} from '../types';
 export * from './common';
 import {validate} from './validate-json';
 
@@ -8,12 +8,6 @@ const isDev = process.env.NODE_ENV === 'development';
 export const log = isDev
     ? (x: string): void => console.log(`--> ${x}`)
     : (): null => null;
-
-export function isSchemaObjectAllOfObject(
-    arg: Record<string, unknown>,
-): arg is Swagger.SchemaObjectAllOfObject {
-    return Array.isArray(arg.allOf);
-}
 
 /**
  * TODO: extract swagger v2 specific utils into separate file

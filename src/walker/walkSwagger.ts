@@ -77,6 +77,7 @@ export function walkSwagger(
             ParameterObject: [],
             ResponsesObject: [],
             ResponseObject: [],
+            ReferenceObject: [],
             SchemaObject: [],
             XMLObject: [],
             HeadersObject: [],
