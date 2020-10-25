@@ -32,6 +32,7 @@ const swaggerVisitorSet = new Set([
     'OperationObject',
     'ParameterObject',
     'ResponsesObject',
+    'ReferenceObject',
     'ResponseObject',
     'SchemaObject',
     'XMLObject',

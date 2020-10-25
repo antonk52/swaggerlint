@@ -94,7 +94,9 @@ export class RuleTester {
                                 assert.fail(
                                     `Expected ${expected.length} error${
                                         expected.length === 1 ? '' : 's'
-                                    } but got ${actual.length}`,
+                                    } but got ${
+                                        actual.length
+                                    }.\n\n${JSON.stringify(actual, null, 4)}`,
                                 );
                             }
 

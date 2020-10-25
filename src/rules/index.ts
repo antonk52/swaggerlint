@@ -1,11 +1,12 @@
 import {SwaggerlintRule} from '../types';
 
-/* GENERATED_START(id:main;hash:45f5fb6405bd067f4899e69520107b1f) This is generated content, do not modify by hand, to regenerate run "npm run updateDocs" */
+/* GENERATED_START(id:main;hash:b40e1cfc8d3333a2dd472ed4f410070e) This is generated content, do not modify by hand, to regenerate run "npm run updateDocs" */
 import expressivePathSummary from './expressive-path-summary';
 import latinDefinitionsOnly from './latin-definitions-only';
 import noEmptyObjectType from './no-empty-object-type';
 import noExternalRefs from './no-external-refs';
 import noInlineEnums from './no-inline-enums';
+import noRefProperties from './no-ref-properties';
 import noSingleAllof from './no-single-allof';
 import noTrailingSlash from './no-trailing-slash';
 import objectPropCasing from './object-prop-casing';
@@ -22,6 +23,7 @@ export const rules: Record<string, SwaggerlintRule<string>> = {
     [noEmptyObjectType.name]: noEmptyObjectType,
     [noExternalRefs.name]: noExternalRefs,
     [noInlineEnums.name]: noInlineEnums,
+    [noRefProperties.name]: noRefProperties,
     [noSingleAllof.name]: noSingleAllof,
     [noTrailingSlash.name]: noTrailingSlash,
     [objectPropCasing.name]: objectPropCasing,
