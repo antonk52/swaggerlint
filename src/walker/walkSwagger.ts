@@ -92,6 +92,7 @@ export function walkSwagger(
             path: string[],
         ): void {
             if (swUtils.isRef(schema)) {
+                visitors.ReferenceObject.push({node: schema, location: path});
                 return;
             }
 
@@ -178,6 +179,7 @@ export function walkSwagger(
             path: string[],
         ): void {
             if (swUtils.isRef(response)) {
+                visitors.ReferenceObject.push({node: response, location: path});
                 return;
             }
 
@@ -252,16 +254,22 @@ export function walkSwagger(
 
                     if (operationObject.parameters) {
                         operationObject.parameters.forEach((parameter, i) => {
-                            if (swUtils.isRef(parameter)) {
-                                return;
-                            }
-                            populateParams(parameter, [
+                            const location = [
                                 'paths',
                                 pathUrl,
                                 method,
                                 'parameters',
                                 String(i),
-                            ]);
+                            ];
+                            if (swUtils.isRef(parameter)) {
+                                visitors.ReferenceObject.push({
+                                    node: parameter,
+                                    location,
+                                });
+
+                                return;
+                            }
+                            populateParams(parameter, location);
                         });
                     }
 
@@ -304,15 +312,20 @@ export function walkSwagger(
 
             if (path.parameters) {
                 path.parameters.forEach((parameter, i) => {
-                    if (swUtils.isRef(parameter)) {
-                        return;
-                    }
-                    populateParams(parameter, [
+                    const location = [
                         'paths',
                         pathUrl,
                         'parameters',
                         String(i),
-                    ]);
+                    ];
+                    if (swUtils.isRef(parameter)) {
+                        visitors.ReferenceObject.push({
+                            node: parameter,
+                            location,
+                        });
+                        return;
+                    }
+                    populateParams(parameter, location);
                 });
             }
         });
