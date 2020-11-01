@@ -28,4 +28,4 @@ jobs:
     - name: unit tests
       run: npm run test
     - name: generated files
-      run: npm run update-files-ci
+      run: npm run update-all-files

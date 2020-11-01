@@ -117,14 +117,15 @@ async function makeTypesFor(target: 'swagger' | 'openapi') {
     });
 }
 
-async function updateTypes() {
+export async function updateTypes() {
     await makeTypesFor('swagger');
     await makeTypesFor('openapi');
 
     console.log('✅types are updated');
 }
 
-updateTypes().catch(e => {
-    console.error(e);
-    process.exit(1);
-});
+if (require.main === module)
+    updateTypes().catch(e => {
+        console.error(e);
+        process.exit(1);
+    });

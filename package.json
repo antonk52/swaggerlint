@@ -12,8 +12,7 @@
         "update-rules": "ts-node ./scripts/update-rules.ts",
         "update-types": "ts-node ./scripts/update-types.ts",
         "update-readme": "ts-node ./scripts/update-readme.ts",
-        "update-all-files": "npm run update-rules && npm run update-types && npm run update-readme",
-        "update-files-ci": "./scripts/update-files-ci.sh",
+        "update-all-files": "ts-node ./scripts/update-all-files.ts && mmac-check --update-script \"npm run update-all-files\"",
         "preversion": "npm run test && npm run lint && npm run build",
         "postversion": "npm publish && git push --follow-tags"
     },
