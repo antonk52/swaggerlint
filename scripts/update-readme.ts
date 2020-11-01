@@ -7,19 +7,24 @@ import prettier from 'prettier';
 
 const prettierConfig = require('../prettier.config') as prettier.Options;
 
-async function updateReadme() {
-    const rulesDirContents = (
-        await fs.readdir(path.join(__dirname, '..', 'src', 'rules'))
-    ).filter(x => x !== 'index.ts');
+const PATHS = {
+    readme: path.join(__dirname, '..', 'README.md'),
+    rulesDir: path.join(__dirname, '..', 'src', 'rules'),
+};
+
+console.log(PATHS);
+
+export async function updateReadme() {
+    const rulesDirContents = (await fs.readdir(PATHS.rulesDir)).filter(
+        x => x !== 'index.ts',
+    );
 
     const rules = await Promise.all(
         rulesDirContents.map(dirName =>
-            import(path.join(__dirname, '..', 'src', 'rules', dirName)).then(
-                rule => ({
-                    rule: rule.default,
-                    dirName,
-                }),
-            ),
+            import(path.join(PATHS.rulesDir, dirName)).then(rule => ({
+                rule: rule.default,
+                dirName,
+            })),
         ),
     );
 
@@ -34,7 +39,7 @@ async function updateReadme() {
 
     await mmac({
         updateScript: 'npm run updateDocs',
-        filepath: path.join(__dirname, '..', 'readme.md'),
+        filepath: PATHS.readme,
         lines: [
             '| rule name | description | default |',
             '| --- | --- | --- |',
@@ -48,4 +53,4 @@ async function updateReadme() {
     console.log('✅readme is updated');
 }
 
-updateReadme();
+if (require.main === module) updateReadme();

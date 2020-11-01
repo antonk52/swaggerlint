@@ -8,7 +8,7 @@ import prettier from 'prettier';
 
 const prettierConfig = require('../prettier.config') as prettier.Options;
 
-async function updateRules() {
+export async function updateRules() {
     const rulesDirContents = (
         await fs.readdir(path.join(__dirname, '..', 'src', 'rules'))
     ).filter(x => x !== 'index.ts');
@@ -38,4 +38,4 @@ async function updateRules() {
     console.log('✅rules are updated');
 }
 
-updateRules();
+if (require.main === module) updateRules();
