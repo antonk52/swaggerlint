@@ -160,6 +160,11 @@ export function swaggerlint(
                             case 'minItems':
                                 err.msg = `Rule setting ${se.message}`;
                                 break;
+                            case 'type':
+                                err.msg = `Value ${
+                                    se.message
+                                }, got ${typeof se.data}`;
+                                break;
                         }
 
                         errors.push(err);

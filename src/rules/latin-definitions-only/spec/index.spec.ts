@@ -64,6 +64,49 @@ ruleTester.run({
                     },
                 ],
             },
+            {
+                it: 'should error for non latin & non ignored definitoins',
+                schema: {
+                    definitions: {
+                        valid: {
+                            type: 'object',
+                        },
+                        '^invalid^': {
+                            type: 'object',
+                        },
+                        '&invalid&': {
+                            type: 'object',
+                        },
+                        $invalid$: {
+                            type: 'object',
+                        },
+                        '«invalid»': {
+                            type: 'object',
+                        },
+                    },
+                },
+                config: {
+                    rules: {
+                        [rule.name]: ['', {ignore: ['$', '«', '»']}],
+                    },
+                },
+                errors: [
+                    {
+                        name: 'latin-definitions-only',
+                        msg:
+                            'Definition name "^invalid^" contains non latin characters.',
+                        messageId: 'msg',
+                        location: ['definitions', '^invalid^'],
+                    },
+                    {
+                        name: 'latin-definitions-only',
+                        msg:
+                            'Definition name "&invalid&" contains non latin characters.',
+                        messageId: 'msg',
+                        location: ['definitions', '&invalid&'],
+                    },
+                ],
+            },
         ],
     },
     openapi: {
@@ -97,6 +140,26 @@ ruleTester.run({
                     },
                 },
             },
+            {
+                it: 'should not error for ignored characters',
+                schema: {
+                    components: {
+                        schemas: {
+                            valid: {
+                                type: 'object',
+                            },
+                            'invalid-obj': {
+                                type: 'object',
+                            },
+                        },
+                    },
+                },
+                config: {
+                    rules: {
+                        [rule.name]: ['', {ignore: ['-']}],
+                    },
+                },
+            },
         ],
         invalid: [
             {
@@ -123,6 +186,41 @@ ruleTester.run({
                             'Definition name "invalid-obj" contains non latin characters.',
                         name: rule.name,
                         location: ['components', 'schemas', 'invalid-obj'],
+                    },
+                ],
+            },
+            {
+                it: 'should error for non non ignored characters',
+                schema: {
+                    components: {
+                        schemas: {
+                            valid: {
+                                type: 'object',
+                            },
+                            $ignored$: {
+                                type: 'object',
+                            },
+                            '^invalid^': {
+                                type: 'object',
+                            },
+                        },
+                    },
+                },
+                config: {
+                    rules: {
+                        [rule.name]: ['', {ignore: ['$']}],
+                    },
+                },
+                errors: [
+                    {
+                        data: {
+                            name: '^invalid^',
+                        },
+                        messageId: 'msg',
+                        msg:
+                            'Definition name "^invalid^" contains non latin characters.',
+                        name: rule.name,
+                        location: ['components', 'schemas', '^invalid^'],
                     },
                 ],
             },

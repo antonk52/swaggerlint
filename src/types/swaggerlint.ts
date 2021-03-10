@@ -349,6 +349,9 @@ type SwaggerlintRuleWithSetting<T extends string> = Omit<
     'meta'
 > & {
     meta: SwaggerlintRulePrimitive<T>['meta'] & {
+        /**
+         * JSONSchema for rule options
+         */
         schema: JSONSchema7;
     };
     /**

@@ -23,3 +23,21 @@ components:
         "тоже невалидное название": # <-- invalid
             type: "number"
 ```
+
+## Configuration
+
+This rule can be configured to ignore specified characters.
+
+```js
+// swaggerlint.config.js
+module.exports = {
+    rules: {
+        'latin-definitions-only': [
+            '',
+            {
+                ignore: ['$', '#'], // characters to ignore
+            },
+        ],
+    },
+};
+```
