@@ -48,6 +48,8 @@ const rule = createRule({
                             type: 'array',
                             items: {
                                 type: 'string',
+                                minLength: 1,
+                                maxLength: 1,
                             },
                         },
                     },

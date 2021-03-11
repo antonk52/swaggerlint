@@ -40,6 +40,58 @@ ruleTester.run({
         ],
         invalid: [
             {
+                it: 'should error for absent ignore option',
+                schema: {
+                    definitions: {
+                        valid: {
+                            type: 'object',
+                        },
+                    },
+                },
+                config: {
+                    rules: {
+                        [rule.name]: ['foo', {}],
+                        'expressive-path-summary': true,
+                    },
+                },
+                errors: [
+                    {
+                        msg:
+                            "Should have required property 'ignore', got object",
+                        name: rule.name,
+                        location: [],
+                    },
+                ],
+            },
+            {
+                it: 'should error for all non single char config options',
+                schema: {
+                    definitions: {
+                        valid: {
+                            type: 'object',
+                        },
+                    },
+                },
+                config: {
+                    rules: {
+                        [rule.name]: ['foo', {ignore: ['', '12']}],
+                        'expressive-path-summary': true,
+                    },
+                },
+                errors: [
+                    {
+                        msg: 'Invalid rule setting.',
+                        name: rule.name,
+                        location: [],
+                    },
+                    {
+                        msg: 'Invalid rule setting.',
+                        name: rule.name,
+                        location: [],
+                    },
+                ],
+            },
+            {
                 it: 'should error for all non latin named definitions',
                 schema: {
                     definitions: {
