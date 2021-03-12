@@ -12,7 +12,7 @@ import {
     RuleVisitorFunction,
     OpenAPITypes,
 } from './types';
-import {isValidSwaggerVisitorName, hasKey} from './utils';
+import {isValidSwaggerVisitorName, hasKey, capitalize} from './utils';
 import {validate} from './utils/validate-json';
 
 import {isSwaggerObject} from './utils/swagger';
@@ -159,6 +159,16 @@ export function swaggerlint(
                                 break;
                             case 'minItems':
                                 err.msg = `Rule setting ${se.message}`;
+                                break;
+                            case 'required':
+                                err.msg = `${capitalize(
+                                    se.message || 'Missing required field',
+                                )}, got ${typeof se.data}`;
+                                break;
+                            case 'type':
+                                err.msg = `Value ${
+                                    se.message
+                                }, got ${typeof se.data}`;
                                 break;
                         }
 

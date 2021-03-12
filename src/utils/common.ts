@@ -33,3 +33,7 @@ export function omit<T, S extends string>(src: T, fields: S[]): Omit<T, S> {
         return acc;
     }, {} as Omit<T, S>);
 }
+
+export function capitalize(str: string): string {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}

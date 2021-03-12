@@ -3,7 +3,7 @@ import {SwaggerlintConfig} from './types';
 const config: SwaggerlintConfig = {
     rules: {
         'expressive-path-summary': true,
-        'latin-definitions-only': true,
+        'latin-definitions-only': ['', {ignore: []}],
         'no-empty-object-type': true,
         'no-external-refs': false,
         'no-inline-enums': true,
